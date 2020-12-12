@@ -35,14 +35,21 @@ namespace ProjetCESI.Web.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
-            return View();
+            RegisterViewModel model = new RegisterViewModel();
+
+            return View(model);
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Register(RegisterViewModel model)
         {
-            return View();
+            if(ModelState.IsValid)
+            {
+                // Inscrire l'utilisateur
+            }
+
+            return View(model);
         }
     }
 }

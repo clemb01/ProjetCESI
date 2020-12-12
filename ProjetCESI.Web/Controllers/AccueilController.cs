@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Models;
 using System;
@@ -9,13 +10,11 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Controllers
 {
-    public class HomeController : Controller
+    [Authorize]
+    public class AccueilController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public AccueilController()
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
