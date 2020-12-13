@@ -12,50 +12,164 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Data
 {
-    public class Repository<T> where T : class
+    public class Repository<T> where T : class, IGetPrimaryKey
     {
-        IConfiguration _configuration;
-        public IConfiguration Configuration { get => _configuration; }
+        private int? _userId;
 
-        public void ConfigureServices(IServiceCollection __services, IConfiguration __configuration)
+        public int? UserId
         {
-            _configuration = __configuration;
-
-            __services.AddDbContext<MainContext>(options => options.UseSqlServer(__configuration.GetConnectionString("Main")));
-            __services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedEmail = false)
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<MainContext>()
-                .AddDefaultTokenProviders()
-                .AddUserManager<UserManager<User>>()
-                .AddSignInManager<SignInManager<User>>();
-
-            __services.Configure<IdentityOptions>(options =>
+            get
             {
-                options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-            });
-
-            __services.Configure<SecurityStampValidatorOptions>(options =>
+                return _userId;
+            }
+            set
             {
-                options.ValidationInterval = TimeSpan.FromMinutes(30);
-            });
+                this._userId = value;
+            }
+        }
 
-            __services.ConfigureApplicationCookie(options =>
+        public DbContext GetContext()
+        {
+            DbContext context = MainContext.Create();
+
+            return context;
+        }
+
+        virtual async public Task<T> GetById(int __coreElementId)
+        {
+            using (DbContext db = GetContext())
             {
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-                options.LoginPath = "/Account/login";
-                options.LogoutPath = "/Account/logOff";
-                options.SlidingExpiration = true;
-            });
+                return await db.Set<T>().FindAsync(__coreElementId);
+            }
+        }
 
-            __services.Configure<PasswordHasherOptions>(options => options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2);
+        virtual async public Task<IEnumerable<T>> GetAll()
+        {
+            using (DbContext db = GetContext())
+            {
+                var liste = db.Set<T>();
+
+                if (liste.Any())
+                {
+                    return await liste.ToListAsync();
+                }
+                else
+                    return await CreationDonneesTable();
+            }
+        }
+
+        virtual async public Task<IEnumerable<T>> CreationDonneesTable()
+        {
+            return null;
+        }
+
+        virtual public async Task<bool> InsertOrUpdate(IEnumerable<T> __lstCoreElement)
+        {
+            foreach (T coreElement in __lstCoreElement)
+            {
+                bool result = await InsertOrUpdate(coreElement);
+                if (result == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        virtual public async Task<bool> InsertOrUpdate(T __coreElement, bool __forceUsageFrontale = false)
+        {
+            try
+            {
+                using (DbContext db = MainContext.Create())
+                {
+                    if (db.Entry(__coreElement).State == EntityState.Detached)
+                        db.Set<T>().Attach(__coreElement);
+
+                    if (__coreElement.GetPrimaryKey() == default(int))
+                        db.Entry(__coreElement).State = EntityState.Added;
+                    else
+                        db.Entry(__coreElement).State = EntityState.Modified;
+
+                    int result = await db.SaveChangesAsync(true);
+
+                    return result != default(int) ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+
+            return false;
+        }
+
+        virtual async public Task<bool> DeleteById(int __coreElementId)
+        {
+            bool result = false;
+
+            using (DbContext db = GetContext())
+            {
+                T entityToDelete = await db.Set<T>().FindAsync(__coreElementId);
+
+                if (entityToDelete != null)
+                {
+                    if (db.Entry(entityToDelete).State == EntityState.Detached)
+                        db.Set<T>().Attach(entityToDelete);
+
+                    db.Set<T>().Remove(entityToDelete);
+
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
+        virtual async public Task<bool> Delete(T __coreElement)
+        {
+            try
+            {
+                using (DbContext db = GetContext())
+                {
+                    db.Set<T>().Attach(__coreElement);
+
+                    db.Set<T>().Remove(__coreElement);
+
+                    await db.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {                
+                return false;
+            }
+        }
+
+        virtual async public Task<bool> Delete(IEnumerable<T> __lstCoreElement)
+        {
+            try
+            {
+                using (DbContext db = GetContext())
+                {
+                    for (int i = __lstCoreElement.Count() - 1; i >= 0; i--)
+                    {
+                        T element = __lstCoreElement.ElementAt(i);
+
+                        db.Set<T>().Attach(element);
+
+                        db.Set<T>().Remove(element);
+                    }
+
+                    await db.SaveChangesAsync();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

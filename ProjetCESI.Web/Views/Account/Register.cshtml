@@ -2,20 +2,40 @@
 
 @model RegisterViewModel
 
+@{ 
+    ViewData["Title"] = "Inscription";
+}
+
 <div>
     @using (Html.BeginForm("Register", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
     {
-    <div class="login-form__input">
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre identifiant" })
-        <i class="fa fa-user inputIcon"></i>
-    </div>
-    <div class="login-form__input">
-        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
-        <i class="fa fa-unlock-alt inputIcon"></i>
-    </div>
-    <button id="btnValidation" style="position:relative" class="btn--henrri btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit" onclick="showSpinner()">
-        <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
-        <span class="text--center">Se connecter</span>
-    </button>
+        <div class="login-form__input">
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre nom d'utilisateur" })
+            <i class="fa fa-user inputIcon"></i>
+        </div>
+        <div class="login-form__input">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre email" })
+            <i class="fa fa-user inputIcon"></i>
+        </div>
+        <div class="login-form__input">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe" })
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmer le mot de passe" })
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input">
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Prénom" })
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input">
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Nom" })
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <button id="btnValidation" style="position:relative" class="btn--henrri btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit" onclick="showSpinner()">
+            <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
+            <span class="text--center">Se connecter</span>
+        </button>
     }
 </div>

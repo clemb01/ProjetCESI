@@ -5,10 +5,11 @@ using ProjetCESI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ProjetCESI.Data.Context
 {
-    public class MainContext : IdentityDbContext<User>
+    public class MainContext : IdentityDbContext<User, ApplicationRole, int>
     {
         public static MainContext Create()
         {
@@ -19,21 +20,20 @@ namespace ProjetCESI.Data.Context
 
         public MainContext() : base()
         {
-            ConnectionString = "Main";
-            //Database.EnsureCreated();
+            ConnectionString = "Cn1";
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public MainContext(DbContextOptions<MainContext> options)
             : base(options)
         {
-            ConnectionString = "Main";
-            //Database.EnsureCreated();
+            ConnectionString = "Cn1";
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().SetBasePath(Environment.CurrentDirectory).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
             IConfigurationRoot configurationRoot = configurationBuilder.Build();
 
             optionsBuilder.UseSqlServer(configurationRoot.GetConnectionString(ConnectionString));
@@ -43,7 +43,5 @@ namespace ProjetCESI.Data.Context
         {
             base.OnModelCreating(builder);
         }
-
-        public DbSet<User> Utilisateurs { get; set; }
     }
 }

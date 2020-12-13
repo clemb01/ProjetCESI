@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ProjetCESI.Core;
+using ProjetCESI.Data.Metier;
+using ProjetCESI.Metier.Main;
 using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +15,9 @@ namespace ProjetCESI.Web.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
+        { }
+
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -42,11 +49,40 @@ namespace ProjetCESI.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register(RegisterViewModel model)
+        public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
         {
-            if(ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(model.FirstName))
             {
-                // Inscrire l'utilisateur
+                ModelState.AddModelError("EmptyPhone", "Le prénom est requis");
+            }
+            else if (string.IsNullOrWhiteSpace(model.LastName))
+            {
+                ModelState.AddModelError("EmptyPhone", "Le nom est requis");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = model.Username,
+                    Email = model.Email
+                };
+
+                IdentityResult result = null;
+
+                result = await UserManager.CreateAsync(user, model.Password);
+
+                if(result.Succeeded)
+                {
+                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Client));
+                }
+
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, true);
+
+                    return Redirect("/Accueil/Index");
+                }
             }
 
             return View(model);

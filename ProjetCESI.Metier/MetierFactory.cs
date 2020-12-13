@@ -27,6 +27,6 @@ namespace ProjetCESI.Metier
             return metier;
         }
 
-        public IMainMetier CreateMainMetier(IMetierBase metierBase = null) => GetMetier<MainMetier>(metierBase);
+        public IApplicationRoleMetier CreateApplicationRoleMetier(IMetierBase metierBase = null) => GetMetier<ApplicationRoleMetier>(metierBase);
     }
 }

@@ -8,6 +8,11 @@ namespace ProjetCESI.Web.Models
 {
     public class RegisterViewModel
     {
+        [Required(ErrorMessage = "Le nom d'utilisateur est requis")]
+        [StringLength(15, ErrorMessage = "Le nom d'utilisateur n'est pas valide", MinimumLength = 5)]
+        [Display(Name = "Nom d'utilisateur")]
+        public string Username { get; set; }
+
         [Required(ErrorMessage = "L'email est requis")]
         [EmailAddress(ErrorMessage = "L'email n'est pas valide")]
         [Display(Name = "Email")]
@@ -31,9 +36,5 @@ namespace ProjetCESI.Web.Models
         [DataType(DataType.Text)]
         [Display(Name = "Nom")]
         public string LastName { get; set; }
-
-        [DataType(DataType.Text)]
-        [Display(Name = "Code Postal")]
-        public string CodePostal { get; set; }
     }
 }

@@ -2,6 +2,10 @@
 
 @model LoginViewModel
 
+@{
+    ViewData["Title"] = "Login";
+}
+
 <div>
     @using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
     {

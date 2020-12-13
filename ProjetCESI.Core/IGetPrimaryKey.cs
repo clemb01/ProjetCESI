@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Core
 {
-    public class Main
+    public interface IGetPrimaryKey
     {
+        int GetPrimaryKey();
     }
 }
