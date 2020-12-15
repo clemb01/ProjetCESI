@@ -28,14 +28,27 @@ namespace ProjetCESI.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            return View();
+            User user = await UserManager.FindByNameAsync(model.Email);
+
+            if(user != null)
+            {
+                var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
+
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Accueil");
+                }
+            }
+
+            return View(model);
         }
 
-        [HttpPost]
-        public IActionResult LogOff()
+        public async Task<IActionResult> LogOff()
         {
+            await SignInManager.SignOutAsync();
+
             return RedirectToAction("Login");
         }
 

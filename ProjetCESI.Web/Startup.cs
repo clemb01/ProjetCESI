@@ -10,6 +10,7 @@ using ProjetCESI.Core;
 using ProjetCESI.Data.Context;
 using ProjetCESI.Metier;
 using ProjetCESI.Metier.Main;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,28 +113,7 @@ namespace ProjetCESI
                 var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
                 var roleManager = scope.ServiceProvider.GetService<RoleManager<ApplicationRole>>();
 
-                Seed(userManager, roleManager).GetAwaiter().GetResult();
-            }
-        }
-
-        private static async Task Seed(UserManager<User> userManager,
-            RoleManager<ApplicationRole> roleManager)
-        {
-            var metierFactory = new MetierFactory();
-            var roles = await ((ApplicationRoleMetier)metierFactory.CreateApplicationRoleMetier()).GetAll();
-
-            var admins = await userManager.GetUsersInRoleAsync("admin");
-            if (admins.Count == 0)
-            {
-                var admin = new User()
-                {
-                    UserName = "Admin",
-                    Email = "coladaitp19-bcl@ccicampus.fr",
-                    EmailConfirmed = true
-                };
-
-                await userManager.CreateAsync(admin, "Admin");
-                await userManager.AddToRoleAsync(admin, Enum.GetName(TypeUtilisateur.Admin));
+                Helper.Seed(userManager, roleManager).GetAwaiter().GetResult();
             }
         }
     }
