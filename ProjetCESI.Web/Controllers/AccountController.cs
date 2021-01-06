@@ -38,7 +38,7 @@ namespace ProjetCESI.Web.Controllers
 
                 if(result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Accueil");
+                    return RedirectToAction("Accueil", "Accueil");
                 }
             }
 
@@ -94,7 +94,7 @@ namespace ProjetCESI.Web.Controllers
                 {
                     await SignInManager.SignInAsync(user, true);
 
-                    return Redirect("/Accueil/Index");
+                    return Redirect("/Accueil/Accueil");
                 }
             }
 
