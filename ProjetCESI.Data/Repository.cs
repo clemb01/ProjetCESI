@@ -78,26 +78,19 @@ namespace ProjetCESI.Data
         }
         virtual public async Task<bool> InsertOrUpdate(T __coreElement, bool __forceUsageFrontale = false)
         {
-            try
+            using (DbContext db = MainContext.Create())
             {
-                using (DbContext db = MainContext.Create())
-                {
-                    if (db.Entry(__coreElement).State == EntityState.Detached)
-                        db.Set<T>().Attach(__coreElement);
+                if (db.Entry(__coreElement).State == EntityState.Detached)
+                    db.Set<T>().Attach(__coreElement);
 
-                    if (__coreElement.GetPrimaryKey() == default(int))
-                        db.Entry(__coreElement).State = EntityState.Added;
-                    else
-                        db.Entry(__coreElement).State = EntityState.Modified;
+                if (__coreElement.GetPrimaryKey() == default(int))
+                    db.Entry(__coreElement).State = EntityState.Added;
+                else
+                    db.Entry(__coreElement).State = EntityState.Modified;
 
-                    int result = await db.SaveChangesAsync(true);
+                int result = await db.SaveChangesAsync(true);
 
-                    return result != default(int) ? true : false;
-                }
-            }
-            catch (Exception ex)
-            {
-               
+                return result != default(int) ? true : false;
             }
 
             return false;

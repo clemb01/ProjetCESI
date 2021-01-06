@@ -17,7 +17,7 @@ namespace ProjetCESI.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Accueil()
         {
             return View();
         }
