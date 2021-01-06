@@ -10,7 +10,7 @@ using ProjetCESI.Data.Context;
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20201213160447_MigrationInitiale")]
+    [Migration("20210106160049_MigrationInitiale")]
     partial class MigrationInitiale
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,6 +151,150 @@ namespace ProjetCESI.Data.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("ProjetCESI.Core.Categorie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("NomCategorie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Commentaire", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("CommentaireParentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("DateCreation")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DateModification")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("RessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Texte")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UtilisateurId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentaireParentId");
+
+                    b.HasIndex("RessourceId");
+
+                    b.HasIndex("UtilisateurId");
+
+                    b.ToTable("Commentaires");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("CategorieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Contenu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("DateCreation")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DateModification")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("EstValide")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NombreConsultation")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeRessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilisateurCreateurId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UtilisateurCreateurId");
+
+                    b.ToTable("Ressources");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.TypeRelation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("NomRelation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeRelations");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.TypeRelationRessource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("RessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeRelationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RessourceId");
+
+                    b.HasIndex("TypeRelationId");
+
+                    b.ToTable("TypeRelationRessources");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.TypeRessource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("NomRessource")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeRessources");
+                });
+
             modelBuilder.Entity("ProjetCESI.Core.User", b =>
                 {
                     b.Property<int>("Id")
@@ -218,6 +362,37 @@ namespace ProjetCESI.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ProjetCESI.Core.UtilisateurRessource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("EstExploite")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EstFavoris")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EstMisDeCote")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UtilisateurId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RessourceId");
+
+                    b.HasIndex("UtilisateurId");
+
+                    b.ToTable("UtilisateurRessources");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("ProjetCESI.Core.ApplicationRole", null)
@@ -267,6 +442,105 @@ namespace ProjetCESI.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Commentaire", b =>
+                {
+                    b.HasOne("ProjetCESI.Core.Commentaire", "CommentaireParent")
+                        .WithMany("CommentairesEnfant")
+                        .HasForeignKey("CommentaireParentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
+                        .WithMany("Commentaires")
+                        .HasForeignKey("RessourceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ProjetCESI.Core.User", "Utilisateur")
+                        .WithMany()
+                        .HasForeignKey("UtilisateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommentaireParent");
+
+                    b.Navigation("Ressource");
+
+                    b.Navigation("Utilisateur");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
+                {
+                    b.HasOne("ProjetCESI.Core.User", "UtilisateurCreateur")
+                        .WithMany()
+                        .HasForeignKey("UtilisateurCreateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UtilisateurCreateur");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.TypeRelationRessource", b =>
+                {
+                    b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
+                        .WithMany("TypeRelationsRessources")
+                        .HasForeignKey("RessourceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ProjetCESI.Core.TypeRelation", "TypeRelation")
+                        .WithMany("TypeRelationsRessource")
+                        .HasForeignKey("TypeRelationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Ressource");
+
+                    b.Navigation("TypeRelation");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.UtilisateurRessource", b =>
+                {
+                    b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
+                        .WithMany("UtilisateurRessources")
+                        .HasForeignKey("RessourceId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ProjetCESI.Core.User", "Utilisateur")
+                        .WithMany("UtilisateurRessources")
+                        .HasForeignKey("UtilisateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ressource");
+
+                    b.Navigation("Utilisateur");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Commentaire", b =>
+                {
+                    b.Navigation("CommentairesEnfant");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
+                {
+                    b.Navigation("Commentaires");
+
+                    b.Navigation("TypeRelationsRessources");
+
+                    b.Navigation("UtilisateurRessources");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.TypeRelation", b =>
+                {
+                    b.Navigation("TypeRelationsRessource");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.User", b =>
+                {
+                    b.Navigation("UtilisateurRessources");
                 });
 #pragma warning restore 612, 618
         }

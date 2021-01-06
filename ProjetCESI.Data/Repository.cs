@@ -92,8 +92,6 @@ namespace ProjetCESI.Data
 
                 return result != default(int) ? true : false;
             }
-
-            return false;
         }
 
         virtual async public Task<bool> DeleteById(int __coreElementId)

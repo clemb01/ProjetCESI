@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Core
 {
-    public class EntiteBase<T> : IGetPrimaryKey where T : IGetPrimaryKey
+    public class EntiteBase : IGetPrimaryKey
     {
         virtual public int GetPrimaryKey()
         {
-            throw new NotImplementedException();
+            return Id;
         }
+
+        [DataMember]
+        public int Id { get; set; }
 
         [NotMapped]
         [DataMember]
