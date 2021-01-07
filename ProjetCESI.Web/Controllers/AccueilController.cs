@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Models;
+using ProjetCESI.Web.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Controllers
+namespace ProjetCESI.Web.Controllers
 {
     [Authorize]
-    public class AccueilController : Controller
+    public class AccueilController : BaseController
     {
         public AccueilController()
         {
@@ -19,6 +20,8 @@ namespace ProjetCESI.Controllers
 
         public IActionResult Accueil()
         {
+            var user = MetierFactory.CreateCategorieMetier().GetUser();
+
             return View();
         }
 

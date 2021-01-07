@@ -1,4 +1,5 @@
-﻿using ProjetCESI.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjetCESI.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,16 @@ namespace ProjetCESI.Data
             await InsertOrUpdate(listeCategorie);
 
             return listeCategorie;
+        }
+
+        public User GetUser()
+        {
+            using(DbContext ctx = GetContext())
+            {
+                var result = ctx.Set<User>().FirstOrDefault();
+
+                return result;
+            }
         }
     }
 }

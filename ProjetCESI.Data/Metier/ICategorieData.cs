@@ -1,6 +1,9 @@
-﻿namespace ProjetCESI.Data
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Data
 {
-    internal interface ICategorieData
+    public interface ICategorieData
     {
+        User GetUser();
     }
 }

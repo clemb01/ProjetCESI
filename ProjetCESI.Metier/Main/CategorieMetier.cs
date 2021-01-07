@@ -10,5 +10,6 @@ namespace ProjetCESI.Metier
 {
     public class CategorieMetier : MetierBase<Categorie, CategorieData>, ICategorieMetier
     {
+        public User GetUser() => DataClass.GetUser();
     }
 }
