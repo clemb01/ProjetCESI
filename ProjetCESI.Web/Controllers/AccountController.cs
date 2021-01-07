@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Data.Metier;
-using ProjetCESI.Metier.Main;
 using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;

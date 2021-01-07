@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ProjetCESI.Core;
 using ProjetCESI.Metier;
-using ProjetCESI.Metier.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,11 @@ namespace ProjetCESI.Web.Outils
             RoleManager<ApplicationRole> roleManager)
         {
             var metierFactory = new MetierFactory();
-            var roles = await ((ApplicationRoleMetier)metierFactory.CreateApplicationRoleMetier()).GetAll();
+            await ((ApplicationRoleMetier)metierFactory.CreateApplicationRoleMetier()).GetAll(); // Permet d'initialiser les données
+            await ((CategorieMetier)metierFactory.CreateCategorieMetier()).GetAll(); // Permet d'initialiser les données
+            await ((TypeRelationMetier)metierFactory.CreateTypeRelationMetier()).GetAll(); // Permet d'initialiser les données
+            await ((TypeRessourceMetier)metierFactory.CreateTypeRessourceMetier()).GetAll(); // Permet d'initialiser les données
+
 
             var admins = await userManager.GetUsersInRoleAsync("admin");
             if (admins.Count == 0)
@@ -23,7 +26,7 @@ namespace ProjetCESI.Web.Outils
                 var admin = new User()
                 {
                     UserName = "Admin",
-                    Email = "coladaitp19-bcl@ccicampus.fr",
+                    Email = "admin.admin@admin.fr",
                     EmailConfirmed = true
                 };
 

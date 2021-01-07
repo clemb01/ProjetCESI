@@ -1,6 +1,6 @@
 ﻿namespace ProjetCESI.Data
 {
-    public interface IApplicationRoleData
+    internal interface ICategorieData
     {
     }
 }

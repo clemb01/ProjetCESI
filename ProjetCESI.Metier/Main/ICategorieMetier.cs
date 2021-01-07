@@ -1,6 +1,6 @@
 ﻿namespace ProjetCESI.Metier
 {
-    public interface IApplicationRoleMetier
+    public interface ICategorieMetier
     {
     }
 }

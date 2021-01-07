@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using ProjetCESI.Core;
 using ProjetCESI.Data.Context;
 using ProjetCESI.Metier;
-using ProjetCESI.Metier.Main;
 using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;

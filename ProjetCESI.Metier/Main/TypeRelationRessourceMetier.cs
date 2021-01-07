@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
 {
-    public class ApplicationRoleMetier : MetierBase<ApplicationRole, ApplicationRoleData>, IApplicationRoleMetier
+    public class TypeRelationRessourceMetier : MetierBase<TypeRelationRessource, TypeRelationRessourceData>, ITypeRelationRessourceMetier
     {
     }
 }
