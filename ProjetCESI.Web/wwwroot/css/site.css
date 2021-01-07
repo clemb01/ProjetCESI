@@ -1,8 +1,39 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-#formulaire_recherche button {
-    background-image: url('../images/magnifier.png')
+#search-text-input {
+    border-top: thin solid #e5e5e5;
+    border-right: thin solid #e5e5e5;
+    border-bottom: 0;
+    border-left: thin solid #e5e5e5;
+    box-shadow: 0px 1px 1px 1px #e5e5e5;
+    float: left;
+    height: 27px;
+    margin: 11px 0 0 .5em;
+    outline: 0;
+    padding: .4em 0 .4em .6em;
+    width: 183px;
+}
+
+#button-holder {
+    background-color: #f1f1f1;
+    border-top: thin solid #e5e5e5;
+    box-shadow: 1px 1px 1px 1px #e5e5e5;
+    cursor: pointer;
+    float: left;
+    height: 27px;
+    margin: 11px 0 0 0;
+    text-align: center;
+    width: 25px;
+}
+
+#button-holder button {
+    padding: 0;
+}
+
+#button-holder img {
+    width: 12px;
+    margin: -4px 0px 0px 0px;
 }
 
 a.navbar-brand {

@@ -86,7 +86,7 @@ namespace ProjetCESI.Web.Controllers
 
                 if(result.Succeeded)
                 {
-                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Client));
+                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
                 }
 
                 if (result.Succeeded)
