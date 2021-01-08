@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ProjetCESI.Core;
 using ProjetCESI.Metier;
+using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,6 @@ namespace ProjetCESI.Web.Controllers
         }
 
         private string _userId;
-
         public string UserId 
         {
             get
@@ -41,6 +41,22 @@ namespace ProjetCESI.Web.Controllers
                 }
                 else
                     return _userId;
+            }
+        }
+
+        private User _utilisateur;
+        public User Utilisateur
+        {
+            get
+            {
+                if (_utilisateur == null)
+                {
+                    User user = UserManager.GetUserAsync(User).Result;
+
+                    return user;
+                }
+                else
+                    return _utilisateur;
             }
         }
 
@@ -77,6 +93,24 @@ namespace ProjetCESI.Web.Controllers
 
                 return _signInManager;
             }
+        }
+
+        public T PrepareModel<T>(T model) where T : BaseViewModel, new()
+        {
+            model.Basepath = Request.Host.Value;
+            model.Path = Request.Path.Value;
+            model.QueryString = Request.QueryString.Value;
+            model.Action = Request.RouteValues["Action"].ToString() ?? "";
+            model.Controller = Request.RouteValues["Controller"].ToString() ?? "";
+            model.Area = Request.RouteValues["Area"] != null ? Request.RouteValues["Area"].ToString() : "";
+            model.Utilisateur = Utilisateur;
+
+            return model;
+        }
+
+        public T PrepareModel<T>() where T : BaseViewModel, new()
+        {
+            return PrepareModel<T>(new T());
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)

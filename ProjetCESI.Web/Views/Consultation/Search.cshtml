@@ -1,0 +1,88 @@
+﻿@using ProjetCESI.Web.Models
+@model RechercheRessourceViewModel
+
+@{
+    ViewData["Title"] = "Recherche";
+}
+
+<h1 class="display-4">Recherche</h1>
+
+<div style="background-color: darkgrey; padding: 15px;">
+    @using (Html.BeginForm("Search", "Consultation", FormMethod.Post))
+    {
+        <div class="form-group">
+            <strong>@Html.LabelFor(c => c.Recherche, "Terme de la recherche")</strong>
+            @Html.EditorFor(model => model.Recherche, new { htmlAttributes = new { @class = "form-control", placeholder = "Recherche" } })
+        </div>
+        <strong>@Html.LabelFor(c => c.Recherche, "Filtrer les résultats par :")</strong>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                @Html.LabelFor(c => c.SelectedCategories, "Categories")
+                <select data-placeholder="Sélectionnez des catégorie..." class="chosen-select form-control" name="SelectedCategories" multiple tabindex="1">
+                    <option value=""></option>
+                    @foreach (var categorie in ViewBag.Categories)
+                    {
+                        if (Model.SelectedCategories != null && Model.SelectedCategories.Contains(int.Parse(categorie.Value)))
+                        {
+                            <option value="@categorie.Value" selected>@categorie.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@categorie.Value">@categorie.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                @Html.LabelFor(c => c.SelectedTypeRelation, "Type de relation")
+                <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
+                    <option value=""></option>
+                    @foreach (var categorie in ViewBag.TypeRelation)
+                    {
+                        if (Model.SelectedTypeRelation != null && Model.SelectedTypeRelation.Contains(int.Parse(categorie.Value)))
+                        {
+                            <option value="@categorie.Value" selected>@categorie.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@categorie.Value">@categorie.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                @Html.LabelFor(c => c.SelectedTypeRessources, "Type de resssources")
+                <select data-placeholder="Sélectionnez des types de ressources..." class="chosen-select form-control" name="SelectedTypeRessources" multiple tabindex="3">
+                    <option value=""></option>
+                    @foreach (var categorie in ViewBag.TypeRessources)
+                    {
+                        if (Model.SelectedTypeRessources != null && Model.SelectedTypeRessources.Contains(int.Parse(categorie.Value)))
+                        {
+                            <option value="@categorie.Value" selected>@categorie.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@categorie.Value">@categorie.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary float-md-right">Recherche avancée</button>
+        </div>
+    }
+</div>
+@if (Model.Ressources != null && Model.Ressources.Any())
+{
+    foreach (var ressource in Model.Ressources)
+    {
+        Html.DisplayFor(c => ressource.Titre);
+    }
+}
+else
+{
+    <p>
+        Aucun résultat n'a été trouvé pour votre recherche
+    </p>
+}

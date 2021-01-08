@@ -18,17 +18,22 @@ namespace ProjetCESI.Core
         [DataMember]
         public string Contenu { get; set; }
         [DataMember]
+        public bool EstValide { get; set; }
+        [DataMember]
+        public int NombreConsultation { get; set; }
+
+        [DataMember]
         public User UtilisateurCreateur { get; set; }
         [DataMember]
         public int UtilisateurCreateurId { get; set; }
         [DataMember]
-        public bool EstValide { get; set; }
+        public TypeRessource TypeRessource { get; set; }
         [DataMember]
         public int TypeRessourceId { get; set; }
         [DataMember]
-        public int CategorieId { get; set; }
+        public Categorie Categorie { get; set; }
         [DataMember]
-        public int NombreConsultation { get; set; }
+        public int CategorieId { get; set; }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }

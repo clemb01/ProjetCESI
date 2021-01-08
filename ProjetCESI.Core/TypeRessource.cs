@@ -10,6 +10,6 @@ namespace ProjetCESI.Core
     public class TypeRessource : EntiteBase
     {
         [DataMember]
-        public string NomRessource { get; set; }
+        public string Nom { get; set; }
     }
 }
