@@ -14,34 +14,20 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Accueil" asp-action="Accueil">
                     <img src="~/images/Icone.png" width="150" height="150" alt="" loading="lazy">
                 </a>
-                <div class="header__widgets header__item widgets__items" style="width: 47%;">
-                    <div class="widgets__inner">
-                        <div class="header__recherche widgets__item">
-                            <div class="formulaire_spip formulaire_recherche form-search" id="formulaire_recherche">
-                                <form action="#" method="get">
-                                    <div>
-                                        <input name="page" value="recherche" type="hidden">
-                                        <div class="input-append">
-                                            <input type="text" class="search text search-query" name="recherche" id="recherche" accesskey="4" autocapitalize="off" autocorrect="off" placeholder="Rechercher">
-                                            <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" style="width: 12px;"/></button>
-                                        </div>
-                                    </div>
-                                </form>
+                <form action="#" method="get">
+                    <div>
+                        <div class="input-append">
+                            <input type='text' placeholder='Rechercher...' id='search-text-input' />
+                            <div id='button-holder'>
+                                <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
                             </div>
                         </div>
-                        <div class="header__menu widgets__item">
-                            <a class="collapsed" data-toggle="collapse" data-target=".nav-collapse" title="Montrer le menu">
-                                <i class="picto picto-menu"></i>
-                            </a>
-                        </div>
-                        <div class="clearfix"></div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Accueil" asp-action="Accueil">ProjetCESI</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -52,8 +38,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Consultation</a>
                         </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Création et partage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                            </li>
+                        }
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">

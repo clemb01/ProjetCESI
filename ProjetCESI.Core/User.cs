@@ -23,10 +23,12 @@ namespace ProjetCESI.Core
         [EnumMember]
         Aucun,
         [EnumMember]
-        Client,
+        Citoyen,
         [EnumMember]
         Moderateur,
         [EnumMember]
-        Admin
+        Admin,
+        [EnumMember]
+        SuperAdmin
     }
 }
