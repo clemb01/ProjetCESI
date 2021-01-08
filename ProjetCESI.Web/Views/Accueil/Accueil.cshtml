@@ -1,4 +1,7 @@
-﻿@{
+﻿@using ProjetCESI.Web.Models
+@model List<UserViewModel>
+
+@{
     ViewData["Title"] = "Accueil";
 }
 
@@ -6,3 +9,37 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<br />
+<br />
+<br />
+<body>
+<h1>Utilisateurs</h1>
+    <br />
+ 
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Nom d'utilisateur
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    <div><label hidden>@Html.DisplayFor(modelItem => item.Utilisateur.Id)</label></div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Utilisateur.UserName)
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>

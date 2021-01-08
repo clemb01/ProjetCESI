@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Models;
 using ProjetCESI.Web.Controllers;
+using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,9 +21,15 @@ namespace ProjetCESI.Web.Controllers
 
         public IActionResult Accueil()
         {
-            var user = MetierFactory.CreateCategorieMetier().GetUser();
+            List<UserViewModel> userList = new List<UserViewModel>();
+            var users = MetierFactory.CreateUtilisateurMetier().GetUser();
 
-            return View();
+            foreach (var user in users)
+            {
+                userList.Add(new UserViewModel { Utilisateur = user });
+            }
+
+            return View(userList);
         }
 
         public IActionResult Privacy()

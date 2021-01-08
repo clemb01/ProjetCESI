@@ -33,14 +33,6 @@ namespace ProjetCESI.Data
             return listeCategorie;
         }
 
-        public User GetUser()
-        {
-            using(DbContext ctx = GetContext())
-            {
-                var result = ctx.Set<User>().FirstOrDefault();
-
-                return result;
-            }
-        }
+       
     }
 }

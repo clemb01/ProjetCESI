@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjetCESI.Metier.Main;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,5 +35,7 @@ namespace ProjetCESI.Metier
         public ITypeRelationRessourceMetier CreateTypeRelationRessourceMetier(IMetierBase metierBase = null) => GetMetier<TypeRelationRessourceMetier>(metierBase);
         public ITypeRessourceMetier CreateTypeRessourceMetier(IMetierBase metierBase = null) => GetMetier<TypeRessourceMetier>(metierBase);
         public IUtilisateurRessourceMetier CreateUtilisateurRessourceMetier(IMetierBase metierBase = null) => GetMetier<UtilisateurRessourceMetier>(metierBase);
+
+        public IAdminMetier CreateUtilisateurMetier(IMetierBase metierBase = null) => GetMetier<AdminMetier>(metierBase);
     }
 }

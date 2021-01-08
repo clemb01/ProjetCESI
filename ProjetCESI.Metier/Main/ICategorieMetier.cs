@@ -4,6 +4,6 @@ namespace ProjetCESI.Metier
 {
     public interface ICategorieMetier
     {
-        User GetUser();
+        
     }
 }
