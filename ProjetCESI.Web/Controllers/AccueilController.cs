@@ -21,15 +21,7 @@ namespace ProjetCESI.Web.Controllers
 
         public IActionResult Accueil()
         {
-            List<UserViewModel> userList = new List<UserViewModel>();
-            var users = MetierFactory.CreateUtilisateurMetier().GetUser();
-
-            foreach (var user in users)
-            {
-                userList.Add(new UserViewModel { Utilisateur = user });
-            }
-
-            return View(userList);
+            return View();
         }
 
         public IActionResult Privacy()

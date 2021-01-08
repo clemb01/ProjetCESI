@@ -48,6 +48,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserList">Liste utilisateur</a>
+                            </li>
                         }
                         @if (User.Identity.IsAuthenticated)
                         {

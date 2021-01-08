@@ -1,10 +1,11 @@
 ﻿using ProjetCESI.Core;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ProjetCESI.Data.Metier
 {
     public interface IUserData
     {
-        IEnumerable<User> GetUser();
+        Task<IEnumerable<User>> GetUsers();
     }
 }

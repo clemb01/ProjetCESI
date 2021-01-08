@@ -1,10 +1,12 @@
 ﻿using ProjetCESI.Core;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier.Main
 {
     public interface IAdminMetier
     {
-        IEnumerable<User> GetUser();
+        Task<IEnumerable<User>> GetUser();
+        Task<bool> AnonymiseUser(User user);
     }
 }

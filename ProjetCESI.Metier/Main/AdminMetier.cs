@@ -10,7 +10,23 @@ namespace ProjetCESI.Metier.Main
 {
     public class AdminMetier : MetierBase<User, UserData>, IAdminMetier
     {
-        public IEnumerable<User> GetUser() => DataClass.GetUser();
+
+        public async Task<IEnumerable<User>> GetUser() => await DataClass.GetUsers();
+
+        public async Task<bool> AnonymiseUser(User user)
+        {
+            if(user != null)
+            {
+                user.UserName = $"UtilisateurSupprimé_{DateTime.Now.Ticks}";
+                user.Email = "";
+
+                var result = await DataClass.InsertOrUpdate(user);
+                return result;
+            }
+            return false;
+        }
     }
+
+
 
 }

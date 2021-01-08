@@ -1,0 +1,52 @@
+﻿@using ProjetCESI.Web.Models
+@model List<UserViewModel>
+
+@{
+    ViewData["Title"] = "UserList";
+}
+
+<br />
+<br />
+<br />
+<body>
+    <h1>Utilisateurs</h1>
+    <br />
+
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Nom d'utilisateur
+                </th>
+
+                <th>
+                    Adresse mail
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Utilisateur.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Utilisateur.Email)
+                </td>
+                <td>
+                    <div><label hidden>@Html.DisplayFor(modelItem => item.Utilisateur.Id)</label></div>
+                </td>
+                <td>
+                    <strong>
+                    @*@Html.ActionLink("Modifier Rôle", "UpdateRole", new { id = item.Utilisateur.Id})*@
+                    @Html.ActionLink("Anonymiser", "AnonymeUser", new { id = item.Utilisateur.Id })
+                    </strong>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</body>

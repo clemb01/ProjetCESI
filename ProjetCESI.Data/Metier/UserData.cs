@@ -10,14 +10,15 @@ namespace ProjetCESI.Data.Metier
 {
     public class UserData : Repository<User> , IUserData
     {
-        public IEnumerable<User> GetUser()
+        public async Task<IEnumerable<User>> GetUsers()
         {
             using (DbContext ctx = GetContext())
             {
-                var result = ctx.Set<User>();
+                var result = ctx.Set<User>().Where(c => !c.UserName.Contains("UtilisateurSupprimé"));
 
-                return result.ToList();
+                return await result.ToListAsync();
             }
         }
+
     }
 }

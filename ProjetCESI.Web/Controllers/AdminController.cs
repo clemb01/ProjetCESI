@@ -12,23 +12,16 @@ namespace ProjetCESI.Web.Controllers
 {
     public class AdminController : BaseController
     {
-        private readonly IAdminMetier _adminMetier;
-
-        public AdminController(UserManager<User> userManager, SignInManager<User> signInManager, IAdminMetier adminMetier) : base(userManager, signInManager)
-        {
-            _adminMetier = adminMetier;
-        }
-
 
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult UserList()
+        public async Task<IActionResult> UserList()
         {
             List<UserViewModel> userList = new List<UserViewModel>();
-            var users = MetierFactory.CreateUtilisateurMetier().GetUser();
+            var users = await MetierFactory.CreateUtilisateurMetier().GetUser();
 
             foreach (var user in users)
             {
@@ -36,6 +29,31 @@ namespace ProjetCESI.Web.Controllers
             }
 
             return View(userList);
+        }
+
+        public async Task<IActionResult> AnonymeUser(string id)
+        {
+            if(id != null)
+            {
+                var user = await UserManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var model = new UserViewModel();
+                    model.Utilisateur = user;
+
+                    return View(model);
+                }
+                    
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Anonymise(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
+            return RedirectToAction("UserList");
         }
     }
 }
