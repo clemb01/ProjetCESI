@@ -17,7 +17,7 @@
             @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
             <i class="fa fa-unlock-alt inputIcon"></i>
         </div>
-        <button id="btnValidation" style="position:relative" class="btn--henrri btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit" onclick="showSpinner()">
+        <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit">
             <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
             <span class="text--center">Se connecter</span>
         </button>

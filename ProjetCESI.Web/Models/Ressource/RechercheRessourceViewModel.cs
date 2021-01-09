@@ -11,7 +11,7 @@ namespace ProjetCESI.Web.Models
     public class RechercheRessourceViewModel : BaseViewModel
     {
         [Required]
-        [Display(Name = "Recherche")]
+        [Display(Name = "Terme de la recherche")]
         public string Recherche { get; set; }
 
         [Display(Name = "Type de relation")]
@@ -22,6 +22,12 @@ namespace ProjetCESI.Web.Models
 
         [Display(Name = "Type de ressource")]
         public List<int> SelectedTypeRessources { get; set; }
+
+        [Display(Name = "Début")]
+        public DateTime? DateDebut { get; set; }
+
+        [Display(Name = "Fin")]
+        public DateTime? DateFin { get; set; }
 
         public int Page { get; set; }
 
