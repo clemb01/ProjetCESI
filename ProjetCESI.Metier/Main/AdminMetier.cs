@@ -26,12 +26,12 @@ namespace ProjetCESI.Metier.Main
             return false;
         }
 
-        public async Task<bool> BanUserTemporary(User user)
+        public async Task<bool> BanUserTemporary(User user, int time)
         {
             if(user != null)
             {
                 user.LockoutEnabled = true;
-                user.LockoutEnd = DateTime.Now.AddMinutes(3);
+                user.LockoutEnd = DateTime.Now.AddDays(time);
 
                 var result = await DataClass.InsertOrUpdate(user);
                 return result;

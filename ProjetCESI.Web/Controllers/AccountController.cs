@@ -35,7 +35,14 @@ namespace ProjetCESI.Web.Controllers
             {
                 var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
 
-                if(result.Succeeded)
+                if (await UserManager.IsLockedOutAsync(user))
+                {
+                    ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
+                    return View();
+                    //return Content("Compte bloqué");
+                }
+
+                if (result.Succeeded)
                 {
                     return RedirectToAction("Accueil", "Accueil");
                 }

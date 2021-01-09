@@ -8,7 +8,7 @@ namespace ProjetCESI.Metier.Main
     {
         Task<IEnumerable<User>> GetUser();
         Task<bool> AnonymiseUser(User user);
-        Task<bool> BanUserTemporary(User user);
+        Task<bool> BanUserTemporary(User user, int time);
         Task<bool> DeBan(User user);
     }
 }

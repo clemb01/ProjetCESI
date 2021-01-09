@@ -15,8 +15,9 @@
                 <div class="form-group form-check">
                     <label class="form-check-label">
                         <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        @Html.CheckBox("Lockout", Model.Utilisateur.LockoutEnd)
-                        Bloquer @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)
+                        @*@Html.CheckBox("Lockout", Model.Utilisateur.LockoutEnd)*@
+                        Nombre de jours où le compte d'@Html.DisplayFor(modelItem => Model.Utilisateur.UserName) sera bloqué :
+                        @Html.TextBox("time")
                     </label>
 
                 </div>

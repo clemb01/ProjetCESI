@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = "Login";
 }
+<h3><font color="red">@ViewData["Message"]</font></h3>
 
 <div>
     @using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))

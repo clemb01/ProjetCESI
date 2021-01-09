@@ -73,10 +73,12 @@ namespace ProjetCESI.Web.Controllers
     
 
         [HttpPost]
-        public async Task<IActionResult> BanTemporary(string id)
+        public async Task<IActionResult> BanTemporary(string id, int time)
         {
             var user = await UserManager.FindByIdAsync(id);
-            bool result = await MetierFactory.CreateUtilisateurMetier().BanUserTemporary(user);
+            bool result = await MetierFactory.CreateUtilisateurMetier().BanUserTemporary(user, time);
+            TempData["Utilisateur"] = true;
+                
 
             return RedirectToAction("UserList");
         }

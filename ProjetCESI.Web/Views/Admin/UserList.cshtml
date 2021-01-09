@@ -23,6 +23,9 @@
                 <th>
                     Adresse mail
                 </th>
+                <th>
+                    Ban jusqu'au
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -37,12 +40,15 @@
                     @Html.DisplayFor(modelItem => item.Utilisateur.Email)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Utilisateur.LockoutEnd)
+                </td>
+                <td>
                     <div><label hidden>@Html.DisplayFor(modelItem => item.Utilisateur.Id)</label></div>
                 </td>
                 <td>
                     <strong>
                         @*@Html.ActionLink("Modifier Rôle", "UpdateRole", new { id = item.Utilisateur.Id})*@
-                        @Html.ActionLink("Ban", "BanTempo", new { id = item.Utilisateur.Id})
+                        @Html.ActionLink("Ban", "BanTempo", new { id = item.Utilisateur.Id })
                         @Html.ActionLink("Anonymiser", "AnonymeUser", new { id = item.Utilisateur.Id })
                     </strong>
                 </td>
@@ -51,3 +57,19 @@
         </tbody>
     </table>
 </body>
+
+
+@if (TempData["Utilisateur"] != null && bool.Parse(TempData["Utilisateur"].ToString()) == true)
+{
+    <div id="AlertBan">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Compte banni!</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+}
+
+
