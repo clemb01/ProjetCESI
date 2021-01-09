@@ -55,5 +55,40 @@ namespace ProjetCESI.Web.Controllers
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
             return RedirectToAction("UserList");
         }
+
+        public async Task<IActionResult> BanTempo(string id)
+        {
+            if (id != null)
+            {
+                var user = await UserManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var model = new UserViewModel();
+                    model.Utilisateur = user;
+                    return View(model);
+                }
+            }
+            return View();
+        }
+    
+
+        [HttpPost]
+        public async Task<IActionResult> BanTemporary(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().BanUserTemporary(user);
+
+            return RedirectToAction("UserList");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DebanUser(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().DeBan(user);
+
+            return RedirectToAction("UserList");
+        }
+
     }
 }
