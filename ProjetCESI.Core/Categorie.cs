@@ -10,6 +10,6 @@ namespace ProjetCESI.Core
     public class Categorie : EntiteBase
     {
         [DataMember]
-        public string NomCategorie { get; set; }
+        public string Nom { get; set; }
     }
 }

@@ -1,0 +1,55 @@
+﻿@using ProjetCESI.Web.Models
+@model ListRessourceViewModel
+
+@if (Model.Ressources != null && Model.Ressources.Any())
+{
+    <br />
+    <div class="d-block">
+        <span>Trier les résultats :</span>
+        <select class="form-control" id="TypeTri" name="Ressources.TypeTri" style="display: initial; width: auto;" onchange="selectionChange(this)">
+            @foreach (var tri in Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>())
+            {
+                if (Model.TypeTri.ToString() == tri.Value)
+                {
+                    <option value="@tri.Value" selected>@tri.Text</option>
+                }
+                else
+                {
+                    <option value="@tri.Value">@tri.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var ressource in Model.Ressources)
+        {
+            <div class="col-sm-6" id="ressource-card">
+                <a href="/Ressource/@ressource.Id">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
+                                <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
+                            </div>
+                            <p class="card-text">
+                                <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
+                                <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
+                                @foreach (var relation in ressource.TypeRelationsRessources)
+                                {
+                                    <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>
+        Aucun résultat n'a été trouvé pour votre recherche
+    </p>
+}

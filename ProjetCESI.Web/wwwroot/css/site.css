@@ -1,6 +1,33 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+#recherche-avancee label {
+    margin-bottom: initial;
+}
+
+.breadcrumb {
+    background-color: initial;
+    padding: initial;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+}
+
+.breadcrumb-item + .active {
+    color: black;
+    font-weight: bold;
+}
+
+#ressource-card * {
+    color: black;
+}
+
+#ressource-card:hover * {
+    color: black;
+    text-decoration: none;
+}
+
 #search-text-input {
     border-top: thin solid #e5e5e5;
     border-right: thin solid #e5e5e5;
@@ -24,11 +51,12 @@ for details on configuring this project to bundle and minify static web assets. 
     height: 27px;
     margin: 11px 0 0 0;
     text-align: center;
-    width: 25px;
+    width: auto;
 }
 
 #button-holder button {
-    padding: 0;
+    padding: initial;
+    width: 2em;
 }
 
 #button-holder img {

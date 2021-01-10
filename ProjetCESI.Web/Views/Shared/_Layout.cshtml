@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjetCESI</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -14,10 +15,10 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Accueil" asp-action="Accueil">
                     <img src="~/images/Icone.png" width="150" height="150" alt="" loading="lazy">
                 </a>
-                <form action="#" method="get">
+                <form asp-action="Search" asp-controller="Consultation" method="get">
                     <div>
                         <div class="input-append">
-                            <input type='text' placeholder='Rechercher...' id='search-text-input' />
+                            <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
                             <div id='button-holder'>
                                 <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
                             </div>
@@ -38,7 +39,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Consultation</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Consultation" asp-action="Consultation">Consultation</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="CreateArticle" asp-action="Create">Création et partage</a>
@@ -79,6 +80,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/chosen/dist/js/chosen.jquery.js"></script>
+    <script src="~/lib/chosen/dist/js/init.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

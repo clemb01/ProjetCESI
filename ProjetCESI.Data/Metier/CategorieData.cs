@@ -14,33 +14,23 @@ namespace ProjetCESI.Data
         {
             List<Categorie> listeCategorie = new List<Categorie>();
 
-            listeCategorie.Add(new Categorie { NomCategorie = "Communication" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Cultures" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Développement personnel" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Intelligence émotionnelle" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Loisirs" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Monde professionnel" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Parentalité" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Qualité de vie" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Recherche de sens" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Santé physique" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Santé psychique" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Spiritualité" });
-            listeCategorie.Add(new Categorie { NomCategorie = "Vie affective" });
+            listeCategorie.Add(new Categorie { Nom = "Communication" });
+            listeCategorie.Add(new Categorie { Nom = "Cultures" });
+            listeCategorie.Add(new Categorie { Nom = "Développement personnel" });
+            listeCategorie.Add(new Categorie { Nom = "Intelligence émotionnelle" });
+            listeCategorie.Add(new Categorie { Nom = "Loisirs" });
+            listeCategorie.Add(new Categorie { Nom = "Monde professionnel" });
+            listeCategorie.Add(new Categorie { Nom = "Parentalité" });
+            listeCategorie.Add(new Categorie { Nom = "Qualité de vie" });
+            listeCategorie.Add(new Categorie { Nom = "Recherche de sens" });
+            listeCategorie.Add(new Categorie { Nom = "Santé physique" });
+            listeCategorie.Add(new Categorie { Nom = "Santé psychique" });
+            listeCategorie.Add(new Categorie { Nom = "Spiritualité" });
+            listeCategorie.Add(new Categorie { Nom = "Vie affective" });
 
             await InsertOrUpdate(listeCategorie);
 
             return listeCategorie;
-        }
-
-        public User GetUser()
-        {
-            using(DbContext ctx = GetContext())
-            {
-                var result = ctx.Set<User>().FirstOrDefault();
-
-                return result;
-            }
         }
     }
 }

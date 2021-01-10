@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Models
 {
-    public class RessourceViewModel : BaseViewModel
+    public class ConsultationViewModel : BaseViewModel
     {
-        public Ressource Ressource { get; set; }
+        public ListRessourceViewModel Ressources { get; set; } = new ListRessourceViewModel();
     }
 }
