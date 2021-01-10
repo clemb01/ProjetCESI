@@ -17,7 +17,7 @@ namespace ProjetCESI.Web.Controllers
             var model = PrepareModel<RechercheRessourceViewModel>();
 
             model.Recherche = recherche;
-            model.TypeTri = 0;
+            model.Ressources.TypeTri = 0;
             model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllSearchPaginedRessource(model.Recherche, _pageOffset: model.Page)).ToList();
 
             ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
@@ -36,7 +36,7 @@ namespace ProjetCESI.Web.Controllers
             if (model.DateFin.HasValue)
                 model.DateFin = model.DateFin.Value.AddDays(1).AddTicks(-1);
 
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.TypeTri, _pageOffset: model.Page)).ToList();
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.Ressources.TypeTri, _pageOffset: model.Page)).ToList();
 
             ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
             ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
@@ -46,11 +46,12 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Consultation()
+        public async Task<IActionResult> Consultation(int tri = 0)
         {
             var model = PrepareModel<ConsultationViewModel>();
 
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource()).ToList();
+            model.Ressources.TypeTri = tri;
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
 
             return View("Consultation", model);
         }

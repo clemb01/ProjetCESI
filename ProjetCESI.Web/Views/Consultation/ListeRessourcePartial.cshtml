@@ -6,7 +6,20 @@
     <br />
     <div class="d-block">
         <span>Trier les résultats :</span>
-        @Html.DropDownList("TypeTri", Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>(), new { @class = "form-control", @style = "display: initial; width: auto;", @onchange = "selectionChange(this)" })
+        <select class="form-control" id="TypeTri" name="Ressources.TypeTri" style="display: initial; width: auto;" onchange="selectionChange(this)">
+            @foreach (var tri in Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>())
+            {
+                if (Model.TypeTri.ToString() == tri.Value)
+                {
+                    <option value="@tri.Value" selected>@tri.Text</option>
+                }
+                else
+                {
+                    <option value="@tri.Value">@tri.Text</option>
+                }
+            }
+        </select>
+        @*@Html.DropDownList("Ressources.TypeTri", Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>(), new { @class = "form-control", @style = "display: initial; width: auto;", @onchange = "selectionChange(this)", selected = "selected" })*@
     </div>
     <br />
     <div class="row">
@@ -41,10 +54,3 @@ else
         Aucun résultat n'a été trouvé pour votre recherche
     </p>
 }
-
-<script type="text/javascript">
-    function selectionChange(selection) {
-        document.getElementById('TypeTri').setAttribute('value', selection.value);
-        $('#recherche-avancee').submit();
-    }
-</script>

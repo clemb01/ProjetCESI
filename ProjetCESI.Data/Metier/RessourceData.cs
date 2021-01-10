@@ -11,7 +11,7 @@ namespace ProjetCESI.Data
 {
     public class RessourceData : Repository<Ressource>, IRessourceData
     {
-        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(int _pagination = 20, int _pageOffset = 0)
+        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
             {
@@ -23,6 +23,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
+                                 .OrderBy(GenerateOrderFilter(_tri))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
 
@@ -53,7 +54,7 @@ namespace ProjetCESI.Data
         public async Task<IEnumerable<Ressource>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0)
         {
             if (string.IsNullOrEmpty(_search))
-                return await GetAllPaginedRessource(_pagination, _pageOffset);
+                return await GetAllPaginedRessource(_pagination: _pagination, _pageOffset: _pageOffset);
 
             using (var ctx = GetContext())
             {
@@ -76,7 +77,7 @@ namespace ProjetCESI.Data
         public async Task<IEnumerable<Ressource>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, TypeTriBase _typeTri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             if (string.IsNullOrEmpty(_search))
-                return await GetAllPaginedRessource(_pagination, _pageOffset);
+                return await GetAllPaginedRessource(_pagination: _pagination, _pageOffset: _pageOffset);
 
             using (var ctx = GetContext())
             {

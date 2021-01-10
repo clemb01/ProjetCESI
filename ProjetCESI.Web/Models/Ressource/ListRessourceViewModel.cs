@@ -8,6 +8,7 @@ namespace ProjetCESI.Web.Models
 {
     public class ListRessourceViewModel : BaseViewModel
     {
+        public int TypeTri { get; set; }
         public List<Ressource> Ressources { get; set; }
     }
 }

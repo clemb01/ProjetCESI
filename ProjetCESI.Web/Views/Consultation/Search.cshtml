@@ -17,7 +17,7 @@
 <div style="background-color: darkgrey; padding: 15px;">
     @using (Html.BeginForm("Search", "Consultation", FormMethod.Post, new { @id = "recherche-avancee" }))
     {
-        @Html.EditorFor(model => model.TypeTri, new { htmlAttributes = new { @value = Model.TypeTri, @class = "form-control", hidden = "hidden" } })
+        @Html.EditorFor(model => model.Ressources.TypeTri, new { htmlAttributes = new { @value = Model.Ressources.TypeTri, @class = "form-control", hidden = "hidden", @id = "TypeTri" } })
         <div class="form-group">
             <strong>@Html.LabelFor(c => c.Recherche)</strong>
             @Html.EditorFor(model => model.Recherche, new { htmlAttributes = new { @class = "form-control", placeholder = "Recherche", required = "required" } })
@@ -100,47 +100,6 @@
 
 @await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
 
-@*@if (Model.Ressources != null && Model.Ressources.Any())
-{
-    <br />
-    <div class="d-block">
-        <span>Trier les résultats :</span>
-        @Html.DropDownList("TypeTri", Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>(), new { @class = "form-control", @style = "display: initial; width: auto;", @onchange = "selectionChange(this)" })
-    </div>
-    <br />
-    <div class="row">
-        @foreach (var ressource in Model.Ressources)
-        {
-            <div class="col-sm-6" id="ressource-card">
-                <a href="#">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
-                                <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
-                            </div>
-                            <p class="card-text">
-                                <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
-                                <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
-                                @foreach (var relation in ressource.TypeRelationsRessources)
-                                {
-                                    <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
-                                }
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <p>
-        Aucun résultat n'a été trouvé pour votre recherche
-    </p>
- }
-
 @section Scripts{
     <script type="text/javascript">
         function selectionChange(selection) {
@@ -148,4 +107,4 @@ else
             $('#recherche-avancee').submit();
         }
     </script>
-}*@
+}
