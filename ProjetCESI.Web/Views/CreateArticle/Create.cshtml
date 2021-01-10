@@ -1,8 +1,45 @@
 ﻿@using ProjetCESI.Web.Models;
+@model CreateRessourceViewModel
 
 <h1>Création d'un article</h1>
 
 <form asp-action="CreateArticle" asp-controller="CreateArticle" method="post">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            @*<strong>@Html.LabelFor(c => c.SelectedCategories, "Categories")</strong>*@
+            <select data-placeholder="Sélectionnez des catégorie..." class="chosen-select form-control" name="SelectedCategories" tabindex="1">
+                <option value=""></option>
+                @foreach (var categorie in ViewBag.Categories)
+                {
+                    <option value="@categorie.Value">@categorie.Text</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            @*<strong>@Html.LabelFor(c => c.SelectedTypeRessources, "Type de resssources")</strong>*@
+            <select data-placeholder="Sélectionnez des types de ressources..." class="chosen-select form-control" name="SelectedTypeRessources" tabindex="3">
+                <option value=""></option>
+                @foreach (var categorie in ViewBag.TypeRessources)
+                {
+                    <option value="@categorie.Value">@categorie.Text</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            @*<strong>@Html.LabelFor(c => c.SelectedTypeRelation, "Type de relation")</strong>*@
+            <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
+                <option value=""></option>
+                @foreach (var categorie in ViewBag.TypeRelation)
+                {
+                    <option value="@categorie.Value">@categorie.Text</option>
+                }
+            </select>
+        </div>
+    </div>
+    <br />
+    @Html.LabelFor(model => model.Titre) 
+    @Html.EditorFor(model => model.Titre)
+    <br />
     <textarea name="Contenu" id="myTextarea"></textarea>
 
     <br />

@@ -1,6 +1,8 @@
-﻿@model string
+﻿@using ProjetCESI.Web.Models;
+@model CreateRessourceViewModel
 
-@Html.Raw(Model)
+@Model.Titre
+@Html.Raw(Model.Contenu)
 
 <form asp-action="CreateArticle" asp-controller="CreateArticle" method="post">
 
