@@ -36,7 +36,5 @@ namespace ProjetCESI.Web.Controllers
 
             return View("Visualisation", model.Contenu);
         }
-
-
     }
 }
