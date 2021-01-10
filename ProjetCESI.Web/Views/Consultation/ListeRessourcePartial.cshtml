@@ -19,14 +19,13 @@
                 }
             }
         </select>
-        @*@Html.DropDownList("Ressources.TypeTri", Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>(), new { @class = "form-control", @style = "display: initial; width: auto;", @onchange = "selectionChange(this)", selected = "selected" })*@
     </div>
     <br />
     <div class="row">
         @foreach (var ressource in Model.Ressources)
         {
             <div class="col-sm-6" id="ressource-card">
-                <a href="#">
+                <a href="/Ressource/@ressource.Id">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
