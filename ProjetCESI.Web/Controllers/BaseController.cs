@@ -68,6 +68,7 @@ namespace ProjetCESI.Web.Controllers
                 return _userManager;
             }
         }
+
         public SignInManager<User> SignInManager
         {
             get
