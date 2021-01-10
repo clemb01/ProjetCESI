@@ -1,7 +1,4 @@
 ﻿@using ProjetCESI.Web.Models
 @model ConsultationViewModel
 
-@{ 
-
-}
-
+@await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)

@@ -2,22 +2,30 @@
 @model RechercheRessourceViewModel
 
 @{
-    ViewData["Title"] = "Recherche";
+    ViewData["Title"] = Model.Recherche;
 }
 
-<h1 class="display-4">Recherche</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Résultat de la recherche</li>
+    </ol>
+</nav>
+
+<h3>Recherche</h3>
 
 <div style="background-color: darkgrey; padding: 15px;">
-    @using (Html.BeginForm("Search", "Consultation", FormMethod.Post))
+    @using (Html.BeginForm("Search", "Consultation", FormMethod.Post, new { @id = "recherche-avancee" }))
     {
+        @Html.EditorFor(model => model.TypeTri, new { htmlAttributes = new { @value = Model.TypeTri, @class = "form-control", hidden = "hidden" } })
         <div class="form-group">
             <strong>@Html.LabelFor(c => c.Recherche)</strong>
-            @Html.EditorFor(model => model.Recherche, new { htmlAttributes = new { @class = "form-control", placeholder = "Recherche" } })
+            @Html.EditorFor(model => model.Recherche, new { htmlAttributes = new { @class = "form-control", placeholder = "Recherche", required = "required" } })
         </div>
-        <strong>@Html.LabelFor(c => c.Recherche, "Filtrer les résultats par :")</strong>
+        <span>@Html.LabelFor(c => c.Recherche, "Filtrer les résultats par :")</span>
         <div class="form-row">
             <div class="form-group col-md-4">
-                @Html.LabelFor(c => c.SelectedCategories, "Categories")
+                <strong>@Html.LabelFor(c => c.SelectedCategories, "Categories")</strong>
                 <select data-placeholder="Sélectionnez des catégorie..." class="chosen-select form-control" name="SelectedCategories" multiple tabindex="1">
                     <option value=""></option>
                     @foreach (var categorie in ViewBag.Categories)
@@ -34,12 +42,12 @@
                 </select>
             </div>
             <div class="form-group col-md-4">
-                @Html.LabelFor(c => c.SelectedTypeRelation, "Type de relation")
-                <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
+                <strong>@Html.LabelFor(c => c.SelectedTypeRessources, "Type de resssources")</strong>
+                <select data-placeholder="Sélectionnez des types de ressources..." class="chosen-select form-control" name="SelectedTypeRessources" multiple tabindex="3">
                     <option value=""></option>
-                    @foreach (var categorie in ViewBag.TypeRelation)
+                    @foreach (var categorie in ViewBag.TypeRessources)
                     {
-                        if (Model.SelectedTypeRelation != null && Model.SelectedTypeRelation.Contains(int.Parse(categorie.Value)))
+                        if (Model.SelectedTypeRessources != null && Model.SelectedTypeRessources.Contains(int.Parse(categorie.Value)))
                         {
                             <option value="@categorie.Value" selected>@categorie.Text</option>
                         }
@@ -51,12 +59,12 @@
                 </select>
             </div>
             <div class="form-group col-md-4">
-                @Html.LabelFor(c => c.SelectedTypeRessources, "Type de resssources")
-                <select data-placeholder="Sélectionnez des types de ressources..." class="chosen-select form-control" name="SelectedTypeRessources" multiple tabindex="3">
+                <strong>@Html.LabelFor(c => c.SelectedTypeRelation, "Type de relation")</strong>
+                <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
                     <option value=""></option>
-                    @foreach (var categorie in ViewBag.TypeRessources)
+                    @foreach (var categorie in ViewBag.TypeRelation)
                     {
-                        if (Model.SelectedTypeRessources != null && Model.SelectedTypeRessources.Contains(int.Parse(categorie.Value)))
+                        if (Model.SelectedTypeRelation != null && Model.SelectedTypeRelation.Contains(int.Parse(categorie.Value)))
                         {
                             <option value="@categorie.Value" selected>@categorie.Text</option>
                         }
@@ -82,45 +90,62 @@
         <div class="d-flex justify-content-between">
             <small class="align-self-end">
                 Catégories : <span class="badge badge-pill badge-primary">&nbsp;</span>
-                Type de relation : <span class="badge badge-pill badge-success">&nbsp;</span>
                 Type de ressource : <span class="badge badge-pill badge-secondary">&nbsp;</span>
+                Type de relation : <span class="badge badge-pill badge-success">&nbsp;</span>
             </small>
             <button type="submit" class="btn btn-primary">Recherche avancée</button>
         </div>
     }
 </div>
-@if (Model.Ressources != null && Model.Ressources.Any())
+
+@await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
+
+@*@if (Model.Ressources != null && Model.Ressources.Any())
 {
-<br />
-<div class="row">
-    @foreach (var ressource in Model.Ressources)
-    {
-    <div class="col-sm-6" id="ressource-card">
-        <a href="#">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
-                        <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
+    <br />
+    <div class="d-block">
+        <span>Trier les résultats :</span>
+        @Html.DropDownList("TypeTri", Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>(), new { @class = "form-control", @style = "display: initial; width: auto;", @onchange = "selectionChange(this)" })
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var ressource in Model.Ressources)
+        {
+            <div class="col-sm-6" id="ressource-card">
+                <a href="#">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
+                                <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
+                            </div>
+                            <p class="card-text">
+                                <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
+                                <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
+                                @foreach (var relation in ressource.TypeRelationsRessources)
+                                {
+                                    <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
+                                }
+                            </p>
+                        </div>
                     </div>
-                    <p class="card-text">
-                        <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
-                        <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />                        
-                        @foreach (var relation in ressource.TypeRelationsRessources)
-                        {
-                            <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
-                        }
-                    </p>
-                </div>
+                </a>
             </div>
-        </a>
-    </div>    
-    }
-</div>
+        }
+    </div>
 }
 else
 {
     <p>
         Aucun résultat n'a été trouvé pour votre recherche
     </p>
-}
+ }
+
+@section Scripts{
+    <script type="text/javascript">
+        function selectionChange(selection) {
+            document.getElementById('TypeTri').setAttribute('value', selection.value);
+            $('#recherche-avancee').submit();
+        }
+    </script>
+}*@

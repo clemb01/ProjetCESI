@@ -3,6 +3,7 @@ using ProjetCESI.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -72,7 +73,7 @@ namespace ProjetCESI.Data
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, int _pagination = 20, int _pageOffset = 0)
+        public async Task<IEnumerable<Ressource>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, TypeTriBase _typeTri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             if (string.IsNullOrEmpty(_search))
                 return await GetAllPaginedRessource(_pagination, _pageOffset);
@@ -109,9 +110,21 @@ namespace ProjetCESI.Data
                 if (_dateFin.HasValue)
                     ressources = ressources.Where(c => c.DateModification < _dateFin.Value);
 
+                ressources = ressources.OrderBy(GenerateOrderFilter(_typeTri));
+
                 return await ressources.Skip(_pageOffset * _pagination)
                                  .Take(_pagination).ToListAsync();
             }
+        }
+
+        private string GenerateOrderFilter(TypeTriBase _tri)
+        {
+            string tri = Enum.GetName(_tri);
+
+            if (tri.Contains("Desc"))
+                tri = tri.Insert(tri.Length - 4, " ");
+
+            return tri;
         }
     }
 }

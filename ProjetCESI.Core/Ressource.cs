@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -38,5 +39,17 @@ namespace ProjetCESI.Core
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
+    }
+
+    public enum TypeTriBase
+    {
+        [Display(Name = "Du plus ancien au plus récent")]
+        DateModification,
+        [Display(Name = "Du plus récent au plus ancien")]
+        DateModificationDesc,
+        [Display(Name = "De A à Z")]
+        Titre,
+        [Display(Name = "De Z à A")]
+        TitreDesc
     }
 }

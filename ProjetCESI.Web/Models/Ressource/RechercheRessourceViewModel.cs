@@ -23,14 +23,16 @@ namespace ProjetCESI.Web.Models
         [Display(Name = "Type de ressource")]
         public List<int> SelectedTypeRessources { get; set; }
 
-        [Display(Name = "Début")]
+        [Display(Name = "Entre le")]
         public DateTime? DateDebut { get; set; }
 
-        [Display(Name = "Fin")]
+        [Display(Name = "Et le")]
         public DateTime? DateFin { get; set; }
+
+        public int TypeTri { get; set; }
 
         public int Page { get; set; }
 
-        public List<Ressource> Ressources { get; set; }
+        public ListRessourceViewModel Ressources { get; set; } = new ListRessourceViewModel();
     }
 }

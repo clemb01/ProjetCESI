@@ -8,6 +8,6 @@ namespace ProjetCESI.Web.Models
 {
     public class ConsultationViewModel : BaseViewModel
     {
-        public List<Ressource> Ressources { get; set; }
+        public ListRessourceViewModel Ressources { get; set; } = new ListRessourceViewModel();
     }
 }
