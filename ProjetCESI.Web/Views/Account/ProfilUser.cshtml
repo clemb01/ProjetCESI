@@ -1,0 +1,10 @@
+﻿@using ProjetCESI.Web.Models
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "ProfilUser";
+}
+
+<h2>Bonjour @Html.DisplayFor(model => model.Utilisateur.UserName)</h2>
+
+@Html.ActionLink("Supprimer le compte", "ConfirmationAnonyme", new { id = Model.Utilisateur.Id })

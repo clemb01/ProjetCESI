@@ -1,0 +1,28 @@
+﻿@using ProjetCESI.Web.Models
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "ConfirmationAnonyme";
+}
+
+
+<div class="jumbotron">
+    <h1>Êtes-vous sûr de vouloir supprimer votre compte ?</h1>
+    <p>Attention ! Cette action est irréversible !</p>
+
+    <dl class="row">
+        <dd hidden class="col-sm-10">
+            @Html.DisplayFor(model => model.Utilisateur.Id)
+        </dd>
+    </dl>
+    <br />
+    <form method="post" asp-action="AnonymiseMyAccount">
+        <input hidden type="text" value="@Model.Utilisateur.Id" name="Id" />
+        <input type="submit" value="Supprimer mon compte" class="btn btn-danger" />
+        <br />
+        <br />
+        <br />
+        <br />
+        <a asp-action="ProfilUser">Retour</a>
+    </form>
+</div>

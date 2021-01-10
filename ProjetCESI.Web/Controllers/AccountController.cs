@@ -106,5 +106,47 @@ namespace ProjetCESI.Web.Controllers
 
             return View(model);
         }
+
+
+        public async Task<IActionResult> ProfilUser()
+        {
+            var id = User.Claims.SingleOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
+            var user = await UserManager.FindByIdAsync(id);
+            if(user != null)
+            {
+                var model = new UserViewModel();
+                model.Utilisateur = user;
+
+                return View(model);
+            }
+            return View();
+
+        }
+
+        public async Task<IActionResult> ConfirmationAnonyme(string id)
+        {
+            if (id != null)
+            {
+                var user = await UserManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var model = new UserViewModel();
+                    model.Utilisateur = user;
+
+                    return View(model);
+                }
+
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AnonymiseMyAccount(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
+            await SignInManager.SignOutAsync();
+            return Redirect("/Accueil/Accueil");
+        }
     }
 }
