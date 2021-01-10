@@ -5,40 +5,80 @@
     ViewData["Title"] = "BanTempo";
 }
 
-<div class="jumbotron">
-    <h1>Bloquer le user</h1>
+@ViewData["Message"];
 
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form method="post" asp-action="BanTemporary">
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        @*@Html.CheckBox("Lockout", Model.Utilisateur.LockoutEnd)*@
-                        Nombre de jours où le compte d'@Html.DisplayFor(modelItem => Model.Utilisateur.UserName) sera bloqué :
-                        @Html.TextBox("time")
-                    </label>
 
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Enregistrer le ban" class="btn btn-primary" />
-                </div>
-            </form>
+<div class="container">
+    <h1>Gestion du blocage de l'utilisateur : @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)</h1>
+    <div class="accordion" id="exempleAccordeon">
+        <div class="card">
+            <div class="card-header" id="header1">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Bloquer en fonction des jours</button>
+            </div>
+            <div id="collapse1" class="collapse show" aria-labelledby="header1" data-parent="#exempleAccordeon">
+                <div class="card-body">
+                    <form method="post" asp-action="BanTemporary">
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                                @*@Html.CheckBox("Lockout", Model.Utilisateur.LockoutEnd)*@
+                                Nombre de jours où le compte d'@Html.DisplayFor(modelItem => Model.Utilisateur.UserName) sera bloqué :
+                                @Html.TextBox("time") jours.
+                            </label>
 
-            <form method="post" asp-action="DeBanUser">
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        @Html.CheckBox("Unlock", Model.Utilisateur.LockoutEnd)
-                        Débloquer @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)
-                    </label>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
+        <div class="card">
+            <div class="card-header" id="header2">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">Bloquer définitivement</button>
+            </div>
+            <div id="collapse2" class="collapse" aria-labelledby="header2" data-parent="#exempleAccordeon">
+                <div class="card-body">
+                    <form method="post" asp-action="BanPermanent">
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                                @Html.CheckBox("Ban", Model.Utilisateur.LockoutEnd)
+                                Bannir définitivement @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)
+                            </label>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Confirmer le banissement définitif" class="btn btn-primary" />
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Enregistrer le déban" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" id="header3">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Débloquer l'user</button>
+            </div>
+            <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
+                <div class="card-body">
+                    <form method="post" asp-action="DeBanUser">
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                                @Html.CheckBox("Unlock", Model.Utilisateur.LockoutEnd)
+                                Débloquer @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)
+                            </label>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Confirmer le déblocage du compte" class="btn btn-primary" />
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

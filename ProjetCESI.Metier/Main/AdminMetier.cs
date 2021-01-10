@@ -39,6 +39,19 @@ namespace ProjetCESI.Metier.Main
             return false;
         }
 
+        public async Task<bool> BanUserPermanent(User user)
+        {
+            if(user != null)
+            {
+                user.LockoutEnabled = true;
+                user.LockoutEnd = DateTime.MaxValue;
+
+                var resultban = await DataClass.InsertOrUpdate(user);
+                return resultban;
+            }
+            return false;
+        }
+
         public async Task<bool> DeBan(User user)
         {
             if(user != null)

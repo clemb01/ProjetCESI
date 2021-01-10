@@ -92,5 +92,14 @@ namespace ProjetCESI.Web.Controllers
             return RedirectToAction("UserList");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> BanPermanent(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().BanUserPermanent(user);
+
+            return RedirectToAction("UserList");
+        }
+
     }
 }
