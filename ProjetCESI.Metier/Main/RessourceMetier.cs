@@ -10,5 +10,11 @@ namespace ProjetCESI.Metier
 {
     public class RessourceMetier : MetierBase<Ressource, RessourceData>, IRessourceMetier
     {
+
+        public async Task SaveRessource(Ressource ressource)
+        {
+            await DataClass.InsertOrUpdate(ressource);
+
+        }
     }
 }

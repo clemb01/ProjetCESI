@@ -2,7 +2,15 @@
 
 <h1>Création d'un article</h1>
 
-<textarea name="myTextarea" id="myTextarea"></textarea>
+<form asp-action="CreateArticle" asp-controller="CreateArticle" method="post">
+    <textarea name="Contenu" id="myTextarea"></textarea>
+
+    <br />
+    <center><button type="submit">Valider mon article</button></center>
+</form>
+
+
+
 
 @section Scripts
 {

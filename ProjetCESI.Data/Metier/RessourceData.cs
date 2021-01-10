@@ -9,5 +9,7 @@ namespace ProjetCESI.Data
 {
     public class RessourceData : Repository<Ressource>, IRessourceData
     {
+        
+
     }
 }
