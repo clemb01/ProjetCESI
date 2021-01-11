@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace ProjetCESI.Web.Controllers
     public class ConsultationController : BaseController
     {
         [HttpGet]
+        [StatistiqueFilter]
         public async Task<IActionResult> Search(string recherche)
         {
             var model = PrepareModel<RechercheRessourceViewModel>();
@@ -28,7 +30,7 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [StatistiqueFilter]
         public async Task<IActionResult> Search(RechercheRessourceViewModel model)
         {
             model = PrepareModel(model);

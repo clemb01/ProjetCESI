@@ -57,5 +57,6 @@ namespace ProjetCESI.Data.Context
         public DbSet<TypeRelation> TypeRelations { get; set; }
         public DbSet<TypeRessource> TypeRessources { get; set; }
         public DbSet<Categorie> Categories { get; set; }
+        public DbSet<Statistique> Statistiques { get; set; }
     }
 }
