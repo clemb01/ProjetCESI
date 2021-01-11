@@ -1,6 +1,8 @@
-﻿namespace ProjetCESI.Metier
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Metier
 {
-    public interface IUtilisateurRessourceMetier
+    public interface IUtilisateurRessourceMetier : IMetier<UtilisateurRessource>
     {
     }
 }

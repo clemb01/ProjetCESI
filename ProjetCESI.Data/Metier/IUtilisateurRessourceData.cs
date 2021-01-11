@@ -1,6 +1,8 @@
-﻿namespace ProjetCESI.Data
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Data
 {
-    public interface IUtilisateurRessourceData
+    public interface IUtilisateurRessourceData : IData<UtilisateurRessource>
     {
     }
 }
