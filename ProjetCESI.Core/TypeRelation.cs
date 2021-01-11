@@ -14,4 +14,14 @@ namespace ProjetCESI.Core
 
         public List<TypeRelationRessource> TypeRelationsRessource { get; set; }
     }
+
+    public enum TypeRelations
+    {
+        Soi = 1,
+        Conjoints,
+        Famille,
+        Professionnelle,
+        Amis,
+        Inconnus
+    }
 }

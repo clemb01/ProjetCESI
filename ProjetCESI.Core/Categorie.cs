@@ -12,4 +12,21 @@ namespace ProjetCESI.Core
         [DataMember]
         public string Nom { get; set; }
     }
+
+    public enum Categories
+    {
+        Communication = 1,
+        Cultures,
+        DeveloppementPersonnel,
+        IntelligenceEmotionnelle,
+        Loisirs,
+        MondeProfessionnel,
+        Parentalite,
+        QualiteDeVie,
+        RechercheDeSens,
+        SantePhysique,
+        SantePsychique,
+        Spiritualite,
+        VieAffective
+    }
 }

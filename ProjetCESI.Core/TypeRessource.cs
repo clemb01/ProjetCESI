@@ -12,4 +12,16 @@ namespace ProjetCESI.Core
         [DataMember]
         public string Nom { get; set; }
     }
+
+    public enum TypeRessources
+    {
+        ActiviteJeu = 1,
+        Article,
+        CarteDefi,
+        PDF,
+        Exercice,
+        FicheLecture,
+        Jeu,
+        Video
+    }
 }
