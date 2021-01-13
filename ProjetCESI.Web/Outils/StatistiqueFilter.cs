@@ -35,14 +35,30 @@ namespace ProjetCESI.Web.Outils
                 stat.RechercheEffectue = context.ActionArguments.ContainsKey("recherche") ? (string)context.ActionArguments["recherche"] : string.Empty;
             }
 
+            MetierFactory metier = null;
+
             if (context.HttpContext != null && context.HttpContext.User != null && context.HttpContext.User.Identity != null && !string.IsNullOrWhiteSpace(context.HttpContext.User.Identity.Name))
             {
                 Claim claim = ((ClaimsIdentity)context.HttpContext.User.Identity).FindFirst(ClaimTypes.NameIdentifier);
                 if (claim != null && claim.Value != null)
-                    stat.UtilisateurId = Convert.ToInt32(claim.Value.ToString());
+                {
+                    int userId = Convert.ToInt32(claim.Value);
+
+                    metier = new MetierFactory(userId);
+                    stat.UtilisateurId = userId;
+                }
+                else
+                {
+                    metier = new MetierFactory(null);
+                    stat.UtilisateurId = null;
+                }
+            }
+            else
+            {
+                metier = new MetierFactory(null);
+                stat.UtilisateurId = null;
             }
 
-            MetierFactory metier = new MetierFactory(stat.UtilisateurId);
             metier.CreateStatistiqueMetier().InsertOrUpdate(stat).GetAwaiter().GetResult();
 
             base.OnActionExecuting(context);

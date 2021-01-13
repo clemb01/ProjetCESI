@@ -10,5 +10,6 @@ namespace ProjetCESI.Metier
 {
     public class CommentaireMetier : MetierBase<Commentaire, CommentaireData>, ICommentaireMetier
     {
+        public async Task<IEnumerable<Commentaire>> GetAllCommentairesParentByRessourceId(int __ressourceId) => await DataClass.GetAllCommentairesParentByRessourceId(__ressourceId);
     }
 }

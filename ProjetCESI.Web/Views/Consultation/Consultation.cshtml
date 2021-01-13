@@ -1,6 +1,10 @@
 ﻿@using ProjetCESI.Web.Models
 @model ConsultationViewModel
 
+@{ 
+    ViewData["Title"] = "Consultation";
+}
+
 <form asp-action="Consultation" asp-controller="Consultation" method="get" id="tri">
     <input id="TypeTri" name="tri" hidden/>
 </form>

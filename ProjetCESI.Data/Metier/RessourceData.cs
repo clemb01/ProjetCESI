@@ -31,6 +31,23 @@ namespace ProjetCESI.Data
             }
         }
 
+        public async Task<Ressource> GetRessourceComplete(int _ressourceId)
+        {
+            using (var ctx = GetContext())
+            {
+                var ressources = ctx.Set<Ressource>()
+                                 .Include(c => c.UtilisateurCreateur)
+                                 .Include(c => c.Categorie)
+                                 .Include(c => c.TypeRessource)
+                                 .Include(c => c.TypeRelationsRessources)
+                                 .ThenInclude(c => c.TypeRelation)
+                                 .Include(c => c.TypeRelationsRessources)
+                                 .ThenInclude(c => c.Ressource);
+
+                return await ressources.FirstOrDefaultAsync(c => c.Id == _ressourceId);
+            }
+        }
+
         public async Task<IEnumerable<Ressource>> GetAllPaginedLastRessource(int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())

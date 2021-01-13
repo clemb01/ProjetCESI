@@ -20,7 +20,7 @@ namespace ProjetCESI.Web.Controllers
         {
             var model = PrepareModel<RessourceViewModel>();
 
-            model.Ressource = await MetierFactory.CreateRessourceMetier().GetById(id);
+            model.Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(id);
 
             if(model.Ressource.TypeRessourceId == (int)TypeRessources.PDF)
             {
