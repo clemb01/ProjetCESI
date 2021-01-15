@@ -15,11 +15,24 @@ namespace ProjetCESI.Data
             using(var ctx = GetContext())
             {
                 return await ctx.Set<Commentaire>()
-                                .Include(c => c.Utilisateur)
-                                .Include(c => c.CommentairesEnfant)
-                                .ThenInclude(c => c.Utilisateur)
-                                .Where(c => c.RessourceId == __ressourceId && c.CommentaireParent == null)
-                                .ToListAsync();
+                            .Include(c => c.Utilisateur)
+                            .Include(c => c.CommentairesEnfant)
+                            .ThenInclude(c => c.Utilisateur)
+                            .Where(c => c.RessourceId == __ressourceId && c.CommentaireParent == null)
+                            .OrderByDescending(c => c.DateModification)
+                            .ToListAsync();
+            }
+        }
+
+        public async Task<Commentaire> GetCommentaireComplet(int __commentaireId)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Commentaire>()
+                            .Include(c => c.Utilisateur)
+                            .Include(c => c.CommentairesEnfant)
+                            .ThenInclude(c => c.Utilisateur)
+                            .FirstOrDefaultAsync(c => c.Id == __commentaireId);
             }
         }
     }

@@ -16,17 +16,19 @@
             <p class="d-block">
                 @commentaire.Texte
             </p>
-            <div id="collapseEditor-@commentaire.Id">
-                <form>
-                    <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id')); $('#submit-btn-@commentaire.Id').collapse('toggle');"></textarea>
-                </form>
-                <div class="collapse" id="submit-btn-@commentaire.Id">
+            @if (User.Identity.IsAuthenticated)
+            {
+            <button class="d-block" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
+            <div class="reponse-editor collapse" id="collapseEditor-@commentaire.Id">
+                <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id'));"></textarea>
+                <div id="submit-btn-@commentaire.Id">
                     <div class="d-flex justify-content-end">
-                        <button id="annuler-commentaire" onclick="$('#submit-btn-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id'));">Annuler</button>
-                        <button form="ajout-commentaire">Envoyer</button>
+                        <button id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
+                        <button form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)">Envoyer</button>
                     </div>
                 </div>
             </div>
+            }
             @if (commentaire.CommentairesEnfant.Any())
             {
                 <span class="toggle-response" id="comments-@commentaire.Id" onclick="toggleResponse(@commentaire.Id, @commentaire.CommentairesEnfant.Count)">

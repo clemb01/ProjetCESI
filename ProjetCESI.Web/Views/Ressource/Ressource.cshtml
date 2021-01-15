@@ -30,18 +30,20 @@
 <div class="comment-section">
     <h2>Commentaires</h2>
     <div id="response-editor">
+        @if (User.Identity.IsAuthenticated)
+        {
         <form id="ajout-commentaire">
             <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
         </form>
-        <div id="submit-btn">
+        }
+        <div class="collapse" id="submit-btn">
             <div class="d-flex justify-content-end">
                 <button id="annuler-commentaire">Annuler</button>
                 <button form="ajout-commentaire">Envoyer</button>
             </div>
         </div>
     </div>
-    <div id="list-commentaire">
-
+    <div id="list-commentaire">        
     </div>
 </div>
 
@@ -49,30 +51,40 @@
 <script src="~/lib/autosize/dist/autosize.min.js"></script>
 <script>
     $(document).ready(function () {
-        document.getElementById('submit-btn').style.display = 'none';
         document.getElementById("favoris").addEventListener("mouseover", mouseHover(this));
         getComments();
         autosize(document.querySelector('.commentaire-editor'));
         $('.commentaire-editor').focusin(function () {
-            document.getElementById('submit-btn').style.display = 'initial';
+            $('#submit-btn').collapse('toggle');
         });
         $('#annuler-commentaire').click(function () {
             resetEditor(document.querySelector('.commentaire-editor'));
-            document.getElementById('submit-btn').style.display = 'none';
+            $('#submit-btn').collapse('toggle');
         });
-        $('#ajout-commentaire').submit(function (event) {
+        @if(User.Identity.IsAuthenticated)
+        {
+        <text>
+        $('#ajout-commentaire').submit(function(event) {
             event.preventDefault();
-            var data = $(this).serialize();
 
             $.ajax({
                 url: "/Commentaire/AjouterCommentaire",
                 method: "POST",
                 data: {
-                    'Commentaire.Texte': $('#Contenu').val() 
+                    contenu: $('#Contenu').val(),
+                    utilisateurId: @Model.Utilisateur.Id,
+                    ressourceId: @Model.Ressource.Id,
                 }
             })
-                .done();
+            .done(function (result) {
+                resetEditor(document.querySelector('.commentaire-editor'));
+                $('#submit-btn').collapse('toggle');
+                document.getElementById("list-commentaire").innerHTML = result;
+            });
         });
+        </text>
+        }
+
     });
 
     function mouseHover(item) {
@@ -88,7 +100,7 @@
             }
         })
             .done(function (result) {
-                document.getElementById("list-commentaire").innerHTML = document.getElementById("list-commentaire").innerHTML + result;
+                document.getElementById("list-commentaire").innerHTML = result;
             });
     }
 </script>

@@ -10,6 +10,18 @@ namespace ProjetCESI.Metier
 {
     public class CommentaireMetier : MetierBase<Commentaire, CommentaireData>, ICommentaireMetier
     {
-        public async Task<IEnumerable<Commentaire>> GetAllCommentairesParentByRessourceId(int __ressourceId) => await DataClass.GetAllCommentairesParentByRessourceId(__ressourceId);
+        public async Task<IEnumerable<Commentaire>> GetAllCommentairesParentByRessourceId(int __ressourceId)
+        {
+            var results =  await DataClass.GetAllCommentairesParentByRessourceId(__ressourceId);
+
+            foreach (var result in results)
+            {
+                result.CommentairesEnfant = result.CommentairesEnfant.OrderBy(c => c.DateModification).ToList();
+            }
+
+            return results;
+        }
+
+        public async Task<Commentaire> GetCommentaireComplet(int __commentaireId) => await DataClass.GetCommentaireComplet(__commentaireId);
     }
 }

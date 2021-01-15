@@ -42,7 +42,9 @@ namespace ProjetCESI.Data
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
-                                 .ThenInclude(c => c.Ressource);
+                                 .ThenInclude(c => c.Ressource)
+                                 .Include(c => c.Commentaires)
+                                 .ThenInclude(c => c.CommentairesEnfant);
 
                 return await ressources.FirstOrDefaultAsync(c => c.Id == _ressourceId);
             }

@@ -26,3 +26,19 @@ function toggleResponse(elementId, count) {
 function resetEditor(element) {
     element.value = "";
 }
+
+function submitReponseForm(commentId, ressourceId, userId) {
+    $.ajax({
+        url: '/Commentaire/RepondreCommentaire',
+        method: 'POST',
+        data: {
+            contenu: $('#response-editor-' + commentId).val(),
+            ressourceId: ressourceId,
+            utilisateurId: userId,
+            commentaireParentId: commentId
+        }
+    })
+        .done(function (result) {
+            document.getElementById("list-commentaire").innerHTML = result;
+        });
+}
