@@ -8,6 +8,8 @@ using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
 using ProjetCESI.Metier;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -30,11 +32,47 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateArticle(CreateRessourceViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(CreateRessourceViewModel model)
         {
             var ressource = new Ressource();
+
+            if (model.SelectedTypeRessources == (int)TypeRessources.PDF)
+            {
+                var uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
+                bool exists = Directory.Exists(uploads);
+                if (!exists)
+                    Directory.CreateDirectory(uploads);
+
+                var fileName = Path.GetFileName(model.File.FileName);
+                string mimeType = model.File.ContentType;
+
+                byte[] fileData = null;
+                using (var fileStream = new FileStream(Path.Combine(uploads, model.File.FileName), FileMode.Create))
+                {
+                    fileData = new byte[model.File.Length];
+                    model.File.OpenReadStream().Read(fileData, 0, (int)model.File.Length);
+                    fileStream.Write(fileData);
+                    fileStream.Close();
+                }
+
+                string embed = "<object data=\"{0}\" type=\"application/pdf\" width=\"100%\" height=\"650px\">";
+                embed += "Si vous ne pouvez pas visualiez le fichier, vous pouvez le télécharger <a href = \"{0}\">ici</a>";
+                embed += " ou vous pouvez télécharger <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> pour visualiser le PDF.";
+                embed += "</object>";
+
+                ressource.Contenu = string.Format(embed, @"/uploads/" + model.File.FileName);
+            }
+            else if(model.SelectedTypeRessources == (int)TypeRessources.Video)
+            {
+                ressource.Contenu = model.urlVideo.Substring(32, 11);
+            }
+            else
+            {
+                ressource.Contenu = model.Contenu;
+            }
+
             ressource.Titre = model.Titre;
-            ressource.Contenu = model.Contenu;
             ressource.EstValide = false;
             //ressource.CategorieId = model.Ressource.Categorie.Id;
             ressource.Commentaires = null;
@@ -45,12 +83,12 @@ namespace ProjetCESI.Web.Controllers
             ressource.UtilisateurCreateurId = Utilisateur.Id;
             ressource.CategorieId = model.SelectedCategories;
             ressource.TypeRessourceId = model.SelectedTypeRessources;
-            
+
             await MetierFactory.CreateRessourceMetier().SaveRessource(ressource);
 
             await MetierFactory.CreateTypeRelationRessourceMetier().AjouterRelationsToRessource(model.SelectedTypeRelation, ressource.Id);
 
-            return View("Create", model);
+            return RedirectToAction("Consultation", "Consultation");
         }
     }
 }

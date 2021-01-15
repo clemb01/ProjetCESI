@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,5 +21,7 @@ namespace ProjetCESI.Web.Models
         [Display(Name = "Titre")]
         public string Titre { get; set; }
         public string Contenu { get; set; }
+        public IFormFile File { get; set; }
+        public string urlVideo { get; set; }
     }
 }

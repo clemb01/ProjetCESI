@@ -22,16 +22,6 @@ namespace ProjetCESI.Web.Controllers
 
             model.Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(id);
 
-            if(model.Ressource.TypeRessourceId == (int)TypeRessources.PDF)
-            {
-                string embed = "<object data=\"{0}\" type=\"application/pdf\" width=\"100%\" height=\"650px\">";
-                embed += "Si vous ne pouvez pas visualiez le fichier, vous pouvez le télécharger <a href = \"{0}\">ici</a>";
-                embed += " ou vous pouvez télécharger <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> pour visualiser le PDF.";
-                embed += "</object>";
-
-                model.Ressource.Contenu = string.Format(embed, @"/uploads/attestation.pdf");
-            }
-
             return View(model);
         }
 

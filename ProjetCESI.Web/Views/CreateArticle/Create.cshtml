@@ -3,7 +3,11 @@
 
 <h1>Création d'un article</h1>
 
-<form asp-action="CreateArticle" asp-controller="CreateArticle" method="post">
+@using (Html.BeginForm("Upload",
+                           "CreateArticle",
+                           FormMethod.Post,
+                           new { enctype = "multipart/form-data" }))
+{
     <div class="form-row">
         <div class="form-group col-md-4">
             @*<strong>@Html.LabelFor(c => c.SelectedCategories, "Categories")</strong>*@
@@ -36,36 +40,40 @@
             </select>
         </div>
     </div>
+<br />
+<p>
+    Titre :
+    <input type="text" id="TitreArticle" name="Titre"/>
+</p>
+
+<br />
+
+<div id="formulaire">
+    <textarea name="Contenu" id="editor"></textarea>
+</div>
+<div id="video" hidden>
+    <p>
+        URL de la vidéo :
+    </p>
+    <input type="url" id="urlVideo" name="urlVideo"/>
+    <br />
     <br />
     <p>
-        Titre : 
-        <input type="text" id="TitreArticle"/>
+        Description de la vidéo :
     </p>
-    
-    <br />
+    <textarea id="desciptionVideo"></textarea>
+</div>
+<div id="pdf" hidden>
+    <h3>Selectionnez un fichier</h3>
+    <label for="file">Upload Image:</label>
+    <input type="file" name="file" id="file" /><br><br>
+    <br><br>
+    @ViewBag.Message
+</div>
 
-    <div id="formulaire">
-        <textarea name="Contenu" id="editor"></textarea>
-    </div>
-    <div id="video" hidden>
-        <p>
-            URL de la vidéo :
-        </p>
-        <input type="url" id="urlVideo" />
-        <br />
-        <br />
-        <p>
-            Description de la vidéo :
-        </p>
-        <textarea id="desciptionVideo"></textarea>
-    </div>    
-    <div id="pdf" hidden>
-        <p>Pdf</p>
-    </div>
-
-    <br />
-    <center><button type="submit" id="btnValiderArticle" hidden>Valider mon article</button></center>
-</form>
+<br />
+<center><button type="submit" id="btnValiderArticle" hidden>Valider mon article</button></center>
+}
 
 @section Scripts
 {
