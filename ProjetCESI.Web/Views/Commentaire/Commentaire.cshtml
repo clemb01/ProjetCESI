@@ -1,0 +1,67 @@
+﻿@using ProjetCESI.Web.Models
+@model CommentairesViewModel
+
+@if (Model.Commentaires != null && Model.Commentaires.Any())
+{
+    @foreach (var commentaire in Model.Commentaires)
+    {
+<div class="commentaire">
+    <div class="d-inline-flex" style="width: 100%;">
+        <a href="#"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FrFZ2w6Uspic%2Fhqdefault.jpg&f=1&nofb=1" /></a>
+        <div style="width: 100%;">
+            <div class="d-inline-flex">
+                <a href="#">@commentaire.Utilisateur.UserName</a>&nbsp;
+                <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
+            </div>
+            <p class="d-block">
+                @commentaire.Texte
+            </p>
+            @if (User.Identity.IsAuthenticated)
+            {
+            <button class="d-block" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
+            <div class="reponse-editor collapse" id="collapseEditor-@commentaire.Id">
+                <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id'));"></textarea>
+                <div id="submit-btn-@commentaire.Id">
+                    <div class="d-flex justify-content-end">
+                        <button id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
+                        <button form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)">Envoyer</button>
+                    </div>
+                </div>
+            </div>
+            }
+            @if (commentaire.CommentairesEnfant.Any())
+            {
+                <span class="toggle-response" id="comments-@commentaire.Id" onclick="toggleResponse(@commentaire.Id, @commentaire.CommentairesEnfant.Count)">
+                    Afficher les @commentaire.CommentairesEnfant.Count réponses
+                </span>
+                <div class="collapse" id="collapseResponse-@commentaire.Id">
+                    @foreach (var commentaireEnfant in commentaire.CommentairesEnfant)
+                    {
+                        <div class="reponse d-block">
+                            <div class="d-inline-flex">
+                                <a href="#"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FrFZ2w6Uspic%2Fhqdefault.jpg&f=1&nofb=1" /></a>
+                                <div>
+                                    <div class="d-inline-flex">
+                                        <a href="#">@commentaireEnfant.Utilisateur.UserName</a>&nbsp;
+                                        <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
+                                    </div>
+                                    <p class="d-block">
+                                        @commentaireEnfant.Texte
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+    }
+}
+else
+{
+    <p>
+        Aucun commentaires
+    </p>
+}

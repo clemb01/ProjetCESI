@@ -1,8 +1,107 @@
 ﻿@using ProjetCESI.Web.Models
 @model RessourceViewModel
 
-@Html.DisplayFor(c => c.Ressource.Titre)
+@{
+    ViewData["Title"] = Model.Ressource.Titre;
+}
+
+<div>
+    <div class="ressource-header justify-content-between">
+        <h3 class="title">@Model.Ressource.Titre</h3>
+        <div class="ressource-button">
+            <span class="favoris"><img id="favoris" src="~/images/003-star.svg" style="width: 32px;"/></span>
+            <span class="cote"><img id="cote" src="~/images/001-clock.svg" style="width: 32px;" /></span>
+            <span class="exploite"><img id="exploite" src="~/images/002-check.svg" style="width: 32px;" /></span>
+        </div>
+    </div>
+    <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Ressource.Categorie.Nom)</span>
+    <span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.Ressource.TypeRessource.Nom)</span>
+    @foreach (var relation in Model.Ressource.TypeRelationsRessources)
+    {
+        <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.TypeRelation.Nom)</span>
+    }
+</div>
+
 
 <div>
     @Html.Raw(Model.Ressource.Contenu)
 </div>
+
+<div class="comment-section">
+    <h2>Commentaires</h2>
+    <div id="response-editor">
+        @if (User.Identity.IsAuthenticated)
+        {
+        <form id="ajout-commentaire">
+            <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
+        </form>
+        }
+        <div class="collapse" id="submit-btn">
+            <div class="d-flex justify-content-end">
+                <button id="annuler-commentaire">Annuler</button>
+                <button form="ajout-commentaire">Envoyer</button>
+            </div>
+        </div>
+    </div>
+    <div id="list-commentaire">        
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/lib/autosize/dist/autosize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        document.getElementById("favoris").addEventListener("mouseover", mouseHover(this));
+        getComments();
+        autosize(document.querySelector('.commentaire-editor'));
+        $('.commentaire-editor').focusin(function () {
+            $('#submit-btn').collapse('toggle');
+        });
+        $('#annuler-commentaire').click(function () {
+            resetEditor(document.querySelector('.commentaire-editor'));
+            $('#submit-btn').collapse('toggle');
+        });
+        @if(User.Identity.IsAuthenticated)
+        {
+        <text>
+        $('#ajout-commentaire').submit(function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: "/Commentaire/AjouterCommentaire",
+                method: "POST",
+                data: {
+                    contenu: $('#Contenu').val(),
+                    utilisateurId: @Model.Utilisateur.Id,
+                    ressourceId: @Model.Ressource.Id,
+                }
+            })
+            .done(function (result) {
+                resetEditor(document.querySelector('.commentaire-editor'));
+                $('#submit-btn').collapse('toggle');
+                document.getElementById("list-commentaire").innerHTML = result;
+            });
+        });
+        </text>
+        }
+
+    });
+
+    function mouseHover(item) {
+        console.log(item.src);
+    }
+
+    function getComments() {
+        $.ajax({
+            url: "/Commentaire/GetCommentaires",
+            method: "GET",
+            data: {
+                ressourceId: @Model.Ressource.Id,
+            }
+        })
+            .done(function (result) {
+                document.getElementById("list-commentaire").innerHTML = result;
+            });
+    }
+</script>
+}
