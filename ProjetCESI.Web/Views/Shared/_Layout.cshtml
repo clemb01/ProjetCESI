@@ -47,7 +47,7 @@
                         @if (User.IsInRole("Admin"))
                         { 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                                <a class="nav-link text-dark" href="/Statistiques">Statistiques</a>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated)

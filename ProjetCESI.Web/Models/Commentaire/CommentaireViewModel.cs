@@ -15,7 +15,7 @@ namespace ProjetCESI.Web.Models
         public int RessourceId { get; set; }
         public Commentaire CommentaireParent { get; set; }
         public int? CommentaireParentId { get; set; }
-        public List<CommentaireViewModel> CommentairesEnfant { get; set; }
+        public List<Commentaire> CommentairesEnfant { get; set; }
     }
 
     public class CommentairesViewModel : BaseViewModel
