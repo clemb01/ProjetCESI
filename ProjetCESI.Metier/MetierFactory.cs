@@ -8,9 +8,11 @@ namespace ProjetCESI.Metier
 {
     public class MetierFactory
     {
-        public MetierFactory()
-        {
+        private int? _userId;
 
+        public MetierFactory(int? _userId)
+        {
+            this._userId = _userId;
         }
 
         private T GetMetier<T>(IMetierBase __metierBase) where T : class, new()
@@ -20,7 +22,7 @@ namespace ProjetCESI.Metier
 
             if (metierBase != null)
             {
-                // Rien pour l'instant
+                metierBase.UserId = _userId;
             }
 
             return metier;

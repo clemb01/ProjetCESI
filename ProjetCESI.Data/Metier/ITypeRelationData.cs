@@ -1,6 +1,8 @@
-﻿namespace ProjetCESI.Data
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Data
 {
-    public interface ITypeRelationData
+    public interface ITypeRelationData : IData<TypeRelation>
     {
     }
 }

@@ -12,8 +12,22 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Data
 {
-    public class Repository<T> where T : class, IGetPrimaryKey
+    public interface IRepository
     {
+        int? UserId { get; set; }
+    }
+
+    abstract public class Repository<T> : IData<T>, IRepository where T : class, IGetPrimaryKey
+    {
+        public U CreateNewDataClass<U>() where U : IRepository, new()
+        {
+            U newDataClasse = new U();
+
+            newDataClasse.UserId = this.UserId;
+
+            return newDataClasse;
+        }
+
         private int? _userId;
 
         public int? UserId
@@ -76,7 +90,7 @@ namespace ProjetCESI.Data
 
             return true;
         }
-        virtual public async Task<bool> InsertOrUpdate(T __coreElement, bool __forceUsageFrontale = false)
+        virtual public async Task<bool> InsertOrUpdate(T __coreElement)
         {
             try
             {

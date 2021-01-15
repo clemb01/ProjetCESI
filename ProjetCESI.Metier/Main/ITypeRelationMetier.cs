@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
 {
-    public interface ITypeRelationMetier
+    public interface ITypeRelationMetier : IMetier<TypeRelation>
     {
-        Task<IEnumerable<TypeRelation>> GetAll();
     }
 }

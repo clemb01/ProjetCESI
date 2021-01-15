@@ -50,7 +50,7 @@ namespace ProjetCESI.Web.Controllers
 
             await MetierFactory.CreateTypeRelationRessourceMetier().AjouterRelationsToRessource(model.SelectedTypeRelation, ressource.Id);
 
-            return View("Visualisation", model);
+            return View("Create", model);
         }
     }
 }

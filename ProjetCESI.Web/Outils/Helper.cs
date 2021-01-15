@@ -13,7 +13,7 @@ namespace ProjetCESI.Web.Outils
         public static async Task Seed(UserManager<User> userManager,
             RoleManager<ApplicationRole> roleManager)
         {
-            var metierFactory = new MetierFactory();
+            var metierFactory = new MetierFactory(null);
             await ((ApplicationRoleMetier)metierFactory.CreateApplicationRoleMetier()).GetAll(); // Permet d'initialiser les données
             await ((CategorieMetier)metierFactory.CreateCategorieMetier()).GetAll(); // Permet d'initialiser les données
             await ((TypeRelationMetier)metierFactory.CreateTypeRelationMetier()).GetAll(); // Permet d'initialiser les données

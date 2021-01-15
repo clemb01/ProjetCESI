@@ -2,4 +2,7 @@
 @model RessourceViewModel
 
 @Html.DisplayFor(c => c.Ressource.Titre)
-@Html.DisplayFor(c => c.Ressource.Contenu)
+
+<div>
+    @Html.Raw(Model.Ressource.Contenu)
+</div>
