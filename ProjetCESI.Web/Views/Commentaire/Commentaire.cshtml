@@ -13,21 +13,32 @@
                 <a href="#">@commentaire.Utilisateur.UserName</a>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
-            <p class="d-block">
-                @commentaire.Texte
-            </p>
+            @{
+                var comms = commentaire.Texte.Split("\\n");
+            }
+            @foreach (var comm in comms)
+            {
+                @if (!string.IsNullOrEmpty(comm))
+                {
+                    <span class="d-block">@comm</span>
+                }
+                else
+                {
+                    <span class="d-block">&nbsp;</span>
+                }
+            }
             @if (User.Identity.IsAuthenticated)
             {
-            <button class="d-block" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
-            <div class="reponse-editor collapse" id="collapseEditor-@commentaire.Id">
-                <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onkeyup="updateSubmitButton(@commentaire.Id)" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id'));"></textarea>
-                <div id="submit-btn-@commentaire.Id">
-                    <div class="d-flex justify-content-end">
-                        <button id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
-                        <button id="response-submit-@commentaire.Id" form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)" disabled>Envoyer</button>
+                <button class="d-block" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
+                <div class="reponse-editor collapse" id="collapseEditor-@commentaire.Id">
+                    <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onkeyup="updateSubmitButton(@commentaire.Id)" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id'));"></textarea>
+                    <div id="submit-btn-@commentaire.Id">
+                        <div class="d-flex justify-content-end">
+                            <button id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
+                            <button id="response-submit-@commentaire.Id" form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)" disabled>Envoyer</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             }
             @if (commentaire.CommentairesEnfant.Any())
             {
@@ -45,9 +56,21 @@
                                         <a href="#">@commentaireEnfant.Utilisateur.UserName</a>&nbsp;
                                         <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
                                     </div>
-                                    <p class="d-block">
-                                        @commentaireEnfant.Texte
-                                    </p>
+                                    @{
+                                        comms = commentaireEnfant.Texte.Split("\\n");
+                                    }
+
+                                    @foreach (var comm in comms)
+                                    {
+                                        @if (!string.IsNullOrEmpty(comm))
+                                        {
+                                            <span class="d-block">@comm</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="d-block">&nbsp;</span>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>

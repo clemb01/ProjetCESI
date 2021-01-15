@@ -19,7 +19,7 @@ namespace ProjetCESI.Web.Controllers
                 DateCreation = date,
                 DateModification = date,
                 RessourceId = ressourceId,
-                Texte = contenu,
+                Texte = contenu.Replace("\n", "\\n"),
                 UtilisateurId = utilisateurId
             };
 
@@ -41,7 +41,7 @@ namespace ProjetCESI.Web.Controllers
                 DateCreation = date,
                 DateModification = date,
                 RessourceId = ressourceId,
-                Texte = contenu,
+                Texte = contenu.Replace("\n", "\\n"),
                 UtilisateurId = utilisateurId,
                 CommentaireParentId = commentaireParentId
             };
