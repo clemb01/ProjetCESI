@@ -40,5 +40,17 @@ function submitReponseForm(commentId, ressourceId, userId) {
     })
         .done(function (result) {
             document.getElementById("list-commentaire").innerHTML = result;
+            document.getElementById('envoyer-btn').disabled = true;
         });
+}
+
+function updateSubmitButton(commentId) {
+    let value = $('#response-editor-' + commentId).val();
+
+    if (value == '') {
+        document.getElementById('response-submit-' + commentId).disabled = true;
+    }
+    else {
+        document.getElementById('response-submit-' + commentId).disabled = false;
+    }
 }

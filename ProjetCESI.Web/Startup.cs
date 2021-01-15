@@ -103,6 +103,11 @@ namespace ProjetCESI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "Statistiques",
+                    pattern: "Statistiques",
+                    defaults: new { area = "", controller = "Statistiques", action = "Statistiques" });
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Accueil}/{action=Accueil}/{id?}");
             });

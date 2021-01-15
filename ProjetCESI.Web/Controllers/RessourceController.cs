@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,30 +10,123 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+
 
 namespace ProjetCESI.Web.Controllers
 {
+    [Authorize]
     public class RessourceController : BaseController
     {
         [HttpGet]
+        [AllowAnonymous]
         [Route("Ressource/{id}")]
-        public async Task<IActionResult> Ressource(int id = 0)
+        public async Task<IActionResult> Ressource(int id)
         {
             var model = PrepareModel<RessourceViewModel>();
 
-            model.Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(id);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
 
-            if(model.Ressource.TypeRessourceId == (int)TypeRessources.PDF)
+            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+
+            model.RessourceId = id;
+            model.Titre = ressource.Titre;
+            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
+            model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.Categorie = ressource.Categorie;
+            model.Commentaires = ressource.Commentaires;
+            model.DateCreation = ressource.DateCreation;
+            model.DateModification = ressource.DateModification;
+            model.Contenu = ressource.Contenu;
+            model.EstValide = ressource.EstValide;
+            model.NombreConsultation = ++ressource.NombreConsultation;
+
+            if(User.Identity.IsAuthenticated)
             {
-                string embed = "<object data=\"{0}\" type=\"application/pdf\" width=\"100%\" height=\"650px\">";
-                embed += "Si vous ne pouvez pas visualiez le fichier, vous pouvez le télécharger <a href = \"{0}\">ici</a>";
-                embed += " ou vous pouvez télécharger <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> pour visualiser le PDF.";
-                embed += "</object>";
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
 
-                model.Ressource.Contenu = string.Format(embed, @"/uploads/attestation.pdf");
+                model.EstExploite = utilisateurRessource.EstExploite;
+                model.EstFavoris = utilisateurRessource.EstFavoris;
+                model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
             }
 
+            ressource.TypeRelationsRessources = null;
+            ressource.TypeRessource = null;
+            ressource.Categorie = null;
+            ressource.Commentaires = null;
+            ressource.UtilisateurCreateur = null;
+            ressource.UtilisateurRessources = null;
+
+            await ressourceMetier.InsertOrUpdate(ressource);
+
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AjouterFavoris(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SupprimerFavoris(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MettreDeCote(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeMettreDeCote(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EstExploite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasExploite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPost]
