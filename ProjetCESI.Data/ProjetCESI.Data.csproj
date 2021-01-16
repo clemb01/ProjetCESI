@@ -40,4 +40,8 @@
     <ProjectReference Include="..\ProjetCESI.Core\ProjetCESI.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjetCESI.Data.Migrations
 {
-    public partial class MigrationInitiale : Migration
+    public partial class NouvelleMigrationInitialeCestToutCasse : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace ProjetCESI.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomCategorie = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,7 +67,7 @@ namespace ProjetCESI.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomRelation = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,7 +80,7 @@ namespace ProjetCESI.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomRessource = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,6 +194,29 @@ namespace ProjetCESI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Statistiques",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Controller = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Parametre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateRecherche = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UtilisateurId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Statistiques", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Statistiques_AspNetUsers_UtilisateurId",
+                        column: x => x.UtilisateurId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ressources",
                 columns: table => new
                 {
@@ -203,11 +226,11 @@ namespace ProjetCESI.Data.Migrations
                     DateModification = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Titre = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Contenu = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UtilisateurCreateurId = table.Column<int>(type: "int", nullable: false),
                     EstValide = table.Column<bool>(type: "bit", nullable: false),
+                    NombreConsultation = table.Column<int>(type: "int", nullable: false),
+                    UtilisateurCreateurId = table.Column<int>(type: "int", nullable: true),
                     TypeRessourceId = table.Column<int>(type: "int", nullable: false),
-                    CategorieId = table.Column<int>(type: "int", nullable: false),
-                    NombreConsultation = table.Column<int>(type: "int", nullable: false)
+                    CategorieId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,6 +239,18 @@ namespace ProjetCESI.Data.Migrations
                         name: "FK_Ressources_AspNetUsers_UtilisateurCreateurId",
                         column: x => x.UtilisateurCreateurId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Ressources_Categories_CategorieId",
+                        column: x => x.CategorieId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ressources_TypeRessources_TypeRessourceId",
+                        column: x => x.TypeRessourceId,
+                        principalTable: "TypeRessources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -229,7 +264,7 @@ namespace ProjetCESI.Data.Migrations
                     DateCreation = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DateModification = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Texte = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UtilisateurId = table.Column<int>(type: "int", nullable: false),
+                    UtilisateurId = table.Column<int>(type: "int", nullable: true),
                     RessourceId = table.Column<int>(type: "int", nullable: false),
                     CommentaireParentId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -241,7 +276,7 @@ namespace ProjetCESI.Data.Migrations
                         column: x => x.UtilisateurId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Commentaires_Commentaires_CommentaireParentId",
                         column: x => x.CommentaireParentId,
@@ -251,7 +286,8 @@ namespace ProjetCESI.Data.Migrations
                         name: "FK_Commentaires_Ressources_RessourceId",
                         column: x => x.RessourceId,
                         principalTable: "Ressources",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,12 +306,14 @@ namespace ProjetCESI.Data.Migrations
                         name: "FK_TypeRelationRessources_Ressources_RessourceId",
                         column: x => x.RessourceId,
                         principalTable: "Ressources",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TypeRelationRessources_TypeRelations_TypeRelationId",
                         column: x => x.TypeRelationId,
                         principalTable: "TypeRelations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,7 +341,8 @@ namespace ProjetCESI.Data.Migrations
                         name: "FK_UtilisateurRessources_Ressources_RessourceId",
                         column: x => x.RessourceId,
                         principalTable: "Ressources",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -361,9 +400,24 @@ namespace ProjetCESI.Data.Migrations
                 column: "UtilisateurId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ressources_CategorieId",
+                table: "Ressources",
+                column: "CategorieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ressources_TypeRessourceId",
+                table: "Ressources",
+                column: "TypeRessourceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ressources_UtilisateurCreateurId",
                 table: "Ressources",
                 column: "UtilisateurCreateurId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Statistiques_UtilisateurId",
+                table: "Statistiques",
+                column: "UtilisateurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypeRelationRessources_RessourceId",
@@ -404,16 +458,13 @@ namespace ProjetCESI.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "Commentaires");
 
             migrationBuilder.DropTable(
-                name: "TypeRelationRessources");
+                name: "Statistiques");
 
             migrationBuilder.DropTable(
-                name: "TypeRessources");
+                name: "TypeRelationRessources");
 
             migrationBuilder.DropTable(
                 name: "UtilisateurRessources");
@@ -429,6 +480,12 @@ namespace ProjetCESI.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "TypeRessources");
         }
     }
 }

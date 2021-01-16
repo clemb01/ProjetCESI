@@ -41,11 +41,15 @@ namespace ProjetCESI.Data.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UtilisateurRessource>().HasOne(c => c.Ressource).WithMany(c => c.UtilisateurRessources).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Commentaire>().HasOne(c => c.Ressource).WithMany(c => c.Commentaires).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<TypeRelationRessource>().HasOne(c => c.Ressource).WithMany(c => c.TypeRelationsRessources).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<User>().HasMany(c => c.Commentaires).WithOne(c => c.Utilisateur).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<User>().HasMany(c => c.RessourcesCree).WithOne(c => c.UtilisateurCreateur).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<User>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Utilisateur).OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Ressource>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Ressource>().HasMany(c => c.Commentaires).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Ressource>().HasMany(c => c.TypeRelationsRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(builder);
         }
