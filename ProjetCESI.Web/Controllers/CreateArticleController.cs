@@ -65,7 +65,17 @@ namespace ProjetCESI.Web.Controllers
             }
             else if(model.SelectedTypeRessources == (int)TypeRessources.Video)
             {
-                ressource.Contenu = model.urlVideo.Substring(32, 11);
+                if(model.urlVideo.Contains("youtube") == true)
+                {
+                    ressource.Contenu = "https://www.youtube.com/embed/" + model.urlVideo.Substring(model.urlVideo.IndexOf("v=") + 2, 11) + " ? rel = 0";
+                }
+                else if(model.urlVideo.Contains("dailymotion") == true)
+                {
+                    ressource.Contenu = "https://www.dailymotion.com/embed/video/" + model.urlVideo.Substring(model.urlVideo.IndexOf("video/") + 6, 7);
+                }
+                
+
+
             }
             else
             {
