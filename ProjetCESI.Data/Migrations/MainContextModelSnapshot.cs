@@ -186,7 +186,7 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<string>("Texte")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UtilisateurId")
+                    b.Property<int?>("UtilisateurId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -231,7 +231,7 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<int>("TypeRessourceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UtilisateurCreateurId")
+                    b.Property<int?>("UtilisateurCreateurId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -480,7 +480,7 @@ namespace ProjetCESI.Data.Migrations
                     b.HasOne("ProjetCESI.Core.Commentaire", "CommentaireParent")
                         .WithMany("CommentairesEnfant")
                         .HasForeignKey("CommentaireParentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
                         .WithMany("Commentaires")
@@ -489,10 +489,9 @@ namespace ProjetCESI.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.User", "Utilisateur")
-                        .WithMany()
+                        .WithMany("Commentaires")
                         .HasForeignKey("UtilisateurId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("CommentaireParent");
 
@@ -516,10 +515,9 @@ namespace ProjetCESI.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.User", "UtilisateurCreateur")
-                        .WithMany()
+                        .WithMany("RessourcesCree")
                         .HasForeignKey("UtilisateurCreateurId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Categorie");
 
@@ -596,6 +594,10 @@ namespace ProjetCESI.Data.Migrations
 
             modelBuilder.Entity("ProjetCESI.Core.User", b =>
                 {
+                    b.Navigation("Commentaires");
+
+                    b.Navigation("RessourcesCree");
+
                     b.Navigation("UtilisateurRessources");
                 });
 #pragma warning restore 612, 618
