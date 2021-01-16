@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Newtonsoft;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ProjetCESI
 {
@@ -31,7 +34,7 @@ namespace ProjetCESI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MainContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Cn1")));
-            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = false)
+            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<MainContext>()
                 .AddDefaultTokenProviders();
 
@@ -55,7 +58,7 @@ namespace ProjetCESI
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
                 options.LoginPath = "/Account/login";
                 options.LogoutPath = "/Account/logOff";
                 options.SlidingExpiration = true;
@@ -75,7 +78,11 @@ namespace ProjetCESI
                 });
             });
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                o.JsonSerializerOptions.MaxDepth = 0;
+            })
                 .AddRazorRuntimeCompilation();
         }
 

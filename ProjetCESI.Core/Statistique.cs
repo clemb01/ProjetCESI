@@ -10,10 +10,13 @@ namespace ProjetCESI.Core
     public class Statistique : EntiteBase
     {
         [DataMember]
-        public string RechercheEffectue { get; set; }
+        public string Controller { get; set; }
 
         [DataMember]
-        public string ParametreRecherche { get; set; }
+        public string Action { get; set; }
+
+        [DataMember]
+        public string Parametre { get; set; }
 
         [DataMember]
         public DateTimeOffset DateRecherche { get; set; }
@@ -23,5 +26,12 @@ namespace ProjetCESI.Core
 
         [DataMember]
         public int? UtilisateurId { get; set; }
+    }
+
+    public enum TypeStat
+    {
+        Recherche,
+        Consultation,
+        CreationRessource
     }
 }

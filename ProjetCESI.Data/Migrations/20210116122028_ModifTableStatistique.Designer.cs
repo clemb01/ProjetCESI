@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetCESI.Data.Context;
 
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20210116122028_ModifTableStatistique")]
+    partial class ModifTableStatistique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -480,12 +482,12 @@ namespace ProjetCESI.Data.Migrations
                     b.HasOne("ProjetCESI.Core.Commentaire", "CommentaireParent")
                         .WithMany("CommentairesEnfant")
                         .HasForeignKey("CommentaireParentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
                         .WithMany("Commentaires")
                         .HasForeignKey("RessourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.User", "Utilisateur")
@@ -542,13 +544,13 @@ namespace ProjetCESI.Data.Migrations
                     b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
                         .WithMany("TypeRelationsRessources")
                         .HasForeignKey("RessourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.TypeRelation", "TypeRelation")
                         .WithMany("TypeRelationsRessource")
                         .HasForeignKey("TypeRelationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Ressource");
@@ -561,7 +563,7 @@ namespace ProjetCESI.Data.Migrations
                     b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
                         .WithMany("UtilisateurRessources")
                         .HasForeignKey("RessourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.User", "Utilisateur")

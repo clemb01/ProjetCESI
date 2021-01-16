@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Core;
@@ -13,17 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Web.Controllers
+namespace ProjetCESI.Web.Area
 {
-    public class BaseController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BaseController : ControllerBase
     {
-
         private MetierFactory _metierFactory;
-        protected MetierFactory MetierFactory 
-        { 
+        protected MetierFactory MetierFactory
+        {
             get
             {
-                if(_metierFactory == null)
+                if (_metierFactory == null)
                 {
                     _metierFactory = new MetierFactory(UserId);
                 }
@@ -33,7 +34,7 @@ namespace ProjetCESI.Web.Controllers
         }
 
         private int _userId;
-        public int UserId 
+        public int UserId
         {
             get
             {
@@ -64,21 +65,6 @@ namespace ProjetCESI.Web.Controllers
             }
         }
 
-        private List<string> _utilisateurRoles;
-        public List<string> UtilisateurRoles 
-        { 
-            get
-            {
-                if(_utilisateur != null)
-                {
-                    _utilisateurRoles = UserManager.GetRolesAsync(Utilisateur).Result.ToList();
-                }
-
-                return _utilisateurRoles;
-            }
-        }
-
-
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IAuthenticationService _authenticationService;
@@ -96,7 +82,7 @@ namespace ProjetCESI.Web.Controllers
             _signInManager = signInManager;
         }
 
-    public UserManager<User> UserManager
+        public UserManager<User> UserManager
         {
             get
             {
@@ -106,7 +92,6 @@ namespace ProjetCESI.Web.Controllers
                 return _userManager;
             }
         }
-
         public SignInManager<User> SignInManager
         {
             get
@@ -176,11 +161,6 @@ namespace ProjetCESI.Web.Controllers
         public T PrepareModel<T>() where T : BaseViewModel, new()
         {
             return PrepareModel<T>(new T());
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            base.OnActionExecuting(context);
         }
     }
 }

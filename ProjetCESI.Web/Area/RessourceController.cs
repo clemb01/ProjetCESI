@@ -1,33 +1,28 @@
-﻿using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ProjetCESI.Web.Outils;
 
-namespace ProjetCESI.Web.Controllers
+namespace ProjetCESI.Web.Area
 {
-    [Authorize]
+    [ApiController]
     public class RessourceController : BaseController
     {
-        [HttpGet]
+        [HttpGet("{id}")]
         [AllowAnonymous]
         [StatistiqueFilter]
-        [Route("Ressource/{id}")]
-        public async Task<IActionResult> Ressource(int id)
+        public async Task<RessourceViewModel> Ressource(int id)
         {
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            
+
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
             model.RessourceId = id;
@@ -61,7 +56,7 @@ namespace ProjetCESI.Web.Controllers
 
             await ressourceMetier.InsertOrUpdate(ressource);
 
-            return View(model);
+            return model;
         }
 
         [HttpPost]

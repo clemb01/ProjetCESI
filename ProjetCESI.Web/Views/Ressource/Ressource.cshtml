@@ -7,11 +7,14 @@
 
 <div class="ressource-header justify-content-between">
     <h3 class="title">@Model.Titre</h3>
-    <div class="ressource-button">
-        <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
-        <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
-        <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
-    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="ressource-button">
+            <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
+            <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
+            <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+        </div>
+    }
 </div>
 <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
 <span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
@@ -119,10 +122,10 @@
             let url = '';
 
             if (!estMisDeCote) {
-                url = "/Ressource/MettreDeCote";
+                url = "/Ressource/AjouterMettreDeCote";
             }
             else {
-                url = "/Ressource/DeMettreDeCote";
+                url = "/Ressource/SupprimerMettreDeCote";
             }
 
             $.ajax({
@@ -150,10 +153,10 @@
             let url = '';
 
             if (!estExploite) {
-                url = "/Ressource/EstExploite";
+                url = "/Ressource/AjouterExploite";
             }
             else {
-                url = "/Ressource/PasExploite";
+                url = "/Ressource/SupprimerExploite";
             }
 
             $.ajax({
