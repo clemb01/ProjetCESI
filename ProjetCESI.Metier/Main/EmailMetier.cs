@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.IdentityModel.Protocols;
-using SendGrid;
+﻿using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier.Main
