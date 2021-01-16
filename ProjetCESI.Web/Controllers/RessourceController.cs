@@ -26,6 +26,39 @@ namespace ProjetCESI.Web.Controllers
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            
+            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+
+            model.RessourceId = id;
+            model.Titre = ressource.Titre;
+            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
+            model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.Categorie = ressource.Categorie;
+            model.Commentaires = ressource.Commentaires;
+            model.DateCreation = ressource.DateCreation;
+            model.DateModification = ressource.DateModification;
+            model.Contenu = ressource.Contenu;
+            model.EstValide = ressource.EstValide;
+            model.NombreConsultation = ++ressource.NombreConsultation;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
+
+                model.EstExploite = utilisateurRessource.EstExploite;
+                model.EstFavoris = utilisateurRessource.EstFavoris;
+                model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+            }
+
+            ressource.TypeRelationsRessources = null;
+            ressource.TypeRessource = null;
+            ressource.Categorie = null;
+            ressource.Commentaires = null;
+            ressource.UtilisateurCreateur = null;
+            ressource.UtilisateurRessources = null;
+
+            await ressourceMetier.InsertOrUpdate(ressource);
 
             return View(model);
         }
