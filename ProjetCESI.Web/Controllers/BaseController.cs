@@ -64,6 +64,21 @@ namespace ProjetCESI.Web.Controllers
             }
         }
 
+        private List<string> _utilisateurRoles;
+        public List<string> UtilisateurRoles 
+        { 
+            get
+            {
+                if(_utilisateur != null)
+                {
+                    _utilisateurRoles = UserManager.GetRolesAsync(Utilisateur).Result.ToList();
+                }
+
+                return _utilisateurRoles;
+            }
+        }
+
+
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IAuthenticationService _authenticationService;
