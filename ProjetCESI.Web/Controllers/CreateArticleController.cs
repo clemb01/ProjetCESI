@@ -73,9 +73,6 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ressource.Contenu = "https://www.dailymotion.com/embed/video/" + model.urlVideo.Substring(model.urlVideo.IndexOf("video/") + 6, 7);
                 }
-                
-
-
             }
             else
             {
