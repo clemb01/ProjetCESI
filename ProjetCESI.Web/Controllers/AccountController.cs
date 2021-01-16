@@ -29,15 +29,22 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            
             User user = await UserManager.FindByNameAsync(model.Email);
 
             if(user != null)
             {
                 var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
+                //var result = await UserManager.IsEmailConfirmedAsync(user);
 
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("Accueil", "Accueil");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid Login Attempt");
+                    return View(model);
                 }
             }
 
@@ -60,17 +67,34 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await UserManager.FindByEmailAsync(email);
+            if (user == null)
+                return View("Error");
+            var result = await UserManager.ConfirmEmailAsync(user, token);
+            return View(result.Succeeded ? nameof(ConfirmEmail) : "Error");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult SuccessRegistration()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Error()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.FirstName))
-            {
-                ModelState.AddModelError("EmptyPhone", "Le prénom est requis");
-            }
-            else if (string.IsNullOrWhiteSpace(model.LastName))
-            {
-                ModelState.AddModelError("EmptyPhone", "Le nom est requis");
-            }
 
             if (ModelState.IsValid)
             {
@@ -84,17 +108,19 @@ namespace ProjetCESI.Web.Controllers
 
                 result = await UserManager.CreateAsync(user, model.Password);
 
-                if(result.Succeeded)
-                {
-                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
-                }
-
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, true);
-
-                    return Redirect("/Accueil/Accueil");
+                    var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+                    await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Aucun));
+                    return RedirectToAction("SuccessRegistration");
                 }
+
+            }
+            else
+            {
+                return View(model);
             }
 
             return View(model);

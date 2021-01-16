@@ -194,3 +194,26 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.Espace-form
+{
+    margin: 1%;
+}
+.field-validation-error {
+    color: #f00;
+}
+
+.validation-summary-errors {
+    color: #f00;
+    font-weight: bold
+}
+
+;
+.input-validation-error {
+    border: 2px solid #f00;
+    background-color: #fee
+}
+
+input[type="checkbox"].input-validation-error {
+    outline: 2px solid #f00;
+}

@@ -34,7 +34,7 @@ namespace ProjetCESI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MainContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Cn1")));
-            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = false)
+            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<MainContext>()
                 .AddDefaultTokenProviders();
 
