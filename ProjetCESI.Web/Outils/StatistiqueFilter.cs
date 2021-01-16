@@ -3,8 +3,10 @@ using ProjetCESI.Core;
 using ProjetCESI.Metier;
 using ProjetCESI.Web.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,21 +21,6 @@ namespace ProjetCESI.Web.Outils
             {
                 DateRecherche = DateTimeOffset.Now
             };
-
-            if(context.ActionArguments.ContainsKey("model"))
-            {
-                var model = (RechercheRessourceViewModel)context.ActionArguments["model"];
-
-                if (model != null)
-                {
-                    stat.RechercheEffectue = model.Recherche;
-                    stat.ParametreRecherche = GenerateParametreRecherche(model);
-                }
-            }
-            else
-            {
-                stat.RechercheEffectue = context.ActionArguments.ContainsKey("recherche") ? (string)context.ActionArguments["recherche"] : string.Empty;
-            }
 
             MetierFactory metier = null;
 
@@ -59,55 +46,78 @@ namespace ProjetCESI.Web.Outils
                 stat.UtilisateurId = null;
             }
 
+            stat.Controller = context.ActionDescriptor.RouteValues["controller"];
+            stat.Action = context.ActionDescriptor.RouteValues["action"];
+
+            if (stat.Controller == "Consultation" && stat.Action == "Search")
+            {
+                if (context.ActionArguments.ContainsKey("model"))
+                {
+                    var model = (RechercheRessourceViewModel)context.ActionArguments["model"];
+
+                    if (model != null)
+                    {
+                        stat.Parametre = GenerateParametreRecherche(model);
+                    }
+                }
+                else
+                {
+                    stat.Parametre = context.ActionArguments.ContainsKey("recherche") ? (string)context.ActionArguments["recherche"] : string.Empty;
+                }
+            }
+            else if (stat.Controller == "Ressource" && stat.Action == "Ressource") 
+            {
+                stat.Parametre = $"ressourceId={(int)context.ActionArguments["id"]}";
+            }
+            else if (stat.Controller == "CreateArticle" && stat.Action == "Upload")
+            {
+                // TODO
+            }
+            else if (stat.Controller == "Ressource" && (stat.Action.Contains("Ajouter") || stat.Action.Contains("Supprimer")))
+            {
+                stat.Parametre = $"ressourceId={(int)context.ActionArguments["ressourceId"]}";
+            }
+
             metier.CreateStatistiqueMetier().InsertOrUpdate(stat).GetAwaiter().GetResult();
 
             base.OnActionExecuting(context);
         }
 
-        private string GenerateParametreRecherche(RechercheRessourceViewModel model)
+        private string GenerateParametreRecherche<T>(T model) where T : new()
         {
             string parametreRecherche = string.Empty;
 
-            if(model.SelectedCategories != null && model.SelectedCategories.Any())
+            var properties = typeof(T).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+            
+            foreach (var property in properties)
             {
-                parametreRecherche += "SelectedCategories=";
-
-                for (int i = 0; i < model.SelectedCategories.Count; i++)
+                if(property.GetValue(model) != null && (property.Name != "Ressources" && typeof(T) == typeof(RechercheRessourceViewModel)))
                 {
-                    parametreRecherche += model.SelectedCategories[i].ToString();
+                    if(parametreRecherche.Length > 0 && parametreRecherche.LastIndexOf('&') != parametreRecherche.Length)
+                    {
+                        parametreRecherche += "&";
+                    }
 
-                    if (i < model.SelectedCategories.Count - 1)
-                        parametreRecherche += "|";
-                }
+                    if(property.PropertyType != typeof(string) && typeof(ICollection).IsAssignableFrom(property.PropertyType))
+                    {
+                        parametreRecherche += $"{property.Name}=";
 
-                parametreRecherche += "&";
-            }
+                        var list = ((ICollection)property.GetValue(model));
+                        var e = list.GetEnumerator();
 
-            if (model.SelectedTypeRelation != null && model.SelectedTypeRelation.Any())
-            {
-                parametreRecherche += "SelectedTypeRelation=";
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            e.MoveNext();
+                            parametreRecherche += $"{e.Current}";
 
-                for (int i = 0; i < model.SelectedTypeRelation.Count; i++)
-                {
-                    parametreRecherche += model.SelectedTypeRelation[i].ToString();
-
-                    if (i < model.SelectedTypeRelation.Count - 1)
-                        parametreRecherche += "|";
-                }
-
-                parametreRecherche += "&";
-            }
-
-            if (model.SelectedTypeRessources != null && model.SelectedTypeRessources.Any())
-            {
-                parametreRecherche += "SelectedTypeRessources=";
-
-                for (int i = 0; i < model.SelectedTypeRessources.Count; i++)
-                {
-                    parametreRecherche += model.SelectedTypeRessources[i].ToString();
-
-                    if (i < model.SelectedTypeRessources.Count - 1)
-                        parametreRecherche += "|";
+                            if (i < list.Count - 1)
+                                parametreRecherche += "|";
+                        }
+                    }
+                    else
+                    {
+                        parametreRecherche += $"{property.Name}={property.GetValue(model)}";
+                    }
                 }
             }
 

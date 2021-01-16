@@ -11,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-
+using ProjetCESI.Web.Outils;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -20,6 +20,7 @@ namespace ProjetCESI.Web.Controllers
     {
         [HttpGet]
         [AllowAnonymous]
+        [StatistiqueFilter]
         [Route("Ressource/{id}")]
         public async Task<IActionResult> Ressource(int id)
         {
@@ -64,6 +65,7 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
+        [StatistiqueFilter]
         public async Task<IActionResult> AjouterFavoris(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
@@ -75,6 +77,7 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
+        [StatistiqueFilter]
         public async Task<IActionResult> SupprimerFavoris(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
@@ -86,7 +89,8 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MettreDeCote(int ressourceId)
+        [StatistiqueFilter]
+        public async Task<IActionResult> AjouterMettreDeCote(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
 
@@ -97,7 +101,8 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeMettreDeCote(int ressourceId)
+        [StatistiqueFilter]
+        public async Task<IActionResult> SupprimerMettreDeCote(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
 
@@ -108,7 +113,8 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EstExploite(int ressourceId)
+        [StatistiqueFilter]
+        public async Task<IActionResult> AjouterExploite(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
 
@@ -119,7 +125,8 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PasExploite(int ressourceId)
+        [StatistiqueFilter]
+        public async Task<IActionResult> SupprimerExploite(int ressourceId)
         {
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
 
@@ -127,34 +134,6 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status200OK);
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadTest(IFormFile file)
-        {
-            var uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
-            bool exists = Directory.Exists(uploads);
-            if (!exists)
-                Directory.CreateDirectory(uploads);
-
-            var fileName = Path.GetFileName(file.FileName);
-            string mimeType = file.ContentType;
-
-            byte[] fileData = null;
-            using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
-            {
-                fileData = new byte[file.Length];
-                file.OpenReadStream().Read(fileData, 0, (int)file.Length);
-                fileStream.Write(fileData);
-                fileStream.Close();
-            }
-
-            BlobClient objBlobService = new BlobClient(Configuration.GetConnectionString("BlobStorage"), "stockage", fileName);
-
-            var test = await objBlobService.UploadAsync(Path.Combine(uploads, file.FileName));
-
-            return RedirectToAction("Accueil", "Accueil");
         }
     }
 }
