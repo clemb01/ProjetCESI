@@ -50,6 +50,7 @@
                         @*@Html.ActionLink("Modifier Rôle", "UpdateRole", new { id = item.Utilisateur.Id})*@
                         @Html.ActionLink("Ban", "BanTempo", new { id = item.Utilisateur.Id })
                         @Html.ActionLink("Anonymiser", "AnonymeUser", new { id = item.Utilisateur.Id })
+                        @Html.ActionLink("Rôles", "UpdateRole", new { id = item.Utilisateur.Id })
                     </strong>
                 </td>
             </tr>

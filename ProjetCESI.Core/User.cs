@@ -16,6 +16,7 @@ namespace ProjetCESI.Core
         }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
+
     }
 
     public enum TypeUtilisateur

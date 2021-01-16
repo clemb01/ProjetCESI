@@ -101,5 +101,41 @@ namespace ProjetCESI.Web.Controllers
             return RedirectToAction("UserList");
         }
 
+        public async Task<IActionResult> UpdateRole(string id)
+        {
+            if (id != null)
+            {
+                var user = await UserManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var model = new UserViewModel();
+                    model.Utilisateur = user;
+                    await UserManager.GetRolesAsync(user);
+
+                    return View(model);
+                }
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateRole(string id, int roleid)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var model = new UserViewModel();
+                model.Utilisateur = user;
+                var result = await UserManager.RemoveFromRolesAsync(user, await UserManager.GetRolesAsync(user));
+                var result1 = await UserManager.AddToRoleAsync(user, Enum.GetName((TypeUtilisateur)roleid));
+
+                return View(model);
+            }
+            return View(null);
+        }
+        
+
+
+
     }
 }
