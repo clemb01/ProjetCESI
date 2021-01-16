@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>true</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
