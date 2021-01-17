@@ -23,7 +23,7 @@ namespace ProjetCESI.Web.Controllers
             else if (model.NomVue == "miscote")
                 model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesMiseDeCote(UserId)).ToList();
 
-            else if (model.NomVue == "creee")
+            else if (model.NomVue == "crees")
                 model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesCreees(UserId)).ToList();
 
             else

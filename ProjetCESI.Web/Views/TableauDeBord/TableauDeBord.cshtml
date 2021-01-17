@@ -16,8 +16,8 @@
         <li class="list-group-item @(Model.NomVue == "miscote" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=miscote">Ressources mises de côté</a>
         </li>
-        <li class="list-group-item @(Model.NomVue == "creee" ? "active" : "")">
-            <a class="nav-link" href="/TableauDeBord?nomVue=creee">Ressource créées</a>
+        <li class="list-group-item @(Model.NomVue == "crees" ? "active" : "")">
+            <a class="nav-link" href="/TableauDeBord?nomVue=crees">Ressource créées</a>
         </li>
     </ul>
 </div>
@@ -31,12 +31,13 @@
                 <th scope="col">Catégorie</th>
                 <th scope="col">Type de relation</th>
                 <th scope="col">Type de ressources</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var ressource in Model.Ressources)
             {
-                <tr>
+                <tr id="ressource-id-@ressource.Id">
                     <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
                     <td><span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span></td>
                     <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span></td>
@@ -44,6 +45,24 @@
                         @foreach (var relation in ressource.TypeRelationsRessources)
                         {
                             <span class="badge badge-pill badge-success text-center">@relation.TypeRelation.Nom</span>
+                        }
+                    </td>
+                    <td>
+                        @if (Model.NomVue == "favoris")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
+                        }
+                        else if (Model.NomVue == "exploitee")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
+                        }
+                        else if (Model.NomVue == "miscote")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
+                        }
+                        else if (Model.NomVue == "crees")
+                        {
+                            <a href="#">Editer la ressource</a>
                         }
                     </td>
                 </tr>
@@ -66,9 +85,35 @@ else
     {
         <text>Aucune ressources n'est marquées comme mise de côté</text>
     }
-    else if (Model.NomVue == "creee")
+    else if (Model.NomVue == "crees")
     {
-        <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreationArticle">ici</a></text>
+        <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreateArticle/Create">ici</a></text>
     }
 </h1>
+}
+
+@section Scripts {
+<script type="text/javascript">
+    function removeFrom(ressourceId, what) {
+        let url = '';
+
+        if(what == "favoris")
+            url = '/Ressource/SupprimerFavoris';
+        else if (what == "exploitee")
+            url = '/Ressource/SupprimerExploite';
+        else if (what == "miscote")
+            url = '/Ressource/SupprimerMettreDeCote';
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                ressourceId: ressourceId
+            }
+        })
+            .done(function () {
+                document.getElementById('ressource-id-' + ressourceId).remove();
+            });
+    }
+</script>
 }
