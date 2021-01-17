@@ -37,8 +37,15 @@ namespace ProjetCESI.Web.Controllers
 
             if(user != null)
             {
+                var CheckEmail = await UserManager.IsEmailConfirmedAsync(user);
+
+                if (!CheckEmail)
+                {
+                    ModelState.AddModelError("", "Veuillez vérifier votre boite mail pour valider votre Email.");
+                    return View(model);
+                }
+
                 var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
-                //var result = await UserManager.IsEmailConfirmedAsync(user);
 
                 if (result.Succeeded)
                 {
@@ -46,7 +53,7 @@ namespace ProjetCESI.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid Login Attempt");
+                    ModelState.AddModelError("", "Identifiant ou mot de passe invalide");
                     return View(model);
                 }
             }
