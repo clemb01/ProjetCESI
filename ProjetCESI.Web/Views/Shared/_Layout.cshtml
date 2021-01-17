@@ -59,8 +59,11 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Création et partage</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="CreateArticle" asp-action="Create">Création et partage</a>
                             </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="/TableauDeBord?nomVue=favoris">Tableau de bord</a>
                             </li>

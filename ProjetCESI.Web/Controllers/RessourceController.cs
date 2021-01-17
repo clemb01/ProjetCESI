@@ -27,7 +27,7 @@ namespace ProjetCESI.Web.Controllers
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-
+            
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
             model.RessourceId = id;
@@ -43,7 +43,7 @@ namespace ProjetCESI.Web.Controllers
             model.EstValide = ressource.EstValide;
             model.NombreConsultation = ++ressource.NombreConsultation;
 
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
 
