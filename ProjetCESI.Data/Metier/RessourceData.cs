@@ -51,6 +51,82 @@ namespace ProjetCESI.Data
             }
         }
 
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId))
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId))
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.UtilisateurCreateurId == _userId)
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId))
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
+
         public async Task<IEnumerable<Ressource>> GetAllPaginedLastRessource(int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())

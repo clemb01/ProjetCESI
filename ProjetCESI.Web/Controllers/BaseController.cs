@@ -37,14 +37,14 @@ namespace ProjetCESI.Web.Controllers
         {
             get
             {
-                if (_userId != default(int))
+                if (_userId == default(int))
                 {
                     string id = UserManager.GetUserId(User);
 
-                    return int.Parse(id);
+                    _userId = int.Parse(id);
                 }
-                else
-                    return _userId;
+
+                return _userId;
             }
         }
 
@@ -57,10 +57,10 @@ namespace ProjetCESI.Web.Controllers
                 {
                     User user = UserManager.GetUserAsync(User).Result;
 
-                    return user;
+                    _utilisateur = user;
                 }
-                else
-                    return _utilisateur;
+
+                return _utilisateur;
             }
         }
 

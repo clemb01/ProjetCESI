@@ -10,11 +10,26 @@ namespace ProjetCESI.Web.Controllers
     public class TableauDeBordController : BaseController
     {
         [Route("TableauDeBord")]
-        public IActionResult TableauDeBord(TableauDeBordViewModel model)
+        public async Task<IActionResult> TableauDeBord(TableauDeBordViewModel model)
         {
             PrepareModel(model);
 
-            return View();
+            if (model.NomVue == "favoris")
+                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserFavoriteRessources(UserId)).ToList();
+
+            else if (model.NomVue == "exploitee")
+                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesExploitee(UserId)).ToList();
+
+            else if (model.NomVue == "miscote")
+                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesMiseDeCote(UserId)).ToList();
+
+            else if (model.NomVue == "creee")
+                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesCreees(UserId)).ToList();
+
+            else
+                return RedirectToAction("Accueil", "Accueil");
+
+            return View(model);
         }
     }
 }

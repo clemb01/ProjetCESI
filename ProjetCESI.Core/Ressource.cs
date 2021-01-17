@@ -50,6 +50,10 @@ namespace ProjetCESI.Core
         [Display(Name = "De A à Z")]
         Titre,
         [Display(Name = "De Z à A")]
-        TitreDesc
+        TitreDesc,
+        [Display(Name = "Les moins consultés")]
+        NombreConsultation,
+        [Display(Name = "Les plus consultés")]
+        NombreConsultationDesc
     }
 }
