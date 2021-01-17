@@ -11,6 +11,7 @@
     {
     <div>
         <div asp-validation-summary="ModelOnly"></div>
+        <span id="ResetTokenEmail"></span>
     </div>
     <div class="login-form__input Espace-form">
         @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
