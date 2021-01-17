@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,11 @@ namespace ProjetCESI.Web.Controllers
 {
     public class TableauDeBordController : BaseController
     {
-        public IActionResult Index()
+        [Route("TableauDeBord")]
+        public IActionResult TableauDeBord(TableauDeBordViewModel model)
         {
+            PrepareModel(model);
+
             return View();
         }
     }

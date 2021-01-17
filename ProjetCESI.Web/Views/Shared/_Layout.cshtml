@@ -15,30 +15,31 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Accueil" asp-action="Accueil">
                     <img src="~/images/Icone.png" width="150" height="150" alt="" loading="lazy">
                 </a>
-                <form asp-action="Search" asp-controller="Consultation" method="get">
-                    <div>
-                        <div class="input-append">
-                            <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
-                            <div id='button-holder'>
-                                <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
                 <ul class="nav navbar-nav navbar-right slices">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item">
-                        <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+                    <li id="connect-btn" class="nav-item align-self-end">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <h4 class="d-lg-inline align-middle">@User.Identity.Name</h4>
+                            <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
+                        }
                         </li>
-                    }
-                    else
-                    {
                         <li class="nav-item">
-                        <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
+                            <form asp-action="Search" asp-controller="Consultation" method="get">
+                                <div>
+                                    <div class="input-append">
+                                        <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
+                                        <div id='button-holder'>
+                                            <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </li>
-                    }
-                </ul>
+                    </ul>
             </div>
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
@@ -61,8 +62,15 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Création et partage</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                                <a class="nav-link text-dark" href="/TableauDeBord?nomVue=favoris">Tableau de bord</a>
                             </li>
+
+                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                                </li>
+                            }
                         }
                         @if (User.Identity.IsAuthenticated)
                         {
