@@ -9,15 +9,20 @@
 <div>
     @using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
     {
-        <div class="login-form__input">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre identifiant" })
-            <i class="fa fa-user inputIcon"></i>
-        </div>
-        <div class="login-form__input">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
-            <i class="fa fa-unlock-alt inputIcon"></i>
-        </div>
-        <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit">
+    <div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+    <div class="login-form__input Espace-form">
+        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
+        @Html.ValidationMessageFor(m => m.Username)
+        <i class="fa fa-user inputIcon"></i>
+    </div>
+    <div class="login-form__input Espace-form">
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
+        @Html.ValidationMessageFor(m => m.Password)
+        <i class="fa fa-unlock-alt inputIcon"></i>
+    </div>
+        <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit">
             <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
             <span class="text--center">Se connecter</span>
         </button>

@@ -29,8 +29,11 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            
-            User user = await UserManager.FindByNameAsync(model.Email);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            User user = await UserManager.FindByNameAsync(model.Username);
 
             if(user != null)
             {
@@ -47,8 +50,13 @@ namespace ProjetCESI.Web.Controllers
                     return View(model);
                 }
             }
+            else
+            {
+                ModelState.AddModelError("", "Veuillez créer un compte avant de vous connecter");
+                return View(model);
+            }
 
-            return View(model);
+            //return View(model);
         }
 
         public async Task<IActionResult> LogOff()
