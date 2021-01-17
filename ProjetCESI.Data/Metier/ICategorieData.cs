@@ -2,8 +2,7 @@
 
 namespace ProjetCESI.Data
 {
-    public interface ICategorieData
+    public interface ICategorieData : IData<Categorie>
     {
-
     }
 }

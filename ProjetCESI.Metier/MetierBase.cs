@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
 {
-    public class MetierBase<T, TData>
+    public class MetierBase<T, TData> : IMetier<T>, IMetierBase
         where T : class, IGetPrimaryKey
         where TData : Repository<T>, new()
     {
@@ -30,7 +30,7 @@ namespace ProjetCESI.Metier
             get
             {
                 if (_metierFactory == null)
-                    _metierFactory = new MetierFactory();
+                    _metierFactory = new MetierFactory(this.UserId);
 
                 return _metierFactory;
             }

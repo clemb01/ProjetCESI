@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Newtonsoft;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace ProjetCESI
 {
@@ -31,7 +34,7 @@ namespace ProjetCESI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MainContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Cn1")));
-            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = false)
+            services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<MainContext>()
                 .AddDefaultTokenProviders();
 
@@ -43,6 +46,7 @@ namespace ProjetCESI
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
+                options.SignIn.RequireConfirmedEmail = true;
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
             });
@@ -55,7 +59,7 @@ namespace ProjetCESI
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
                 options.LoginPath = "/Account/login";
                 options.LogoutPath = "/Account/logOff";
                 options.SlidingExpiration = true;
@@ -75,7 +79,11 @@ namespace ProjetCESI
                 });
             });
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                o.JsonSerializerOptions.MaxDepth = 0;
+            })
                 .AddRazorRuntimeCompilation();
         }
 
@@ -102,6 +110,11 @@ namespace ProjetCESI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "Statistiques",
+                    pattern: "Statistiques",
+                    defaults: new { area = "", controller = "Statistiques", action = "Statistiques" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Accueil}/{action=Accueil}/{id?}");

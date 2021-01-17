@@ -1,6 +1,109 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+#menu-tableau-bord .active {
+    background-color: grey;
+    color: white;
+    font-weight: bold;
+}
+
+#connect-btn {
+    margin-top: 0.5em;
+}
+
+#connect-btn a {
+    margin-left: 0.5em;
+}
+
+.content {
+    margin: 1em 0em 0.5em 0em;
+}
+
+.reponse-editor {
+    margin-top: 0.5em;
+}
+
+.commentaire .toggle-response {
+    cursor: pointer;
+    color: dodgerblue;
+    font-weight: bold;
+}
+
+.commentaire-editor {
+    width: 100%;
+    overflow: hidden;
+    resize: none;
+}
+
+#response-editor {
+    margin-bottom: 1.5em;
+}
+
+.commentaire img {
+    margin-right: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+}
+
+.commentaire .reponse img {
+    margin-right: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+.commentaire .reponse {
+    padding-top: 1em;
+}
+
+.commentaire p {
+    margin-bottom: 0.1em;
+}
+
+.commentaire {
+    margin-bottom: 0.5em;
+}
+
+.ressource-header {
+    display: flex;
+}
+
+.ressource-header .title {
+    width: 75%;
+}
+
+.ressource-header span {
+    cursor: pointer;
+}
+
+#recherche-avancee label {
+    margin-bottom: initial;
+}
+
+.breadcrumb {
+    background-color: initial;
+    padding: initial;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+}
+
+.breadcrumb-item + .active {
+    color: black;
+    font-weight: bold;
+}
+
+#ressource-card * {
+    color: black;
+}
+
+#ressource-card:hover * {
+    color: black;
+    text-decoration: none;
+}
+
 #search-text-input {
     border-top: thin solid #e5e5e5;
     border-right: thin solid #e5e5e5;
@@ -24,11 +127,12 @@ for details on configuring this project to bundle and minify static web assets. 
     height: 27px;
     margin: 11px 0 0 0;
     text-align: center;
-    width: 25px;
+    width: auto;
 }
 
 #button-holder button {
-    padding: 0;
+    padding: initial;
+    width: 2em;
 }
 
 #button-holder img {
@@ -103,4 +207,27 @@ body {
   width: 100%;
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
+}
+
+.Espace-form
+{
+    margin: 1%;
+}
+.field-validation-error {
+    color: #f00;
+}
+
+.validation-summary-errors {
+    color: #f00;
+    font-weight: bold
+}
+
+;
+.input-validation-error {
+    border: 2px solid #f00;
+    background-color: #fee
+}
+
+input[type="checkbox"].input-validation-error {
+    outline: 2px solid #f00;
 }

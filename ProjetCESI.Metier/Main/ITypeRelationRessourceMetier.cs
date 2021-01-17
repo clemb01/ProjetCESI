@@ -1,6 +1,8 @@
-﻿namespace ProjetCESI.Metier
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Metier
 {
-    public interface ITypeRelationRessourceMetier
+    public interface ITypeRelationRessourceMetier : IMetier<TypeRelationRessource>
     {
     }
 }

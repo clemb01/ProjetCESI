@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjetCESI</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -14,16 +15,31 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Accueil" asp-action="Accueil">
                     <img src="~/images/Icone.png" width="150" height="150" alt="" loading="lazy">
                 </a>
-                <form action="#" method="get">
-                    <div>
-                        <div class="input-append">
-                            <input type='text' placeholder='Rechercher...' id='search-text-input' />
-                            <div id='button-holder'>
-                                <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                <ul class="nav navbar-nav navbar-right slices">
+                    <li id="connect-btn" class="nav-item align-self-end">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <h4 class="d-lg-inline align-middle">@User.Identity.Name</h4>
+                            <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
+                        }
+                        </li>
+                        <li class="nav-item">
+                            <form asp-action="Search" asp-controller="Consultation" method="get">
+                                <div>
+                                    <div class="input-append">
+                                        <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
+                                        <div id='button-holder'>
+                                            <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
             </div>
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
@@ -38,20 +54,29 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Consultation</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Consultation" asp-action="Consultation">Consultation</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Accueil">Création et partage</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                                <a class="nav-link text-dark" href="/TableauDeBord?nomVue=favoris">Tableau de bord</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserList">Liste utilisateur</a>
-                            </li>
+
+                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Accueil" asp-action="Privacy">Statistiques</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserList">Liste utilisateur</a>
+                                </li>
+                            }
                         }
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
@@ -85,6 +110,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/chosen/dist/js/chosen.jquery.js"></script>
+    <script src="~/lib/chosen/dist/js/init.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

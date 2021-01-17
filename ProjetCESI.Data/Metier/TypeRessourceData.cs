@@ -13,14 +13,14 @@ namespace ProjetCESI.Data.Metier
         {
             List<TypeRessource> listeRessource = new List<TypeRessource>();
 
-            listeRessource.Add(new TypeRessource { NomRessource = "Activité / Jeu à réaliser" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Article" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Carte défi" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Cours au format PDF" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Exercice / Atelier" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Fiche de lecture" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Jeu en ligne" });
-            listeRessource.Add(new TypeRessource { NomRessource = "Vidéo" });
+            listeRessource.Add(new TypeRessource { Nom = "Activité / Jeu à réaliser" });
+            listeRessource.Add(new TypeRessource { Nom = "Article" });
+            listeRessource.Add(new TypeRessource { Nom = "Carte défi" });
+            listeRessource.Add(new TypeRessource { Nom = "Cours au format PDF" });
+            listeRessource.Add(new TypeRessource { Nom = "Exercice / Atelier" });
+            listeRessource.Add(new TypeRessource { Nom = "Fiche de lecture" });
+            listeRessource.Add(new TypeRessource { Nom = "Jeu en ligne" });
+            listeRessource.Add(new TypeRessource { Nom = "Vidéo" });
 
             await InsertOrUpdate(listeRessource);
 

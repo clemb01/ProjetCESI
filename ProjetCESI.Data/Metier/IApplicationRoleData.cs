@@ -1,6 +1,8 @@
-﻿namespace ProjetCESI.Data
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Data
 {
-    public interface IApplicationRoleData
+    public interface IApplicationRoleData : IData<ApplicationRole>
     {
     }
 }

@@ -10,8 +10,18 @@ namespace ProjetCESI.Core
     public class TypeRelation : EntiteBase
     {
         [DataMember]
-        public string NomRelation { get; set; }
+        public string Nom { get; set; }
 
         public List<TypeRelationRessource> TypeRelationsRessource { get; set; }
+    }
+
+    public enum TypeRelations
+    {
+        Soi = 1,
+        Conjoints,
+        Famille,
+        Professionnelle,
+        Amis,
+        Inconnus
     }
 }

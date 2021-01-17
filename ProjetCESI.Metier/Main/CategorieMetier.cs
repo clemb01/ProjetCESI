@@ -10,6 +10,5 @@ namespace ProjetCESI.Metier
 {
     public class CategorieMetier : MetierBase<Categorie, CategorieData>, ICategorieMetier
     {
-        
     }
 }

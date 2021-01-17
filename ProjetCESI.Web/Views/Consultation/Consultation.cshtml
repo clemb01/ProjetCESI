@@ -1,0 +1,21 @@
+﻿@using ProjetCESI.Web.Models
+@model ConsultationViewModel
+
+@{ 
+    ViewData["Title"] = "Consultation";
+}
+
+<form asp-action="Consultation" asp-controller="Consultation" method="get" id="tri">
+    <input id="TypeTri" name="tri" hidden/>
+</form>
+
+@await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
+
+@section Scripts{
+    <script type="text/javascript">
+        function selectionChange(selection) {
+            document.getElementById('TypeTri').setAttribute('value', selection.value);
+            $('#tri').submit();
+        }
+    </script>
+}

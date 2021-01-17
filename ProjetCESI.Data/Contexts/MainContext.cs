@@ -41,11 +41,15 @@ namespace ProjetCESI.Data.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Ressource>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Ressource>().HasMany(c => c.Commentaires).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Ressource>().HasMany(c => c.TypeRelationsRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<TypeRelation>().HasMany(c => c.TypeRelationsRessource).WithOne(c => c.TypeRelation).OnDelete(DeleteBehavior.NoAction);
-            builder.Entity<Commentaire>().HasMany(c => c.CommentairesEnfant).WithOne(c => c.CommentaireParent).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<User>().HasMany(c => c.Commentaires).WithOne(c => c.Utilisateur).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<User>().HasMany(c => c.RessourcesCree).WithOne(c => c.UtilisateurCreateur).OnDelete(DeleteBehavior.SetNull);
+            builder.Entity<User>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Utilisateur).OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Ressource>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Ressource>().HasMany(c => c.Commentaires).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Ressource>().HasMany(c => c.TypeRelationsRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(builder);
         }
@@ -57,5 +61,6 @@ namespace ProjetCESI.Data.Context
         public DbSet<TypeRelation> TypeRelations { get; set; }
         public DbSet<TypeRessource> TypeRessources { get; set; }
         public DbSet<Categorie> Categories { get; set; }
+        public DbSet<Statistique> Statistiques { get; set; }
     }
 }

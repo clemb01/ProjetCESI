@@ -1,0 +1,223 @@
+﻿@using ProjetCESI.Web.Models
+@model RessourceViewModel
+
+@{
+    ViewData["Title"] = Model.Titre;
+}
+
+<div class="ressource-header justify-content-between">
+    <h3 class="title">@Model.Titre</h3>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="ressource-button">
+            <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
+            <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
+            <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+        </div>
+    }
+</div>
+<span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
+<span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
+@foreach (var relation in Model.TypeRelations)
+{
+    <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
+}
+
+<div class="content">
+    @if (Model.TypeRessource.Id != (int)ProjetCESI.Core.TypeRessources.Video)
+    {
+        @Html.Raw(Model.Contenu)
+    }
+    else
+    {
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="@Model.Contenu" allowfullscreen></iframe>
+        </div>
+    }
+</div>
+
+<div class="comment-section">
+    <h2>Commentaires</h2>
+    <div id="response-editor">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form id="ajout-commentaire">
+                <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
+            </form>
+        }
+        <div class="collapse" id="submit-btn">
+            <div class="d-flex justify-content-end">
+                <button id="annuler-commentaire">Annuler</button>
+                <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
+            </div>
+        </div>
+    </div>
+    <div id="list-commentaire">
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/autosize/dist/autosize.min.js"></script>
+    <script>
+    let estFavoris = @Model.EstFavoris.ToString().ToLower();
+    let estMisDeCote = @Model.EstMisDeCote.ToString().ToLower();
+    let estExploite = @Model.EstExploite.ToString().ToLower();
+
+    $(document).ready(function () {
+        getComments();
+        autosize(document.querySelector('.commentaire-editor'));
+
+        $('.commentaire-editor').focusin(function () {
+            $('#submit-btn').collapse('toggle');
+        });
+
+        $('#annuler-commentaire').click(function () {
+            resetEditor(document.querySelector('.commentaire-editor'));
+            $('#submit-btn').collapse('toggle');
+        });
+
+        $('.commentaire-editor').keyup(function () {
+            let value = $(this).val();
+
+            if (value == '') {
+                document.getElementById('envoyer-btn').disabled = true;
+            }
+            else {
+                document.getElementById('envoyer-btn').disabled = false;
+            }
+        });
+
+        $('#favoris').click(function () {
+            let url = '';
+
+            if (!estFavoris) {
+                url = "/Ressource/AjouterFavoris";
+            }
+            else {
+                url = "/Ressource/SupprimerFavoris";
+            }
+
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+                .done(function () {
+                    if (estFavoris) {
+                        document.getElementById('favoris').src = "/images/003-star.svg";
+                        document.getElementById('favoris').title = "Ajouter aux favoris";
+                        estFavoris = false;
+                    }
+                    else {
+                        document.getElementById('favoris').src = "/images/004-star-1.svg";
+                        document.getElementById('favoris').title = "Supprimer des favoris";
+                        estFavoris = true;
+                    }
+            });
+        });
+
+        $('#cote').click(function () {
+            let url = '';
+
+            if (!estMisDeCote) {
+                url = "/Ressource/AjouterMettreDeCote";
+            }
+            else {
+                url = "/Ressource/SupprimerMettreDeCote";
+            }
+
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+                .done(function () {
+                    if (estMisDeCote) {
+                        document.getElementById('cote').src = "/images/photo-camera.svg";
+                        document.getElementById('cote').title = "Mettre de côté";
+                        estMisDeCote = false;
+                    }
+                    else {
+                        document.getElementById('cote').src = "/images/001-clock.svg";
+                        document.getElementById('cote').title = "Supprimer des ressources mise de côté";
+                        estMisDeCote = true;
+                    }
+            });
+        });
+
+        $('#exploite').click(function () {
+            let url = '';
+
+            if (!estExploite) {
+                url = "/Ressource/AjouterExploite";
+            }
+            else {
+                url = "/Ressource/SupprimerExploite";
+            }
+
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+                .done(function () {
+                    if (estExploite) {
+                        document.getElementById('exploite').src = "/images/remove.svg";
+                        document.getElementById('exploite').title = "Indiquer comme exploitée";
+                        estExploite = false;
+                    }
+                    else {
+                        document.getElementById('exploite').src = "/images/002-check.svg";
+                        document.getElementById('exploite').title = "Supprimer des ressources exploitées";
+                        estExploite = true;
+                    }
+            });
+        });
+
+        @if(User.Identity.IsAuthenticated)
+        {
+        <text>
+        $('#ajout-commentaire').submit(function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: "/Commentaire/AjouterCommentaire",
+                method: "POST",
+                data: {
+                    contenu: $('#Contenu').val(),
+                    utilisateurId: @Model.Utilisateur.Id,
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+            .done(function (result) {
+                resetEditor(document.querySelector('.commentaire-editor'));
+                $('#submit-btn').collapse('toggle');
+                document.getElementById("list-commentaire").innerHTML = result;
+                document.getElementById('envoyer-btn').disabled = true;
+            });
+        });
+        </text>
+        }
+
+    });
+
+    function getComments() {
+        $.ajax({
+            url: "/Commentaire/GetCommentaires",
+            method: "GET",
+            data: {
+                ressourceId: @Model.RessourceId,
+            }
+        })
+            .done(function (result) {
+                document.getElementById("list-commentaire").innerHTML = result;
+            });
+    }
+    </script>
+}

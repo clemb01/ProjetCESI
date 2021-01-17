@@ -16,13 +16,14 @@ namespace ProjetCESI.Core
         }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
-
+        public List<Commentaire> Commentaires { get; set; }
+        public List<Ressource> RessourcesCree { get; set; }
     }
 
     public enum TypeUtilisateur
     {
         [EnumMember]
-        Aucun,
+        Aucun = 1,
         [EnumMember]
         Citoyen,
         [EnumMember]

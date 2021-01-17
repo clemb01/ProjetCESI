@@ -14,12 +14,12 @@ namespace ProjetCESI.Data
         {
             List<TypeRelation> listeRelation = new List<TypeRelation>();
 
-            listeRelation.Add(new TypeRelation { NomRelation = "Soi" });
-            listeRelation.Add(new TypeRelation { NomRelation = "Conjoints" });
-            listeRelation.Add(new TypeRelation { NomRelation = "Famille : enfants / parent / fratrie" });
-            listeRelation.Add(new TypeRelation { NomRelation = "Professionnelle : collègues, collaborateur et managers" });
-            listeRelation.Add(new TypeRelation { NomRelation = "Amis et communautés" });
-            listeRelation.Add(new TypeRelation { NomRelation = "Inconnus" });
+            listeRelation.Add(new TypeRelation { Nom = "Soi" });
+            listeRelation.Add(new TypeRelation { Nom = "Conjoints" });
+            listeRelation.Add(new TypeRelation { Nom = "Famille : enfants / parent / fratrie" });
+            listeRelation.Add(new TypeRelation { Nom = "Professionnelle : collègues, collaborateur et managers" });
+            listeRelation.Add(new TypeRelation { Nom = "Amis et communautés" });
+            listeRelation.Add(new TypeRelation { Nom = "Inconnus" });
 
             await InsertOrUpdate(listeRelation);
 

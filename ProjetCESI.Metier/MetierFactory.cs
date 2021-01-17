@@ -9,9 +9,11 @@ namespace ProjetCESI.Metier
 {
     public class MetierFactory
     {
-        public MetierFactory()
-        {
+        private int? _userId;
 
+        public MetierFactory(int? _userId)
+        {
+            this._userId = _userId;
         }
 
         private T GetMetier<T>(IMetierBase __metierBase) where T : class, new()
@@ -21,7 +23,7 @@ namespace ProjetCESI.Metier
 
             if (metierBase != null)
             {
-                // Rien pour l'instant
+                metierBase.UserId = _userId;
             }
 
             return metier;
@@ -35,6 +37,9 @@ namespace ProjetCESI.Metier
         public ITypeRelationRessourceMetier CreateTypeRelationRessourceMetier(IMetierBase metierBase = null) => GetMetier<TypeRelationRessourceMetier>(metierBase);
         public ITypeRessourceMetier CreateTypeRessourceMetier(IMetierBase metierBase = null) => GetMetier<TypeRessourceMetier>(metierBase);
         public IUtilisateurRessourceMetier CreateUtilisateurRessourceMetier(IMetierBase metierBase = null) => GetMetier<UtilisateurRessourceMetier>(metierBase);
+        public IEmailMetier EmailMetier(IMetierBase metierBase = null) => GetMetier<EmailMetier>(metierBase);
+
+        public IStatistiqueMetier CreateStatistiqueMetier(IMetierBase metierBase = null) => GetMetier<StatistiqueMetier>(metierBase);
 
         public IAdminMetier CreateUtilisateurMetier(IMetierBase metierBase = null) => GetMetier<AdminMetier>(metierBase);
     }

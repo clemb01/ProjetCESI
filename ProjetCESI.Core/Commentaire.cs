@@ -20,7 +20,7 @@ namespace ProjetCESI.Core
         [DataMember]
         public User Utilisateur { get; set; }
         [DataMember]
-        public int UtilisateurId { get; set; }
+        public int? UtilisateurId { get; set; }
         [DataMember]
         public Ressource Ressource { get; set; }
         [DataMember]

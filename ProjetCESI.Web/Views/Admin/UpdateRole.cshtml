@@ -22,7 +22,20 @@
 
         <div class="form-group">
             <div class="col-md-10">
-                <select name="roleid" asp-items="Html.GetEnumSelectList<UserViewModel.TypeUtilisateur>()">
+                <select name="roleid">
+                    @foreach (var item in ViewBag.Roles)
+                    {
+                        if (Model.Role == item.Text)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+
+                            <option value="@item.Value">@item.Text</option>
+                        }
+
+                    }
                 </select>
                 <span asp-validation-for="Utilisateur" class="text-danger"></span>
             </div>

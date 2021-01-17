@@ -24,5 +24,7 @@ namespace ProjetCESI.Web.Models
             [EnumMember]
             SuperAdmin
         }
+
+        public string Role { get; set; }
     }
 }

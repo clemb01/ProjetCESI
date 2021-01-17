@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
 using ProjetCESI.Metier.Main;
 using ProjetCESI.Web.Models;
@@ -110,8 +111,8 @@ namespace ProjetCESI.Web.Controllers
                 {
                     var model = new UserViewModel();
                     model.Utilisateur = user;
-                    await UserManager.GetRolesAsync(user);
-
+                    model.Role = (await UserManager.GetRolesAsync(user)).FirstOrDefault();
+                    ViewBag.Roles = new SelectList(await MetierFactory.CreateApplicationRoleMetier().GetAll(), "Id", "Name");
                     return View(model);
                 }
             }
@@ -128,6 +129,8 @@ namespace ProjetCESI.Web.Controllers
                 model.Utilisateur = user;
                 var result = await UserManager.RemoveFromRolesAsync(user, await UserManager.GetRolesAsync(user));
                 var result1 = await UserManager.AddToRoleAsync(user, Enum.GetName((TypeUtilisateur)roleid));
+                model.Role = (await UserManager.GetRolesAsync(user)).FirstOrDefault();
+                ViewBag.Roles = new SelectList(await MetierFactory.CreateApplicationRoleMetier().GetAll(), "Id", "Name");
 
                 return View(model);
             }

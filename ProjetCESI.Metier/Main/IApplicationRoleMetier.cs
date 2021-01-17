@@ -1,6 +1,9 @@
-﻿namespace ProjetCESI.Metier
+﻿using ProjetCESI.Core;
+
+namespace ProjetCESI.Metier
 {
-    public interface IApplicationRoleMetier
+    public interface IApplicationRoleMetier : IMetier<ApplicationRole>
     {
+
     }
 }

@@ -1,6 +1,10 @@
-﻿namespace ProjetCESI.Metier
+﻿using ProjetCESI.Core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ProjetCESI.Metier
 {
-    public interface ITypeRelationMetier
+    public interface ITypeRelationMetier : IMetier<TypeRelation>
     {
     }
 }

@@ -1,9 +1,10 @@
 ﻿using ProjetCESI.Core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
 {
-    public interface ICategorieMetier
+    public interface ICategorieMetier : IMetier<Categorie>
     {
-        
     }
 }
