@@ -27,5 +27,12 @@ namespace ProjetCESI.Metier
         public async Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesExploitee(_userId, _tri, _pagination, _pageOffset);
 
         public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesCreees(_userId, _tri, _pagination, _pageOffset);
+
+        public async Task SaveRessource(Ressource ressource)
+        {
+            await DataClass.InsertOrUpdate(ressource);
+        }
+
+        
     }
 }

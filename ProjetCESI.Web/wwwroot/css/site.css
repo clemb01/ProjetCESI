@@ -246,3 +246,23 @@ body {
 input[type="checkbox"].input-validation-error {
     outline: 2px solid #f00;
 }
+
+#btnValideArticle {
+    position : center;
+}
+
+#TitreArticle {
+    border: 3px solid #555;
+    width: 50%;
+}
+
+#urlVideo {
+    border: 3px solid #555;
+    width: 100%;
+}
+
+#desciptionVideo {
+    border: 3px solid #555;
+    width: 100%;
+}
+
