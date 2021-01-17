@@ -169,6 +169,9 @@ namespace ProjetCESI.Web.Controllers
             model.Area = Request.RouteValues["Area"] != null ? Request.RouteValues["Area"].ToString() : "";
             model.Utilisateur = Utilisateur;
 
+            if(UtilisateurRoles != null)
+                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (int)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()) : (int)TypeUtilisateur.Aucun;
+
             return model;
         }
 
