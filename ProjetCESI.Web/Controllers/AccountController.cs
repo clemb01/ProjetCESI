@@ -42,6 +42,8 @@ namespace ProjetCESI.Web.Controllers
                 if (!CheckEmail)
                 {
                     ModelState.AddModelError("", "Veuillez vérifier votre boite mail pour valider votre Email.");
+                    ViewBag.RenvoieMail = $"<p>Vous n'avez pas reçu le mail ? <a href='/Account/RenvoyerEmailConfirm?Username={model.Username}' >Renvoyer le mail</a></p>";
+                    //@Html.ActionLink("Renvoyer le mail", "RenvoyerEmailConfirm", routeValues: new { Username = Model.Username })
                     return View(model);
                 }
 
@@ -86,6 +88,17 @@ namespace ProjetCESI.Web.Controllers
             RegisterViewModel model = new RegisterViewModel();
 
             return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> RenvoyerEmailConfirm(string Username)
+        {
+            var user = await UserManager.FindByNameAsync(Username);
+            var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+            return View();
         }
 
         [AllowAnonymous]

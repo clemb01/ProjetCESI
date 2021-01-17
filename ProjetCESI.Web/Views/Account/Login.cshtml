@@ -12,7 +12,14 @@
     {
     <div>
         <div asp-validation-summary="ModelOnly"></div>
-        <span id="ResetTokenEmail"></span>
+        <span id="RenvoieMail">
+            @if (ViewBag.RenvoieMail != null)
+            {
+                @Html.Raw(ViewBag.RenvoieMail as string)
+            }
+        </span>
+            @*Vous n'avez pas reçu le mail ? @Html.ActionLink("Renvoyer le mail", "RenvoyerEmailConfirm", routeValues: new { Username = Model.Username })*@
+        
     </div>
     <div class="login-form__input Espace-form">
         @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
