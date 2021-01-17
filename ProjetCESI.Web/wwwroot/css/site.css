@@ -1,6 +1,20 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+#menu-tableau-bord .active {
+    background-color: grey;
+    color: white;
+    font-weight: bold;
+}
+
+#connect-btn {
+    margin-top: 0.5em;
+}
+
+#connect-btn a {
+    margin-left: 0.5em;
+}
+
 .content {
     margin: 1em 0em 0.5em 0em;
 }

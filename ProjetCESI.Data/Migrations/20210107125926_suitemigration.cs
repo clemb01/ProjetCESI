@@ -2,7 +2,7 @@
 
 namespace ProjetCESI.Data.Migrations
 {
-    public partial class SuppressionEnCascade : Migration
+    public partial class suitemigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

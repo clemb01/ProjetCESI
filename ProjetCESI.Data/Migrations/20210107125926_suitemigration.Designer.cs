@@ -10,8 +10,8 @@ using ProjetCESI.Data.Context;
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20210108140643_ModifNomTypeRelationcategorieTypeRessource")]
-    partial class ModifNomTypeRelationcategorieTypeRessource
+    [Migration("20210107125926_suitemigration")]
+    partial class suitemigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -158,7 +158,7 @@ namespace ProjetCESI.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("NomCategorie")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -238,10 +238,6 @@ namespace ProjetCESI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategorieId");
-
-                    b.HasIndex("TypeRessourceId");
-
                     b.HasIndex("UtilisateurCreateurId");
 
                     b.ToTable("Ressources");
@@ -254,7 +250,7 @@ namespace ProjetCESI.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("NomRelation")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -291,7 +287,7 @@ namespace ProjetCESI.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Nom")
+                    b.Property<string>("NomRessource")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -476,27 +472,11 @@ namespace ProjetCESI.Data.Migrations
 
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
-                    b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
-                        .WithMany()
-                        .HasForeignKey("CategorieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjetCESI.Core.TypeRessource", "TypeRessource")
-                        .WithMany()
-                        .HasForeignKey("TypeRessourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ProjetCESI.Core.User", "UtilisateurCreateur")
                         .WithMany()
                         .HasForeignKey("UtilisateurCreateurId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Categorie");
-
-                    b.Navigation("TypeRessource");
 
                     b.Navigation("UtilisateurCreateur");
                 });

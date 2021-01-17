@@ -1,0 +1,49 @@
+﻿@using ProjetCESI.Web.Models
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "UpdateRole";
+}
+
+
+<div class="jumbotron">
+    <h1>Mis à jour du rôle</h1>
+
+    <dl class="row">
+        <dd hidden class="col-sm-10">
+            @Html.DisplayFor(model => model.Utilisateur.Id)
+        </dd>
+        <dd class="col-sm-10">
+            <label><font size="5">Utilisateur sélectionné : <font size="5" color="red">@Html.DisplayFor(model => model.Utilisateur.UserName)</font></font></label>
+        </dd>
+    </dl>
+    <form method="post" asp-action="UpdateRole">
+        <input hidden type="text" value="@Model.Utilisateur.Id" name="Id" />
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <select name="roleid">
+                    @foreach (var item in ViewBag.Roles)
+                    {
+                        if (Model.Role == item.Text)
+                        {
+                            <option value="@item.Value" selected>@item.Text</option>
+                        }
+                        else
+                        {
+
+                            <option value="@item.Value">@item.Text</option>
+                        }
+
+                    }
+                </select>
+                <span asp-validation-for="Utilisateur" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <input type="submit" value="Modifier le role" class="btn btn-danger" />
+    </form>
+</div>
+
+
