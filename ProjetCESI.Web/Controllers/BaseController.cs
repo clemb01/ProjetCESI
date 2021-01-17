@@ -106,6 +106,7 @@ namespace ProjetCESI.Web.Controllers
                 return _userManager;
             }
         }
+
         public SignInManager<User> SignInManager
         {
             get
@@ -170,7 +171,7 @@ namespace ProjetCESI.Web.Controllers
             model.Utilisateur = Utilisateur;
 
             if(UtilisateurRoles != null)
-                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (int)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()) : (int)TypeUtilisateur.Aucun;
+                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (int)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()) : (int)TypeUtilisateur.Citoyen;
 
             return model;
         }

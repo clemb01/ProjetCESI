@@ -47,6 +47,13 @@ namespace ProjetCESI.Web.Controllers
 
                 var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
 
+                if (await UserManager.IsLockedOutAsync(user))
+                {
+                    ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
+                    return View();
+                    //return Content("Compte bloqué");
+                }
+
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Accueil", "Accueil");
@@ -128,7 +135,7 @@ namespace ProjetCESI.Web.Controllers
                     var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
                     await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
-                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Aucun));
+                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
                     return RedirectToAction("SuccessRegistration");
                 }
 
@@ -137,8 +144,48 @@ namespace ProjetCESI.Web.Controllers
             {
                 return View(model);
             }
-
             return View(model);
+        }
+
+        public async Task<IActionResult> ProfilUser()
+        {
+            var id = User.Claims.SingleOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
+            var user = await UserManager.FindByIdAsync(id);
+            if(user != null)
+            {
+                var model = new UserViewModel();
+                model.Utilisateur = user;
+
+                return View(model);
+            }
+            return View();
+
+        }
+
+        public async Task<IActionResult> ConfirmationAnonyme(string id)
+        {
+            if (id != null)
+            {
+                var user = await UserManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    var model = new UserViewModel();
+                    model.Utilisateur = user;
+
+                    return View(model);
+                }
+
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AnonymiseMyAccount(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
+            await SignInManager.SignOutAsync();
+            return Redirect("/Accueil/Accueil");
         }
     }
 }

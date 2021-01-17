@@ -19,5 +19,12 @@ namespace ProjetCESI.Metier
         public async Task<IEnumerable<Ressource>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, TypeTriBase _typeTri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllAdvancedSearchPaginedRessource(_search, _categories, _typeRelation, _typeRessource, _dateDebut, _dateFin, _typeTri, _pagination, _pageOffset);
 
         public async Task<IEnumerable<Ressource>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllSearchPaginedRessource(_search, _pagination, _pageOffset);
+
+        public async Task SaveRessource(Ressource ressource)
+        {
+            await DataClass.InsertOrUpdate(ressource);
+        }
+
+        
     }
 }
