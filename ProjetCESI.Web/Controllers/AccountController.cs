@@ -119,7 +119,7 @@ namespace ProjetCESI.Web.Controllers
                     var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
                     var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
                     await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
-                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Aucun));
+                    result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
                     return RedirectToAction("SuccessRegistration");
                 }
 

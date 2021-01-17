@@ -170,7 +170,7 @@ namespace ProjetCESI.Web.Controllers
             model.Utilisateur = Utilisateur;
 
             if(UtilisateurRoles != null)
-                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (int)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()) : (int)TypeUtilisateur.Aucun;
+                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (int)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()) : (int)TypeUtilisateur.Citoyen;
 
             return model;
         }
