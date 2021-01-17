@@ -23,9 +23,7 @@ namespace ProjetCESI.Core
     public enum TypeUtilisateur
     {
         [EnumMember]
-        Aucun = 1,
-        [EnumMember]
-        Citoyen,
+        Citoyen = 1,
         [EnumMember]
         Moderateur,
         [EnumMember]
