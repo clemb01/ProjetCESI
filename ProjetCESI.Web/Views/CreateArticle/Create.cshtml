@@ -5,87 +5,121 @@
     ViewData["Title"] = "Création de ressource";
 }
 
-<h1>Création d'un article</h1>
+<h2>Création d'un article</h2>
 
-@using (Html.BeginForm("Upload",
+@using (Html.BeginForm("Create",
                            "CreateArticle",
                            FormMethod.Post,
                            new { enctype = "multipart/form-data" }))
 {
     <div class="form-row">
         <div class="form-group col-md-4">
-            @*<strong>@Html.LabelFor(c => c.SelectedCategories, "Categories")</strong>*@
             <select data-placeholder="Sélectionnez une catégorie..." class="chosen-select form-control" name="SelectedCategories" tabindex="1">
-                <option value=""></option>
+                <option value="0"></option>
                 @foreach (var categorie in ViewBag.Categories)
                 {
-                    <option value="@categorie.Value">@categorie.Text</option>
+                    @if (Model.SelectedCategories == int.Parse(categorie.Value))
+                    {
+                        <option value="@categorie.Value" selected>@categorie.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@categorie.Value">@categorie.Text</option>
+                    }
                 }
             </select>
+            @Html.ValidationMessageFor(c => c.SelectedCategories, "", new { @style = "font-size: 14px;" })
         </div>
         <div class="form-group col-md-4">
-            @*<strong>@Html.LabelFor(c => c.SelectedTypeRessources, "Type de resssources")</strong>*@
             <select id="TypeRessource" data-placeholder="Sélectionnez un type de ressource..." class="chosen-select form-control" name="SelectedTypeRessources" tabindex="3" onchange="MajFormulaire()">
-                <option value=""></option>
-                @foreach (var TypeRessource in ViewBag.TypeRessources)
+                <option value="0"></option>
+                @foreach (var typeRessource in ViewBag.TypeRessources)
                 {
-                    <option value="@TypeRessource.Value">@TypeRessource.Text</option>
+                    @if (Model.SelectedTypeRessources == int.Parse(typeRessource.Value))
+                    {
+                        <option value="@typeRessource.Value" selected>@typeRessource.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@typeRessource.Value">@typeRessource.Text</option>
+                    }
                 }
             </select>
+            @Html.ValidationMessageFor(c => c.SelectedTypeRessources, "", new { @style = "font-size: 14px;" })
         </div>
         <div class="form-group col-md-4">
-            @*<strong>@Html.LabelFor(c => c.SelectedTypeRelation, "Type de relation")</strong>*@
             <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
                 <option value=""></option>
                 @foreach (var TypeRelation in ViewBag.TypeRelation)
                 {
-                    <option value="@TypeRelation.Value">@TypeRelation.Text</option>
+                    @if (Model.SelectedTypeRelation != null && Model.SelectedTypeRelation.Contains(int.Parse(TypeRelation.Value)))
+                    {
+                        <option value="@TypeRelation.Value" selected>@TypeRelation.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@TypeRelation.Value">@TypeRelation.Text</option>
+                    }
                 }
             </select>
+            @Html.ValidationMessageFor(c => c.SelectedTypeRelation, "", new { @style = "font-size: 14px;" })
         </div>
     </div>
 <br />
-<p>
-    Titre :
-    <input type="text" id="TitreArticle" name="Titre"/>
-</p>
+
+<div class="d-flex justify-content-between">
+    <p>
+        Titre :
+        <input type="text" id="TitreArticle" name="Titre" value="@Model.Titre" />
+        @Html.ValidationMessageFor(c => c.Titre, "", new { @style = "font-size: 14px;" })
+    </p>
+    <p>
+        Type de partage
+        <select data-placeholder="Sélectionnez un type de partage..." class="chosen-select form-control" name="SelectedTypePartage">
+            @foreach (var partage in Enum.GetNames(typeof(ProjetCESI.Core.TypePartage)))
+            {
+                <option value="@((int)Enum.Parse(typeof(ProjetCESI.Core.TypePartage), partage))">@partage</option>
+            }
+        </select>
+    </p>
+</div>
 
 <br />
 
-<div id="formulaire">
-    <textarea name="Contenu" id="editor"></textarea>
+<div id="formulaire" @(Model.SelectedTypeRessources != (int)ProjetCESI.Core.TypeRessources.PDF && Model.SelectedTypeRessources != (int)ProjetCESI.Core.TypeRessources.Video ? (Model.SelectedTypeRessources == 0 ? "hidden" : "") : "hidden")>
+    @Html.ValidationMessageFor(c => c.Contenu, "", new { @style = "font-size: 14px;" })
+    <textarea name="Contenu" id="editor">@Model.Contenu</textarea>
 </div>
-<div id="video" hidden>
+<div id="video" @(Model.SelectedTypeRessources == (int)ProjetCESI.Core.TypeRessources.Video ? "" : "hidden")>
     <p>
-        URL de la vidéo :
+        URL de la vidéo (Nous n'hébergons pas nous même les vidéos):
     </p>
-    <input type="url" id="urlVideo" name="urlVideo"/>
+    @Html.ValidationMessageFor(c => c.urlVideo)
+    <input type="url" id="urlVideo" name="urlVideo" value="@Model.urlVideo"/>
     <br />
     <br />
-    <p>Le site ne prend en compte que les vidéo vennants de Youtube et Dailymotion</p>
+    <p>Le site ne prend en compte que les vidéo venants de Youtube et Dailymotion</p>
 </div>
-<div id="pdf" hidden>
+<div id="pdf" @(Model.SelectedTypeRessources == (int)ProjetCESI.Core.TypeRessources.PDF ? "" : "hidden")>
     <h3>Selectionnez un fichier</h3>
     <label for="file">Upload Image:</label>
-    <input type="file" name="file" id="file" /><br><br>
+    <input type="file" name="File" id="file" accept=".pdf" value="@Model.File"/><br><br>
+    @Html.ValidationMessage("File")
     <br><br>
-    @ViewBag.Message
 </div>
 
 <br />
-<center><button type="submit" id="btnValiderArticle" hidden>Valider mon article</button></center>
+<center><button type="submit" id="btnValiderArticle">Valider mon article</button></center>
 }
 
-@section Scripts
-{
-    <script>
-
+@section Scripts {
+    <script src='~/lib/tinymce/tinymce.min.js'></script>
+    <script type="text/javascript">
         $(document).ready(function () {
             JoliEditeur();
         })
 
         function MajFormulaire() {
-
             var selectElmt = document.getElementById("TypeRessource");
             var valeurselectionnee = selectElmt.options[selectElmt.selectedIndex].value;
 
@@ -104,14 +138,7 @@
                 document.getElementById("video").setAttribute('hidden', 'hidden');
                 document.getElementById("pdf").setAttribute('hidden', 'hidden');
             }
-
-            if (valeurselectionnee != 0) {
-                document.getElementById("btnValiderArticle").removeAttribute('hidden');
-            }
         }
-    </script>
-    <script src='~/lib/tinymce/tinymce.min.js'></script>
-    <script type="text/javascript">
 
         function JoliEditeur() {
 
@@ -169,10 +196,5 @@
                 contextmenu: "link image imagetools table",
             });
         }
-
     </script>
 }
-
-
-
-
