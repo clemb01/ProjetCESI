@@ -37,7 +37,7 @@ namespace ProjetCESI.Metier
         {
             var result = await DataClass.GetAllPaginedRessource(_tri, _pagination, _pageOffset);
 
-            return (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource(TypeTriBase.NombreConsultationDesc, 5)).Select(c => Tuple.Create(
+            return result.Select(c => Tuple.Create(
                 c.Id,
                 c.Categorie.Nom,
                 c.Titre,

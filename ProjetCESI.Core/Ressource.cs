@@ -22,6 +22,8 @@ namespace ProjetCESI.Core
         public bool EstValide { get; set; }
         [DataMember]
         public int NombreConsultation { get; set; }
+        [DataMember]
+        public TypePartage TypePartage { get; set; }
 
         [DataMember]
         public User UtilisateurCreateur { get; set; }
@@ -39,6 +41,13 @@ namespace ProjetCESI.Core
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
+    }
+
+    public enum TypePartage
+    {
+        Public,
+        Partage,
+        Prive
     }
 
     public enum TypeTriBase
