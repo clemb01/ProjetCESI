@@ -23,7 +23,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.EstValide)
+                                 .Where(c => c.Statut == Statut.Accepter)
                                  .OrderBy(GenerateOrderFilter(_tri))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -63,7 +63,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId))
                         .OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
@@ -82,7 +82,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId))
                         .OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
@@ -120,7 +120,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.EstValide && c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId))
                         .OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
@@ -139,7 +139,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.EstValide)
+                                 .Where(c => c.Statut == Statut.Accepter)
                                  .OrderByDescending(c => c.DateModification)
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -163,7 +163,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.EstValide)
+                                 .Where(c => c.Statut == Statut.Accepter)
                                  .Where(c => c.Titre.Contains(_search))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -187,7 +187,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.EstValide)
+                                 .Where(c => c.Statut == Statut.Accepter)
                                  .Where(c => c.Titre.Contains(_search));
 
                 if (_categories != null && _categories.Any())

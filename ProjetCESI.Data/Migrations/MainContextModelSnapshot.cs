@@ -200,6 +200,45 @@ namespace ProjetCESI.Data.Migrations
                     b.ToTable("Commentaires");
                 });
 
+            modelBuilder.Entity("ProjetCESI.Core.HistoriqueRessource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("CategorieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Contenu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("DateCreation")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("RessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypeRelationSerializer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeRessourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategorieId");
+
+                    b.HasIndex("RessourceId");
+
+                    b.HasIndex("TypeRessourceId");
+
+                    b.ToTable("HistoriqueRessources");
+                });
+
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
                     b.Property<int>("Id")
@@ -219,10 +258,16 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<DateTimeOffset>("DateModification")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<bool>("EstValide")
-                        .HasColumnType("bit");
+                    b.Property<DateTimeOffset>("DateSuppression")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("NombreConsultation")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RessourceSupprime")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Statut")
                         .HasColumnType("int");
 
                     b.Property<string>("Titre")
@@ -503,6 +548,32 @@ namespace ProjetCESI.Data.Migrations
                     b.Navigation("Utilisateur");
                 });
 
+            modelBuilder.Entity("ProjetCESI.Core.HistoriqueRessource", b =>
+                {
+                    b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
+                        .WithMany()
+                        .HasForeignKey("CategorieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetCESI.Core.Ressource", "Ressource")
+                        .WithMany("HistoriqueRessources")
+                        .HasForeignKey("RessourceId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ProjetCESI.Core.TypeRessource", "TypeRessource")
+                        .WithMany()
+                        .HasForeignKey("TypeRessourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categorie");
+
+                    b.Navigation("Ressource");
+
+                    b.Navigation("TypeRessource");
+                });
+
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
                     b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
@@ -584,6 +655,8 @@ namespace ProjetCESI.Data.Migrations
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
                     b.Navigation("Commentaires");
+
+                    b.Navigation("HistoriqueRessources");
 
                     b.Navigation("TypeRelationsRessources");
 

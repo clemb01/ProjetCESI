@@ -15,11 +15,15 @@ namespace ProjetCESI.Core
         [DataMember]
         public DateTimeOffset DateModification { get; set; }
         [DataMember]
+        public DateTimeOffset DateSuppression { get; set; }
+        [DataMember]
         public string Titre { get; set; }
         [DataMember]
         public string Contenu { get; set; }
         [DataMember]
-        public bool EstValide { get; set; }
+        public Statut Statut { get; set; }
+        [DataMember]
+        public bool RessourceSupprime { get; set; }
         [DataMember]
         public int NombreConsultation { get; set; }
         [DataMember]
@@ -41,6 +45,19 @@ namespace ProjetCESI.Core
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
+        public List<HistoriqueRessource> HistoriqueRessources { get; set; }
+    }
+
+    public enum Statut
+    {
+        [Display(Name = "En pause")]
+        EnPause,
+        [Display(Name = "En attente de validation")]
+        AttenteValidation,
+        [Display(Name = "Accepté")]
+        Accepter,
+        [Display(Name = "Refusé")]
+        Refuser
     }
 
     public enum TypePartage

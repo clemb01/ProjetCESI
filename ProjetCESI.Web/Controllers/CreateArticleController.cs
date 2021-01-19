@@ -57,7 +57,7 @@ namespace ProjetCESI.Web.Controllers
 
             if (model.SelectedTypeRessources == (int)TypeRessources.PDF)
             {
-                if(model.File == null || model.File.ContentType != "application/pdf" || model.File.Length == 0)
+                if (model.File == null || model.File.ContentType != "application/pdf" || model.File.Length == 0)
                 {
                     ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
                     ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
@@ -92,9 +92,9 @@ namespace ProjetCESI.Web.Controllers
 
                 ressource.Contenu = string.Format(embed, @"/uploads/" + model.File.FileName);
             }
-            else if(model.SelectedTypeRessources == (int)TypeRessources.Video)
+            else if (model.SelectedTypeRessources == (int)TypeRessources.Video)
             {
-                if(string.IsNullOrEmpty(model.urlVideo))
+                if (string.IsNullOrEmpty(model.urlVideo))
                 {
                     ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
                     ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
@@ -109,7 +109,7 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ressource.Contenu = "https://www.youtube.com/embed/" + model.urlVideo.Substring(model.urlVideo.IndexOf("v=") + 2, 11) + " ?rel=0";
                 }
-                else if(Regex.IsMatch(model.urlVideo, @"^((?:https?:)?\/\/)?((?:www|m)\.)?((?:dailymotion\.com))(\/(?:[\w\-]+\/video//\/)?)([\w\-]+)(\S+)?$")/*model.urlVideo.Contains("dailymotion") == true*/)
+                else if (Regex.IsMatch(model.urlVideo, @"^((?:https?:)?\/\/)?((?:www|m)\.)?((?:dailymotion\.com))(\/(?:[\w\-]+\/video//\/)?)([\w\-]+)(\S+)?$")/*model.urlVideo.Contains("dailymotion") == true*/)
                 {
                     ressource.Contenu = "https://www.dailymotion.com/embed/video/" + model.urlVideo.Substring(model.urlVideo.IndexOf("video/") + 6, 7);
                 }
@@ -130,7 +130,7 @@ namespace ProjetCESI.Web.Controllers
             }
 
             ressource.Titre = model.Titre;
-            ressource.EstValide = false;
+            ressource.Statut = Statut.AttenteValidation;
             ressource.Commentaires = null;
             ressource.DateCreation = DateTimeOffset.Now;
             ressource.DateModification = DateTimeOffset.Now;
@@ -145,6 +145,34 @@ namespace ProjetCESI.Web.Controllers
             await MetierFactory.CreateTypeRelationRessourceMetier().AjouterRelationsToRessource(model.SelectedTypeRelation, ressource.Id);
 
             return RedirectToAction("Consultation", "Consultation");
+        }
+
+        [Route("Edit/{ressourceId}")]
+        public async Task<IActionResult> Edit(int ressourceId)
+        {
+            CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
+
+            var ressource = await MetierFactory.CreateRessourceMetier().GetById(ressourceId);
+
+            if(ressource != null)
+            {
+                List<string> roles = new List<string>() { Enum.GetName(TypeUtilisateur.Admin), Enum.GetName(TypeUtilisateur.SuperAdmin) };
+
+                if (ressource.UtilisateurCreateurId != UserId || UtilisateurRoles.Any(c => roles.Contains(c)))
+                {
+                    RedirectToAction("Accueil", "Accueil");
+                }
+
+                ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+            }
+            else
+            {
+                model = null;
+            }
+
+            return View(model);
         }
     }
 }

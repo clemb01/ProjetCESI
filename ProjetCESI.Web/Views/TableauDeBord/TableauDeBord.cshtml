@@ -31,41 +31,51 @@
                 <th scope="col">Catégorie</th>
                 <th scope="col">Type de relation</th>
                 <th scope="col">Type de ressources</th>
+
+                @if (Model.NomVue == "crees")
+                {
+                    <th scope="col">Statut</th>
+                }
+
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var ressource in Model.Ressources)
             {
-                <tr id="ressource-id-@ressource.Id">
-                    <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
-                    <td><span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span></td>
-                    <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span></td>
-                    <td>
-                        @foreach (var relation in ressource.TypeRelationsRessources)
-                        {
-                            <span class="badge badge-pill badge-success text-center">@relation.TypeRelation.Nom</span>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.NomVue == "favoris")
-                        {
-                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
-                        }
-                        else if (Model.NomVue == "exploitee")
-                        {
-                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
-                        }
-                        else if (Model.NomVue == "miscote")
-                        {
-                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
-                        }
-                        else if (Model.NomVue == "crees")
-                        {
-                            <a href="#">Editer la ressource</a>
-                        }
-                    </td>
-                </tr>
+            <tr id="ressource-id-@ressource.Id">
+                <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
+                <td><span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span></td>
+                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span></td>
+                <td>
+                    @foreach (var relation in ressource.TypeRelationsRessources)
+                    {
+                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation.Nom</span>
+                    }
+                </td>
+                @if (Model.NomVue == "crees")
+                {
+                    <td>@Html.DisplayFor(c => ressource.Statut)</td>
+                }
+                <td>
+                    @if (Model.NomVue == "favoris")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
+                    }
+                    else if (Model.NomVue == "exploitee")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
+                    }
+                    else if (Model.NomVue == "miscote")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
+                    }
+                    else if (Model.NomVue == "crees")
+                    {
+                        <a href="#">Editer la ressource</a>
+                    }
+                </td>
+            </tr>
             }
         </tbody>
     </table>
