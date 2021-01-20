@@ -20,11 +20,54 @@ namespace ProjetCESI.Metier
 
         public async Task<IEnumerable<Ressource>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllSearchPaginedRessource(_search, _pagination, _pageOffset);
 
+        public async Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserFavoriteRessources(_userId, _tri, _pagination, _pageOffset);
+
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesMiseDeCote(_userId, _tri, _pagination, _pageOffset);
+
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesExploitee(_userId, _tri, _pagination, _pageOffset);
+
+        public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesCreees(_userId, _tri, _pagination, _pageOffset);
+
         public async Task SaveRessource(Ressource ressource)
         {
             await DataClass.InsertOrUpdate(ressource);
         }
 
-        
+        public async Task<IEnumerable<Tuple<int, string, string, List<string>, string, string>>> GetRessourcesAccueil(TypeTriBase _tri = TypeTriBase.DateModificationDesc, int _pagination = 5, int _pageOffset = 0)
+        {
+            var result = await DataClass.GetAllPaginedRessource(_tri, _pagination, _pageOffset);
+
+            return result.Select(c => Tuple.Create(
+                c.Id,
+                c.Categorie.Nom,
+                c.Titre,
+                c.TypeRelationsRessources.Select(a => a.TypeRelation.Nom).ToList(),
+                c.TypeRessource.Nom,
+                GenerateContenu(c.Contenu, (TypeRessources)c.TypeRessource.Id)
+            ));
+        }
+
+        private string GenerateContenu(string contenu, TypeRessources typeRessource)
+        {
+            string content = string.Empty;
+
+            if(typeRessource == TypeRessources.PDF)
+            {
+                content = "Il s'agit d'un pdf, pour le visualiser, veuillez cliquer sur la ressource.";
+            }
+            else if (typeRessource == TypeRessources.Video)
+            {
+                content = "Il s'agit d'une vidéo, pour la regarder, veuillez cliquer sur la ressource.";
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(contenu) && contenu.Length > 100)
+                    content = contenu.Substring(0, 100) + "...";
+                else
+                    content = contenu;
+            }
+
+            return content;
+        }
     }
 }

@@ -1,10 +1,104 @@
-﻿
+﻿@using ProjetCESI.Web.Models
+@model AccueilViewModel
 
 @{
     ViewData["Title"] = "Accueil";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (Model.RessourcesPlusRecentes.Any())
+{
+    <div class="text-center">
+        <h2>Dernière ressources mise en ligne</h2>
+    </div>
+    <div style="width: 75%; margin: auto;">
+        <div id="carouselRessourcePlusRecente" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                @for (int i = 0; i < Model.RessourcesPlusRecentes.Count; i++)
+                {
+                    <li data-target="#carouselRessourcePlusRecente" data-slide-to="@i" @(i == 0 ? "class=active" : "")></li>
+                }
+            </ol>
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.RessourcesPlusRecentes.Count; i++)
+                {                
+                <div class="item carousel-item @(i == 0 ? "active" : "")">
+                    <a href="/Ressource/@Model.RessourcesPlusRecentes[i].Id">
+                        <h2>@Model.RessourcesPlusRecentes[i].Titre</h2>
+                        <div class="carousel-caption">
+                            <div style="top: 30%">
+                                @Html.Raw(Model.RessourcesPlusRecentes[i].Apercu)
+                            </div>
+                            <p>
+                                <span class="badge badge-pill badge-primary">@Model.RessourcesPlusRecentes[i].Categorie</span><br />
+                                <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusRecentes[i].TypeRessource</span><br />
+                                @foreach (var relation in Model.RessourcesPlusRecentes[i].TypeRelations)
+                                {
+                                    <span class="badge badge-pill badge-success">@relation</span>
+                                }
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#carouselRessourcePlusRecente" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselRessourcePlusRecente" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+}
+
+<br />
+
+@if (Model.RessourcesPlusVues.Any())
+{
+    <div class="text-center">
+        <h2>Ressources les plus consultées</h2>
+    </div>
+    <div style="width: 75%; margin: auto;">
+        <div id="carouselRessourcePlusVues" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                @for (int i = 0; i < Model.RessourcesPlusVues.Count; i++)
+                {
+                    <li data-target="#carouselRessourcePlusVues" data-slide-to="@i" @(i == 0 ? "class=active" : "")></li>
+                }
+            </ol>
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.RessourcesPlusVues.Count; i++)
+                {
+                    <div class="item carousel-item @(i == 0 ? "active" : "")">
+                        <a href="/Ressource/@Model.RessourcesPlusVues[i].Id">
+                            <h2>@Model.RessourcesPlusVues[i].Titre</h2>
+                            <div class="carousel-caption">
+                                <div style="top: 30%">
+                                    @Html.Raw(Model.RessourcesPlusVues[i].Apercu)
+                                </div>
+                                <p>
+                                    <span class="badge badge-pill badge-primary">@Model.RessourcesPlusVues[i].Categorie</span><br />
+                                    <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusVues[i].TypeRessource</span><br />
+                                    @foreach (var relation in Model.RessourcesPlusVues[i].TypeRelations)
+                                    {
+                                        <span class="badge badge-pill badge-success">@relation</span>
+                                    }
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+            <a class="carousel-control-prev" href="#carouselRessourcePlusVues" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselRessourcePlusVues" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+}

@@ -8,6 +8,7 @@ namespace ProjetCESI.Web.Controllers
 {
     public class StatistiquesController : BaseController
     {
+        [Route("Statistiques")]
         public IActionResult Statistiques()
         {
             return View();

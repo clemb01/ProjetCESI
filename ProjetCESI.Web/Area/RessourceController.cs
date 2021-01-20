@@ -35,7 +35,7 @@ namespace ProjetCESI.Web.Area
             model.DateCreation = ressource.DateCreation;
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
-            model.EstValide = ressource.EstValide;
+            model.Statut = ressource.Statut;
             model.NombreConsultation = ++ressource.NombreConsultation;
 
             if (User.Identity.IsAuthenticated)
