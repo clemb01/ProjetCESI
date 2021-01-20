@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
-using ProjetCESI.Data.Metier;
 using ProjetCESI.Web.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -43,7 +41,6 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ModelState.AddModelError("", "Veuillez vérifier votre boite mail pour valider votre Email.");
                     ViewBag.RenvoieMail = $"<p>Vous n'avez pas reçu le mail ? <a href='/Account/RenvoyerEmailConfirm?Username={model.Username}' >Renvoyer le mail</a></p>";
-                    //@Html.ActionLink("Renvoyer le mail", "RenvoyerEmailConfirm", routeValues: new { Username = Model.Username })
                     return View(model);
                 }
 
@@ -53,7 +50,6 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
                     return View();
-                    //return Content("Compte bloqué");
                 }
 
                 if (result.Succeeded)
@@ -89,6 +85,7 @@ namespace ProjetCESI.Web.Controllers
 
             return View(model);
         }
+
 
         [AllowAnonymous]
         [HttpGet]
@@ -199,6 +196,72 @@ namespace ProjetCESI.Web.Controllers
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
             await SignInManager.SignOutAsync();
             return Redirect("/Accueil/Accueil");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordModel)
+        {
+            if (!ModelState.IsValid)
+                return View(forgotPasswordModel);
+            var user = await UserManager.FindByEmailAsync(forgotPasswordModel.Email);
+            if (user == null)
+                return RedirectToAction(nameof(ForgotPasswordConfirm));
+            var token = await UserManager.GeneratePasswordResetTokenAsync(user);
+            var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Réinitialisation du mot de passe", callback);
+            return RedirectToAction(nameof(ForgotPasswordConfirm));
+        }
+
+        [AllowAnonymous]
+        public IActionResult ForgotPasswordConfirm()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordModel)
+        {
+            if (!ModelState.IsValid)
+                return View(resetPasswordModel);
+            var user = await UserManager.FindByEmailAsync(resetPasswordModel.Email);
+            if (user == null)
+                RedirectToAction(nameof(ResetPasswordConfirm));
+            var resetPassResult = await UserManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                foreach (var error in resetPassResult.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return View();
+            }
+            return RedirectToAction(nameof(ResetPasswordConfirm));
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ResetPasswordConfirm()
+        {
+            return View();
         }
     }
 }

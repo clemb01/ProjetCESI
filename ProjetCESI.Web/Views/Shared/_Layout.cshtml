@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,27 +20,27 @@
                     <li id="connect-btn" class="nav-item align-self-end">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <h4 class="d-lg-inline align-middle">@User.Identity.Name</h4>
+                            <a class="d-lg-inline align-middle" asp-area="" asp-controller="" asp-action="">@User.Identity.Name</a>
                             <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
                         }
                         else
                         {
-                            <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
+                            <a class="btn btn-outline-secondary"asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
                         }
-                        </li>
-                        <li class="nav-item">
-                            <form asp-action="Search" asp-controller="Consultation" method="get">
-                                <div>
-                                    <div class="input-append">
-                                        <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
-                                        <div id='button-holder'>
-                                            <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
-                                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <form asp-action="Search" asp-controller="Consultation" method="get">
+                            <div>
+                                <div class="input-append">
+                                    <input type='text' placeholder='Rechercher...' id='search-text-input' name="Recherche" />
+                                    <div id='button-holder'>
+                                        <button type="submit" class="btn" title="Rechercher"><img src="~/images/magnifier.png" /></button>
                                     </div>
                                 </div>
-                            </form>
-                        </li>
-                    </ul>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom mb-3">
@@ -80,21 +81,6 @@
                             }
                         }
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ProfilUser">Profil</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Se connecter</a>
-                            </li>
-                        }
                     </ul>
                 </div>
             </div>
@@ -104,6 +90,82 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        <div class="modal fade" id="SeConnecter" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style=" background-color: #5ad9a4; color: white;">
+                        <h2 class="modal-title">Se connecter</h2>
+                    </div>
+                    <div class="modal-body" id="formulaire">
+
+                        @using ProjetCESI.Web.Models;
+
+                        @*@model LoginViewModel*@
+                        @*@using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
+                            {*@
+                        <div asp-validation-summary="ModelOnly"></div>
+                        <span id="RenvoieMail">
+                            @if (ViewBag.RenvoieMail != null)
+                            {
+                                @Html.Raw(ViewBag.RenvoieMail as string)
+                            }
+                        </span>
+                        <form action="/Account/Login" method="post">
+                            <div>
+                                <input class="form-control" placeholder="Votre identifiant" type="text" autofocus required>
+                                <span class="text-danger" />
+                            </div>
+                            <div>
+                                <input class="form-control" placeholder="Mot de passe" type="password"  required/>
+                                <span class="text-danger" />
+                            </div>
+
+                            <p>
+                                Pas de compte ? cliquez <a href='/Account/RegisterTest'>ici</a> pour vous inscrire
+                            </p>
+                            <p>
+                                <button type="submit" class="btn btn-success">Se connecter</button>
+                            </p>
+
+                        </form>
+                        @*<div>
+                                    <div asp-validation-summary="ModelOnly"></div>
+                                    <span id="RenvoieMail">
+                                        @if (ViewBag.RenvoieMail != null)
+                                        {
+                                            @Html.Raw(ViewBag.RenvoieMail as string)
+                                        }
+                                    </span>
+
+                                </div>
+                                <div class="login-form__input Espace-form">
+                                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
+                                    @Html.ValidationMessageFor(m => m.Username)
+                                    <i class="fa fa-user inputIcon"></i>
+                                </div>
+                                <div class="login-form__input Espace-form">
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
+                                    @Html.ValidationMessageFor(m => m.Password)
+                                    <input asp-for="Password" class="form-control" placeholder="Mot de passe" type="password" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                    <i class="fa fa-unlock-alt inputIcon"></i>
+                                </div>
+                                <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit">
+                                    <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
+                                    <span class="text--center">Se connecter</span>
+                                </button>
+                            }
+                            <p>
+                                Pas de compte ? cliquez <a href='/Account/Register'>ici</a> pour vous inscrire
+                            </p>*@
+                        @*<p>
+                                Pas de compte ? cliquez @Html.ActionLink("ici", "Register", "Account") pour vous inscrire
+                            </p>*@
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
