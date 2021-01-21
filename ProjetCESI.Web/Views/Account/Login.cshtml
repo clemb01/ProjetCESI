@@ -10,15 +10,30 @@
 <div>
     @using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
     {
-        <div class="login-form__input">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre identifiant" })
+        <div>
+            <div asp-validation-summary="ModelOnly"></div>
+            <span id="RenvoieMail">
+                @if (ViewBag.RenvoieMail != null)
+                {
+                    @Html.Raw(ViewBag.RenvoieMail as string)
+                }
+            </span>
+
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
+            @Html.ValidationMessageFor(m => m.Username)
             <i class="fa fa-user inputIcon"></i>
         </div>
-        <div class="login-form__input">
+        <div class="login-form__input Espace-form">
             @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
+            @Html.ValidationMessageFor(m => m.Password)
             <i class="fa fa-unlock-alt inputIcon"></i>
         </div>
-        <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit" data-left-position="30px" type="submit">
+        <div class="form-group">
+            <a asp-action="ForgotPassword">Mot de passe oublié ?</a>
+        </div>
+        <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit">
             <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
             <span class="text--center">Se connecter</span>
         </button>

@@ -1,56 +1,129 @@
 ﻿@using ProjetCESI.Web.Models
 @model TableauDeBordViewModel
 
-@{ 
+@{
     ViewData["Title"] = "Tableau de bord";
 }
 
 <div class="d-flex justify-content-around" id="menu-tableau-bord">
     <ul class="list-group list-group-horizontal-md">
-        <li class="list-group-item active">
-            <a class="nav-link" href="/TableauDeBord?nomVue=favoris">Ressource favorites <span class="sr-only">(current)</span></a>
+        <li class="list-group-item @(Model.NomVue == "favoris" ? "active" : "")">
+            <a class="nav-link" href="/TableauDeBord?nomVue=favoris">Ressource favorites</a>
         </li>
-        <li class="list-group-item">
+        <li class="list-group-item @(Model.NomVue == "exploitee" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=exploitee">Ressource exploitées</a>
         </li>
-        <li class="list-group-item">
+        <li class="list-group-item @(Model.NomVue == "miscote" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=miscote">Ressources mises de côté</a>
         </li>
-        <li class="list-group-item">
-            <a class="nav-link" href="/TableauDeBord?nomVue=creee">Ressource créées</a>
+        <li class="list-group-item @(Model.NomVue == "crees" ? "active" : "")">
+            <a class="nav-link" href="/TableauDeBord?nomVue=crees">Ressource créées</a>
         </li>
     </ul>
 </div>
 
-<h2 class="text-center m-4">Ressources favorites</h2>
+@if (Model.Ressources.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Titre</th>
+                <th scope="col">Catégorie</th>
+                <th scope="col">Type de relation</th>
+                <th scope="col">Type de ressources</th>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mdo</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>twitter</td>
-        </tr>
-    </tbody>
-</table>
+                @if (Model.NomVue == "crees")
+                {
+                    <th scope="col">Statut</th>
+                }
+
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ressource in Model.Ressources)
+            {
+            <tr id="ressource-id-@ressource.Id">
+                <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
+                <td><span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span></td>
+                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span></td>
+                <td>
+                    @foreach (var relation in ressource.TypeRelationsRessources)
+                    {
+                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation.Nom</span>
+                    }
+                </td>
+                @if (Model.NomVue == "crees")
+                {
+                    <td>@Html.DisplayFor(c => ressource.Statut)</td>
+                }
+                <td>
+                    @if (Model.NomVue == "favoris")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
+                    }
+                    else if (Model.NomVue == "exploitee")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
+                    }
+                    else if (Model.NomVue == "miscote")
+                    {
+                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
+                    }
+                    else if (Model.NomVue == "crees")
+                    {
+                        <a href="#">Editer la ressource</a>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+<h1>
+    @if (Model.NomVue == "favoris")
+    {
+        <text>Aucune ressources dans vos favoris</text>
+    }
+    else if (Model.NomVue == "exploitee")
+    {
+        <text>Aucune ressources n'est marquées comme exploitée</text>
+    }
+    else if (Model.NomVue == "miscote")
+    {
+        <text>Aucune ressources n'est marquées comme mise de côté</text>
+    }
+    else if (Model.NomVue == "crees")
+    {
+        <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreateArticle/Create">ici</a></text>
+    }
+</h1>
+}
+
+@section Scripts {
+<script type="text/javascript">
+    function removeFrom(ressourceId, what) {
+        let url = '';
+
+        if(what == "favoris")
+            url = '/Ressource/SupprimerFavoris';
+        else if (what == "exploitee")
+            url = '/Ressource/SupprimerExploite';
+        else if (what == "miscote")
+            url = '/Ressource/SupprimerMettreDeCote';
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                ressourceId: ressourceId
+            }
+        })
+            .done(function () {
+                document.getElementById('ressource-id-' + ressourceId).remove();
+            });
+    }
+</script>
+}

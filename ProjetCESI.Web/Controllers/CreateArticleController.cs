@@ -10,6 +10,7 @@ using ProjetCESI.Metier;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -24,21 +25,49 @@ namespace ProjetCESI.Web.Controllers
 
         public async Task<IActionResult> Create()
         {
+            CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
+
             ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
             ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
             ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upload(CreateRessourceViewModel model)
+        public async Task<IActionResult> Create(CreateRessourceViewModel model)
         {
+            if (model.SelectedCategories == 0)
+                ModelState.AddModelError("SelectedCategories", "Vous devez selectionner une catégorie");
+
+            if (model.SelectedTypeRessources == 0)
+                ModelState.AddModelError("SelectedTypeRessources", "Vous devez selectionner un type de ressource");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+
+                return View(model);
+            }
+
             var ressource = new Ressource();
 
             if (model.SelectedTypeRessources == (int)TypeRessources.PDF)
             {
+                if (model.File == null || model.File.ContentType != "application/pdf" || model.File.Length == 0)
+                {
+                    ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                    ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                    ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+
+                    ModelState.AddModelError("File", "Veuillez selectionner un fichier valide !");
+
+                    return View(model);
+                }
+
                 var uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
                 bool exists = Directory.Exists(uploads);
                 if (!exists)
@@ -63,15 +92,36 @@ namespace ProjetCESI.Web.Controllers
 
                 ressource.Contenu = string.Format(embed, @"/uploads/" + model.File.FileName);
             }
-            else if(model.SelectedTypeRessources == (int)TypeRessources.Video)
+            else if (model.SelectedTypeRessources == (int)TypeRessources.Video)
             {
-                if(model.urlVideo.Contains("youtube") == true)
+                if (string.IsNullOrEmpty(model.urlVideo))
                 {
-                    ressource.Contenu = "https://www.youtube.com/embed/" + model.urlVideo.Substring(model.urlVideo.IndexOf("v=") + 2, 11) + " ? rel = 0";
+                    ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                    ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                    ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+
+                    ModelState.AddModelError("urlVideo", "Veuillez saisir une url");
+
+                    return View(model);
                 }
-                else if(model.urlVideo.Contains("dailymotion") == true)
+
+                if (Regex.IsMatch(model.urlVideo, @"^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$")/* && model.urlVideo.Contains("youtube") == true*/)
+                {
+                    ressource.Contenu = "https://www.youtube.com/embed/" + model.urlVideo.Substring(model.urlVideo.IndexOf("v=") + 2, 11) + " ?rel=0";
+                }
+                else if (Regex.IsMatch(model.urlVideo, @"^((?:https?:)?\/\/)?((?:www|m)\.)?((?:dailymotion\.com))(\/(?:[\w\-]+\/video//\/)?)([\w\-]+)(\S+)?$")/*model.urlVideo.Contains("dailymotion") == true*/)
                 {
                     ressource.Contenu = "https://www.dailymotion.com/embed/video/" + model.urlVideo.Substring(model.urlVideo.IndexOf("video/") + 6, 7);
+                }
+                else
+                {
+                    ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                    ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                    ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+
+                    ModelState.AddModelError("urlVideo", "L'url saisie n'est pas valide");
+
+                    return View(model);
                 }
             }
             else
@@ -80,22 +130,49 @@ namespace ProjetCESI.Web.Controllers
             }
 
             ressource.Titre = model.Titre;
-            ressource.EstValide = false;
-            //ressource.CategorieId = model.Ressource.Categorie.Id;
+            ressource.Statut = Statut.AttenteValidation;
             ressource.Commentaires = null;
             ressource.DateCreation = DateTimeOffset.Now;
             ressource.DateModification = DateTimeOffset.Now;
             ressource.NombreConsultation = 0;
-            //ressource.UtilisateurCreateur = Utilisateur;
             ressource.UtilisateurCreateurId = Utilisateur.Id;
             ressource.CategorieId = model.SelectedCategories;
             ressource.TypeRessourceId = model.SelectedTypeRessources;
+            ressource.TypePartage = model.TypePartage;
 
             await MetierFactory.CreateRessourceMetier().SaveRessource(ressource);
 
             await MetierFactory.CreateTypeRelationRessourceMetier().AjouterRelationsToRessource(model.SelectedTypeRelation, ressource.Id);
 
             return RedirectToAction("Consultation", "Consultation");
+        }
+
+        [Route("Edit/{ressourceId}")]
+        public async Task<IActionResult> Edit(int ressourceId)
+        {
+            CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
+
+            var ressource = await MetierFactory.CreateRessourceMetier().GetById(ressourceId);
+
+            if(ressource != null)
+            {
+                List<string> roles = new List<string>() { Enum.GetName(TypeUtilisateur.Admin), Enum.GetName(TypeUtilisateur.SuperAdmin) };
+
+                if (ressource.UtilisateurCreateurId != UserId || UtilisateurRoles.Any(c => roles.Contains(c)))
+                {
+                    RedirectToAction("Accueil", "Accueil");
+                }
+
+                ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+                ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+                ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+            }
+            else
+            {
+                model = null;
+            }
+
+            return View(model);
         }
     }
 }

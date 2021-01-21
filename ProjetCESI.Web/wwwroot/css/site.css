@@ -1,8 +1,36 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.item {
+    background-color: #2f3030;
+    text-align: center;
+    height: 400px;
+}
+
+.item h2 {
+    margin: 0;
+    color: #888;
+    padding-top: 80px;
+    font-size: 30px;
+}
+
+#menu-tableau-bord {
+    margin-bottom: 1em;
+}
+
+#menu-tableau-bord li {
+    padding: 0;
+}
+
+#menu-tableau-bord a {
+    padding: .75rem 1.25rem;
+}
+
 #menu-tableau-bord .active {
     background-color: grey;
+}
+
+#menu-tableau-bord .active a {
     color: white;
     font-weight: bold;
 }
@@ -249,5 +277,11 @@ input[type="checkbox"].input-validation-error {
 #desciptionVideo {
     border: 3px solid #555;
     width: 100%;
+}
+
+#modifParam {
+    margin-right: 5px;
+    display: flex;
+    float: right;
 }
 
