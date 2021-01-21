@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using Microsoft.AspNetCore.Http.Features
+
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    var showBanner = !consentFeature?.CanTrack ?? false;
+    var cookieString = consentFeature?.CreateConsentCookie();
+}
+
+@if (showBanner)
+{
+    <div id="cookieConsent" class="alert alert-info alert-dismissible fade show" role="alert">
+        <div>
+            <p>
+                Nous utilisons les cookies afin de fournir les services et fonctionnalités proposés sur notre site et afin d’améliorer l’expérience de nos utilisateurs. Les cookies sont des données qui sont téléchargés ou stockés sur votre ordinateur ou sur tout autre appareil.
+            </p>
+            <p>
+                En cliquant sur ”J’accepte”, vous acceptez l’utilisation des cookies. Vous pourrez toujours les désactiver ultérieurement. Si vous supprimez ou désactivez nos cookies, vous pourriez rencontrer des interruptions ou des problèmes d’accès au site.
+            </p>
+            <p>
+                En poursuivant votre navigation, vous acceptez le dépôt de cookies tiers destinés à vous proposer des vidéos, des boutons de partage, des remontées de contenus de plateformes sociales.
+            </p>
+            <p>
+                Nous utilisons des cookies pour nous permettre de mieux comprendre comment le site est utilisé. En continuant à utiliser ce site, vous acceptez cette politique.
+            </p>
+        </div>
+        <div>
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="btn btn-link" asp-area="" asp-controller="Accueil" asp-action="CookiePolicy">En savoir plus</a>
+                    <button  class="btn btn-primary accept-policy" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString" asp-page="">
+                        J'accepte
+                    </button>
+                </li>
+            </ul>
+        </div>
+        
+
+    </div>
+
+    <script>
+        (function () {
+            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+            button.addEventListener("click", function (event) {
+                document.cookie = button.dataset.cookieString;
+            }, false);
+        })();
+    </script>
+}

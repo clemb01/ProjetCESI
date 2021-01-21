@@ -87,6 +87,7 @@
         </nav>
     </header>
     <div class="container">
+        <partial name="_RgpdCookiePartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -102,7 +103,7 @@
 
                         @*@model LoginViewModel*@
                         @*@using (Html.BeginForm("Login", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
-                            {*@
+                        {*@
                         <div asp-validation-summary="ModelOnly"></div>
                         <span id="RenvoieMail">
                             @if (ViewBag.RenvoieMail != null)
@@ -116,7 +117,7 @@
                                 <span class="text-danger" />
                             </div>
                             <div>
-                                <input class="form-control" placeholder="Mot de passe" type="password"  required/>
+                                <input class="form-control" placeholder="Mot de passe" type="password" required />
                                 <span class="text-danger" />
                             </div>
 
@@ -129,38 +130,38 @@
 
                         </form>
                         @*<div>
-                                    <div asp-validation-summary="ModelOnly"></div>
-                                    <span id="RenvoieMail">
-                                        @if (ViewBag.RenvoieMail != null)
-                                        {
-                                            @Html.Raw(ViewBag.RenvoieMail as string)
-                                        }
-                                    </span>
+                                <div asp-validation-summary="ModelOnly"></div>
+                                <span id="RenvoieMail">
+                                    @if (ViewBag.RenvoieMail != null)
+                                    {
+                                        @Html.Raw(ViewBag.RenvoieMail as string)
+                                    }
+                                </span>
 
-                                </div>
-                                <div class="login-form__input Espace-form">
-                                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
-                                    @Html.ValidationMessageFor(m => m.Username)
-                                    <i class="fa fa-user inputIcon"></i>
-                                </div>
-                                <div class="login-form__input Espace-form">
-                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
-                                    @Html.ValidationMessageFor(m => m.Password)
-                                    <input asp-for="Password" class="form-control" placeholder="Mot de passe" type="password" />
-                                    <span asp-validation-for="Password" class="text-danger"></span>
-                                    <i class="fa fa-unlock-alt inputIcon"></i>
-                                </div>
-                                <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit">
-                                    <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
-                                    <span class="text--center">Se connecter</span>
-                                </button>
-                            }
-                            <p>
-                                Pas de compte ? cliquez <a href='/Account/Register'>ici</a> pour vous inscrire
-                            </p>*@
+                            </div>
+                            <div class="login-form__input Espace-form">
+                                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre identifiant" })
+                                @Html.ValidationMessageFor(m => m.Username)
+                                <i class="fa fa-user inputIcon"></i>
+                            </div>
+                            <div class="login-form__input Espace-form">
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe", onkeydown = "submitForm(event);" })
+                                @Html.ValidationMessageFor(m => m.Password)
+                                <input asp-for="Password" class="form-control" placeholder="Mot de passe" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                                <i class="fa fa-unlock-alt inputIcon"></i>
+                            </div>
+                            <button id="btnValidation" style="position:relative" class="btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit">
+                                <span id="spinner" style="display:none;position:absolute;left:23px;top:10px"><img src="~/Images/spinner-interval.png" style="width: 20px;"></span>
+                                <span class="text--center">Se connecter</span>
+                            </button>
+                        }
+                        <p>
+                            Pas de compte ? cliquez <a href='/Account/Register'>ici</a> pour vous inscrire
+                        </p>*@
                         @*<p>
-                                Pas de compte ? cliquez @Html.ActionLink("ici", "Register", "Account") pour vous inscrire
-                            </p>*@
+                            Pas de compte ? cliquez @Html.ActionLink("ici", "Register", "Account") pour vous inscrire
+                        </p>*@
                     </div>
 
                 </div>
@@ -170,7 +171,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - ProjetCESI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - ProjetCESI - <a asp-area="" asp-controller="Accueil" asp-action="CookiePolicy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

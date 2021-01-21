@@ -46,5 +46,12 @@ namespace ProjetCESI.Web.Controllers
 
             return View(model);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult CookiePolicy()
+        {
+            return View();
+        }
     }
 }
