@@ -13,7 +13,7 @@ namespace ProjetCESI.Web.Models
         public DateTimeOffset DateModification { get; set; }
         public string Titre { get; set; }
         public string Contenu { get; set; }
-        public bool EstValide { get; set; }
+        public Statut Statut { get; set; }
         public int NombreConsultation { get; set; }
         public User UtilisateurCreateur { get; set; }
         public TypeRessource TypeRessource { get; set; }

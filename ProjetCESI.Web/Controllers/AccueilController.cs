@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Web.Controllers;
+using ProjetCESI.Web.Models;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -12,13 +13,45 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
     public class AccueilController : BaseController
     {
-        public IActionResult Accueil()
+        public async Task<IActionResult> Accueil()
+        {
+            var model = PrepareModel<AccueilViewModel>();
+
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+
+            var ressourcesPlusVues = (await ressourceMetier.GetRessourcesAccueil(Core.TypeTriBase.NombreConsultationDesc));
+            var ressourcesPlusRecente = (await ressourceMetier.GetRessourcesAccueil(Core.TypeTriBase.DateModificationDesc));
+
+            model.RessourcesPlusVues = ressourcesPlusVues.Select(c => new RessourceAccueil
+            {
+                Id = c.Item1,
+                Categorie = c.Item2,
+                Titre = c.Item3,
+                TypeRelations = c.Item4,
+                TypeRessource = c.Item5,
+                Apercu = c.Item6
+            }).ToList();
+
+            model.RessourcesPlusRecentes = ressourcesPlusRecente.Select(c => new RessourceAccueil
+            {
+                Id = c.Item1,
+                Categorie = c.Item2,
+                Titre = c.Item3,
+                TypeRelations = c.Item4,
+                TypeRessource = c.Item5,
+                Apercu = c.Item6
+            }).ToList();
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult CookiePolicy()
         {
             return View();
         }
-
     }
 }
