@@ -4,9 +4,9 @@
 <h1>Création d'un article</h1>
 
 @using (Html.BeginForm("Upload",
-                           "CreateArticle",
-                           FormMethod.Post,
-                           new { enctype = "multipart/form-data" }))
+                          "CreateArticle",
+                          FormMethod.Post,
+                          new { enctype = "multipart/form-data" }))
 {
     <div class="form-row">
         <div class="form-group col-md-4">
@@ -40,36 +40,39 @@
             </select>
         </div>
     </div>
-<br />
-<p>
-    Titre :
-    <input type="text" id="TitreArticle" name="Titre"/>
-</p>
-
-<br />
-
-<div id="formulaire">
-    <textarea name="Contenu" id="editor"></textarea>
-</div>
-<div id="video" hidden>
+    <div style="position: relative; float: right;">
+        <button class=pull-right name="modifParam">Paramètre</button>
+    </div>
+    <br />
     <p>
-        URL de la vidéo :
+        Titre :
+        <input type="text" id="TitreArticle" name="Titre" />
     </p>
-    <input type="url" id="urlVideo" name="urlVideo"/>
-    <br />
-    <br />
-    <p>Le site ne prend en compte que les vidéo vennants de Youtube et Dailymotion</p>
-</div>
-<div id="pdf" hidden>
-    <h3>Selectionnez un fichier</h3>
-    <label for="file">Upload Image:</label>
-    <input type="file" name="file" id="file" /><br><br>
-    <br><br>
-    @ViewBag.Message
-</div>
 
-<br />
-<center><button type="submit" id="btnValiderArticle" hidden>Valider mon article</button></center>
+    <br />
+
+    <div id="formulaire">
+        <textarea name="Contenu" id="editor"></textarea>
+    </div>
+    <div id="video" hidden>
+        <p>
+            URL de la vidéo :
+        </p>
+        <input type="url" id="urlVideo" name="urlVideo" />
+        <br />
+        <br />
+        <p>Le site ne prend en compte que les vidéo vennants de Youtube et Dailymotion</p>
+    </div>
+    <div id="pdf" hidden>
+        <h3>Selectionnez un fichier</h3>
+        <label for="file">Upload Image:</label>
+        <input type="file" name="file" id="file" /><br><br>
+        <br><br>
+        @ViewBag.Message
+    </div>
+
+    <br />
+    <center><button type="submit" id="btnValiderArticle" hidden>Valider mon article</button></center>
 }
 
 @section Scripts
