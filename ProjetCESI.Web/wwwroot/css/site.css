@@ -278,3 +278,10 @@ input[type="checkbox"].input-validation-error {
     border: 3px solid #555;
     width: 100%;
 }
+
+#modifParam {
+    margin-right: 5px;
+    display: flex;
+    float: right;
+}
+

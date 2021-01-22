@@ -2,44 +2,46 @@
 
 @model RegisterViewModel
 
-@{ 
+@{
     ViewData["Title"] = "Inscription";
 }
 
 <div>
     @using (Html.BeginForm("Register", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
     {
-
-    <div class="login-form__input Espace-form">
-        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre nom d'utilisateur" })
-        @Html.ValidationMessageFor(m => m.Username)
-        <i class="fa fa-user inputIcon"></i>
-    </div>
-    <div class="login-form__input Espace-form">
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre email" })
-        @Html.ValidationMessageFor(m => m.Email)
-        <i class="fa fa-user inputIcon"></i>
-    </div>
-    <div class="login-form__input Espace-form">
-        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe" })
-        @Html.ValidationMessageFor(m => m.Password)
-        <i class="fa fa-unlock-alt inputIcon"></i>
-    </div>
-    <div class="login-form__input Espace-form">
-        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmer le mot de passe" })
-        @Html.ValidationMessageFor(m => m.ConfirmPassword)
-        <i class="fa fa-unlock-alt inputIcon"></i>
-    </div>
-    <div class="login-form__input Espace-form">
-        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Prénom" })
-        @Html.ValidationMessageFor(m => m.FirstName)
-        <i class="fa fa-unlock-alt inputIcon"></i>
-    </div>
-    <div class="login-form__input Espace-form">
-        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Nom" })
-        @Html.ValidationMessageFor(m => m.LastName)
-        <i class="fa fa-unlock-alt inputIcon"></i>
-    </div>
+        <div>
+            <div asp-validation-summary="ModelOnly"></div>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Votre nom d'utilisateur" })
+            @Html.ValidationMessageFor(m => m.Username)
+            <i class="fa fa-user inputIcon"></i>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Votre email" })
+            @Html.ValidationMessageFor(m => m.Email)
+            <i class="fa fa-user inputIcon"></i>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mot de passe" })
+            @Html.ValidationMessageFor(m => m.Password)
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmer le mot de passe" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Prénom" })
+            @Html.ValidationMessageFor(m => m.FirstName)
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
+        <div class="login-form__input Espace-form">
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Nom" })
+            @Html.ValidationMessageFor(m => m.LastName)
+            <i class="fa fa-unlock-alt inputIcon"></i>
+        </div>
         <button id="btnValidation" style="position:relative" class="btn--henrri btn--primary btn--block text--center loaderPage login-form__submit btn btn-success Espace-form" data-left-position="30px" type="submit" onclick="showSpinner()">
             <span class="text--center">S'inscrire</span>
         </button>
