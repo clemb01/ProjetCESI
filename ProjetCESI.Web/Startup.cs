@@ -79,6 +79,8 @@ namespace ProjetCESI
                 });
             });
 
+            services.AddViewToStringRendererService();
+
             services.AddControllersWithViews().AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;

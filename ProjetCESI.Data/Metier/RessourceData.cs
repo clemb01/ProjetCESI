@@ -89,6 +89,15 @@ namespace ProjetCESI.Data
             }
         }
 
+        public async Task<Ressource> GetFirstEmptyRessource(int __userId)
+        {
+            using(var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                    .FirstOrDefaultAsync(c => c.UtilisateurCreateurId == __userId && c.Statut == Statut.Empty);
+            }
+        }
+
         public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
@@ -101,7 +110,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.UtilisateurCreateurId == _userId)
+                        .Where(c => c.UtilisateurCreateurId == _userId && c.Statut != Statut.Empty)
                         .OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();

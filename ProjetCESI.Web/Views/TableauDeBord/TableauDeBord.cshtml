@@ -45,12 +45,12 @@
             {
             <tr id="ressource-id-@ressource.Id">
                 <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
-                <td><span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span></td>
-                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span></td>
+                <td><span class="badge badge-pill badge-primary">@ressource.Categorie?.Nom</span></td>
+                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource?.Nom</span></td>
                 <td>
                     @foreach (var relation in ressource.TypeRelationsRessources)
                     {
-                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation.Nom</span>
+                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation?.Nom</span>
                     }
                 </td>
                 @if (Model.NomVue == "crees")
@@ -72,7 +72,7 @@
                     }
                     else if (Model.NomVue == "crees")
                     {
-                        <a href="#">Editer la ressource</a>
+                        <a href="/CreateArticle/Edit/@ressource.Id">Editer la ressource</a>
                     }
                 </td>
             </tr>

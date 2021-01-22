@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Metier.Main
+namespace ProjetCESI.Metier
 {
     public class AdminMetier : MetierBase<User, UserData>, IAdminMetier
     {

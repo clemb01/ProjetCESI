@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace ProjetCESI.Core
         [DataMember]
         public string Contenu { get; set; }
         [DataMember]
+        public string ContenuOriginal { get; set; }
+        [DataMember]
         public Statut Statut { get; set; }
         [DataMember]
         public bool RessourceSupprime { get; set; }
@@ -30,26 +33,43 @@ namespace ProjetCESI.Core
         public TypePartage TypePartage { get; set; }
 
         [DataMember]
+        public Ressource RessourceParent { get; set; }
+        [DataMember]
+        public int? RessourceParentId { get; set; }
+        [DataMember]
         public User UtilisateurCreateur { get; set; }
         [DataMember]
         public int? UtilisateurCreateurId { get; set; }
         [DataMember]
         public TypeRessource TypeRessource { get; set; }
         [DataMember]
-        public int TypeRessourceId { get; set; }
+        public int? TypeRessourceId { get; set; }
         [DataMember]
         public Categorie Categorie { get; set; }
         [DataMember]
-        public int CategorieId { get; set; }
+        public int? CategorieId { get; set; }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
-        public List<HistoriqueRessource> HistoriqueRessources { get; set; }
+        public List<Ressource> HistoriqueRessource { get; set; }
+
+        public Ressource Clone()
+        {
+            Ressource clone = new Ressource();
+
+            foreach (PropertyInfo prop in GetType().GetProperties())
+                if(GetType().GetProperty(prop.Name).CanWrite && !GetType().GetProperty(prop.Name).IsCollectible && GetType().GetProperty(prop.Name).PropertyType != typeof(object))
+                    GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(this, null), null);
+
+            return clone;
+        }
     }
 
     public enum Statut
     {
+        [Display(Name = "Vide")]
+        Empty,
         [Display(Name = "En pause")]
         EnPause,
         [Display(Name = "En attente de validation")]

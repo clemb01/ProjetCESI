@@ -30,6 +30,10 @@ namespace ProjetCESI.Web.Controllers
             
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
+            if(ressource.UtilisateurCreateurId != UserId)
+                if (ressource.Statut != Statut.Accepter)
+                    return RedirectToAction("Accueil", "Accueil");
+
             model.RessourceId = id;
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;

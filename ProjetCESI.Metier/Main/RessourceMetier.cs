@@ -28,11 +28,6 @@ namespace ProjetCESI.Metier
 
         public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesCreees(_userId, _tri, _pagination, _pageOffset);
 
-        public async Task SaveRessource(Ressource ressource)
-        {
-            await DataClass.InsertOrUpdate(ressource);
-        }
-
         public async Task<IEnumerable<Tuple<int, string, string, List<string>, string, string>>> GetRessourcesAccueil(TypeTriBase _tri = TypeTriBase.DateModificationDesc, int _pagination = 5, int _pageOffset = 0)
         {
             var result = await DataClass.GetAllPaginedRessource(_tri, _pagination, _pageOffset);
@@ -45,6 +40,24 @@ namespace ProjetCESI.Metier
                 c.TypeRessource.Nom,
                 GenerateContenu(c.Contenu, (TypeRessources)c.TypeRessource.Id)
             ));
+        }
+
+        public async Task<int> InitNewRessource(int __userId)
+        {
+            Ressource result = await DataClass.GetFirstEmptyRessource(__userId);
+
+            if(result == null)
+            {
+                result = new Ressource
+                {
+                    UtilisateurCreateurId = __userId,
+                    Statut = Statut.Empty
+                };
+
+                await DataClass.InsertOrUpdate(result);
+            }
+
+            return result.Id;
         }
 
         private string GenerateContenu(string contenu, TypeRessources typeRessource)

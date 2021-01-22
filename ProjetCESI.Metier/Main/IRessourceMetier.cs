@@ -15,8 +15,8 @@ namespace ProjetCESI.Metier
         Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
         Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
         Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
+        Task<int> InitNewRessource(int __userId);
         Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
-        Task SaveRessource(Ressource ressource);
         Task<IEnumerable<Tuple<int, string, string, List<string>, string, string>>> GetRessourcesAccueil(TypeTriBase _tri = TypeTriBase.DateModificationDesc, int _pagination = 5, int _pageOffset = 0);
     }
 }

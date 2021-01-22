@@ -16,5 +16,6 @@ namespace ProjetCESI.Data
         Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
         Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
         Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
+        Task<Ressource> GetFirstEmptyRessource(int __userId);
     }
 }
