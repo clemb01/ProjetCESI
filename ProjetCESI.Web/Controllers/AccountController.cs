@@ -68,7 +68,6 @@ namespace ProjetCESI.Web.Controllers
                 return View(model);
             }
 
-            //return View(model);
         }
 
         public async Task<IActionResult> LogOff()
@@ -130,6 +129,7 @@ namespace ProjetCESI.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                var CheckUser = new User();
                 var user = new User
                 {
                     UserName = model.Username,
@@ -137,6 +137,20 @@ namespace ProjetCESI.Web.Controllers
                 };
 
                 IdentityResult result = null;
+
+                CheckUser = await UserManager.FindByNameAsync(model.Username);
+                if (CheckUser != null)
+                {
+                    ModelState.AddModelError("", "Ce nom d'utilisateur existe déjà");
+                    return View(model);
+                }
+
+                CheckUser = await UserManager.FindByEmailAsync(model.Email);
+                if (CheckUser != null)
+                {
+                    ModelState.AddModelError("", "Email déjà utilisé");
+                    return View(model);
+                }
 
                 result = await UserManager.CreateAsync(user, model.Password);
 
