@@ -62,6 +62,18 @@ namespace ProjetCESI.Metier
             }
             return false;
         }
+
+        public async Task<User> UpdateInfoUser(User user, string newUsername)
+        {
+            if(user != null)
+            {
+                user.UserName = newUsername;
+                var result = await DataClass.InsertOrUpdate(user);
+                return user;
+            }
+            return null;
+        }
+
     }
 
 

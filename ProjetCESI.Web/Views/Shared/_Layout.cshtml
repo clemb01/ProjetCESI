@@ -19,7 +19,7 @@
                     <li id="connect-btn" class="nav-item align-self-end">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a class="d-lg-inline align-middle" asp-area="" asp-controller="" asp-action="">@User.Identity.Name</a>
+                            <a class="d-lg-inline align-middle" asp-area="" asp-controller="Account" asp-action="ProfilUser">@User.Identity.Name</a>
                             <a class="btn btn-outline-secondary" asp-area="" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
                         }
                         else

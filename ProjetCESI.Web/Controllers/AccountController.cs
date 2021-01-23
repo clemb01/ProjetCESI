@@ -277,5 +277,59 @@ namespace ProjetCESI.Web.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfilUser(string id, string newUsername)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
+
+            return Redirect("/Accueil/Accueil");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateEmail(string id, string newEmail)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await UserManager.GenerateChangeEmailTokenAsync(user, newEmail);
+
+            var confirmationLink = Url.Action(nameof(ConfirmChangeEmail), "Account", new { token = result, id = user.Id, newEmail }, Request.Scheme);
+
+            var htmlContent = String.Format(
+                    @"Thank you for updating your email. Please confirm the email by clicking this link: 
+        <br><a href='{0}'>Confirm new email</a>",
+                    confirmationLink);
+
+
+            // send email to the user with the confirmation link
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+
+            return RedirectToAction("SuccessRegistration");
+
+
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ConfirmChangeEmail(string token, string id, string newEmail)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null)
+                return View("Error");
+            var result = await UserManager.ChangeEmailAsync(user, newEmail, token);
+            return View(result.Succeeded ? nameof(ConfirmChangeEmail) : "Error");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(string id, string password, string newPassword)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await UserManager.ChangePasswordAsync(user, password, newPassword);
+            return RedirectToAction("ProfilUser");
+        }
+
     }
 }
+
