@@ -12,6 +12,11 @@ namespace ProjetCESI.Web.Models
 
         public string Tri { get; set; }
 
+        public int Page { get; set; }
+
+        public int NombrePages { get; set; }
+        public string Recherche { get; set; }
+
         public List<Ressource> Ressources { get; set; }
     }
 }

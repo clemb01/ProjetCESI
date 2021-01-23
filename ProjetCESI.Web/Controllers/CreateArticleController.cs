@@ -147,7 +147,10 @@ namespace ProjetCESI.Web.Controllers
 
             Ressource ressource = await ressourceMetier.GetById(ressourceId);
 
-            ressource.Statut = Statut.AttenteValidation;
+            if(User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)))
+                ressource.Statut = Statut.Accepter;
+            else
+                ressource.Statut = Statut.AttenteValidation;
 
             await ressourceMetier.InsertOrUpdate(ressource);
 

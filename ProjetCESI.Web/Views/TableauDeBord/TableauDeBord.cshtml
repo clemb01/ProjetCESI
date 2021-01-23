@@ -22,6 +22,48 @@
     </ul>
 </div>
 
+<nav aria-label="...">
+    <div class="d-flex justify-content-between">
+        <form action="/TableauDeBord" method="get" style="margin-bottom: 1rem;">
+            @Html.HiddenFor(c => Model.NomVue)
+            <input type="text" placeholder="Recherche..." name="Recherche" value="@Model.Recherche" />
+            <input type="submit" value="Filtrer" />
+        </form>
+        @if (Model.NombrePages > 1)
+        {
+            <ul class="pagination pagination-sm">
+                @for (int i = 1; i <= Model.NombrePages; i++)
+                {
+                    if (i == Model.Page)
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">
+                                @i
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>
+                    }
+                    else
+                    {
+                        string link = string.Empty;
+
+                        if (!string.IsNullOrEmpty(Model.Recherche))
+                        {
+                            link = $"/TableauDeBord?nomVue={Model.NomVue}&Recherche={Model.Recherche}&Page={i}";
+                        }
+                        else
+                        {
+                            link = $"/TableauDeBord?nomVue={Model.NomVue}&Page={i}";
+                        }
+
+                        <li class="page-item"><a class="page-link" href="@link">@i</a></li>
+                    }
+                }
+            </ul>
+        }
+    </div>
+</nav>
+
 @if (Model.Ressources.Any())
 {
     <table class="table table-striped">
@@ -43,87 +85,96 @@
         <tbody>
             @foreach (var ressource in Model.Ressources)
             {
-            <tr id="ressource-id-@ressource.Id">
-                <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
-                <td><span class="badge badge-pill badge-primary">@ressource.Categorie?.Nom</span></td>
-                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource?.Nom</span></td>
-                <td>
-                    @foreach (var relation in ressource.TypeRelationsRessources)
+                <tr id="ressource-id-@ressource.Id">
+                    <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
+                    <td><span class="badge badge-pill badge-primary">@ressource.Categorie?.Nom</span></td>
+                    <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource?.Nom</span></td>
+                    <td>
+                        @foreach (var relation in ressource.TypeRelationsRessources)
+                        {
+                            <span class="badge badge-pill badge-success text-center">@relation.TypeRelation?.Nom</span>
+                        }
+                    </td>
+                    @if (Model.NomVue == "crees")
                     {
-                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation?.Nom</span>
+                        <td>@Html.DisplayFor(c => ressource.Statut)</td>
                     }
-                </td>
-                @if (Model.NomVue == "crees")
-                {
-                    <td>@Html.DisplayFor(c => ressource.Statut)</td>
-                }
-                <td>
-                    @if (Model.NomVue == "favoris")
-                    {
-                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
-                    }
-                    else if (Model.NomVue == "exploitee")
-                    {
-                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
-                    }
-                    else if (Model.NomVue == "miscote")
-                    {
-                        <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
-                    }
-                    else if (Model.NomVue == "crees")
-                    {
-                        <a href="/CreateArticle/Edit/@ressource.Id">Editer la ressource</a>
-                    }
-                </td>
-            </tr>
+                    <td>
+                        @if (Model.NomVue == "favoris")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des favoris</a>
+                        }
+                        else if (Model.NomVue == "exploitee")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources exploitées</a>
+                        }
+                        else if (Model.NomVue == "miscote")
+                        {
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')">Supprimer des ressources de côté</a>
+                        }
+                        else if (Model.NomVue == "crees")
+                        {
+                            <a href="/CreateArticle/Edit/@ressource.Id">Editer la ressource</a>
+                        }
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 }
 else
 {
-<h1>
-    @if (Model.NomVue == "favoris")
+    if (string.IsNullOrEmpty(Model.Recherche))
     {
-        <text>Aucune ressources dans vos favoris</text>
+        <h1>
+            @if (Model.NomVue == "favoris")
+            {
+                <text>Aucune ressources dans vos favoris</text>
+            }
+            else if (Model.NomVue == "exploitee")
+            {
+                <text>Aucune ressources n'est marquées comme exploitée</text>
+            }
+            else if (Model.NomVue == "miscote")
+            {
+                <text>Aucune ressources n'est marquées comme mise de côté</text>
+            }
+            else if (Model.NomVue == "crees")
+            {
+                <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreateArticle/Create">ici</a></text>
+            }
+        </h1>
     }
-    else if (Model.NomVue == "exploitee")
+    else
     {
-        <text>Aucune ressources n'est marquées comme exploitée</text>
+        <h1>
+            Aucun résultats trouvé pour votre recherche !
+        </h1>
     }
-    else if (Model.NomVue == "miscote")
-    {
-        <text>Aucune ressources n'est marquées comme mise de côté</text>
-    }
-    else if (Model.NomVue == "crees")
-    {
-        <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreateArticle/Create">ici</a></text>
-    }
-</h1>
 }
 
 @section Scripts {
-<script type="text/javascript">
-    function removeFrom(ressourceId, what) {
-        let url = '';
+    <script type="text/javascript">
+        function removeFrom(ressourceId, what) {
+            let url = '';
 
-        if(what == "favoris")
-            url = '/Ressource/SupprimerFavoris';
-        else if (what == "exploitee")
-            url = '/Ressource/SupprimerExploite';
-        else if (what == "miscote")
-            url = '/Ressource/SupprimerMettreDeCote';
+            if (what == "favoris")
+                url = '/Ressource/SupprimerFavoris';
+            else if (what == "exploitee")
+                url = '/Ressource/SupprimerExploite';
+            else if (what == "miscote")
+                url = '/Ressource/SupprimerMettreDeCote';
 
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: {
-                ressourceId: ressourceId
-            }
-        })
-            .done(function () {
-                document.getElementById('ressource-id-' + ressourceId).remove();
-            });
-    }
-</script>
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    ressourceId: ressourceId
+                }
+            })
+                .done(function () {
+                    document.getElementById('ressource-id-' + ressourceId).remove();
+                });
+        }
+    </script>
 }

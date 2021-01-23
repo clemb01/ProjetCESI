@@ -56,11 +56,24 @@ namespace ProjetCESI.Core
 
         public Ressource Clone()
         {
-            Ressource clone = new Ressource();
-
-            foreach (PropertyInfo prop in GetType().GetProperties())
-                if(GetType().GetProperty(prop.Name).CanWrite && !GetType().GetProperty(prop.Name).IsCollectible && GetType().GetProperty(prop.Name).PropertyType != typeof(object))
-                    GetType().GetProperty(prop.Name).SetValue(this, prop.GetValue(this, null), null);
+            Ressource clone = new Ressource
+            {
+                Id = default,
+                TypeRessourceId = this.TypeRessourceId,
+                CategorieId = this.CategorieId,
+                UtilisateurCreateurId = this.UtilisateurCreateurId,
+                DateCreation = this.DateCreation,
+                DateModification = this.DateModification,
+                DateSuppression = this.DateSuppression,
+                NombreConsultation = this.NombreConsultation,
+                Statut = this.Statut,
+                Titre = this.Titre,
+                Contenu = this.Contenu,
+                ContenuOriginal = this.ContenuOriginal,
+                RessourceSupprime = this.RessourceSupprime,
+                TypePartage = this.TypePartage,
+                RessourceParentId = this.RessourceParentId
+            };
 
             return clone;
         }
