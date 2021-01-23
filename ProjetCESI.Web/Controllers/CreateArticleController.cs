@@ -13,6 +13,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using ProjetCESI.Web.Outils;
 using Microsoft.AspNetCore.Authorization;
+using ProjetCESI.Metier.Outils;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -190,15 +191,13 @@ namespace ProjetCESI.Web.Controllers
                             string mimeType = model.File.ContentType;
 
                             byte[] fileData = null;
-                            using (var fileStream = new FileStream(Path.Combine(uploads, model.File.FileName), FileMode.Create))
-                            {
-                                fileData = new byte[model.File.Length];
-                                model.File.OpenReadStream().Read(fileData, 0, (int)model.File.Length);
-                                fileStream.Write(fileData);
-                                fileStream.Close();
-                            }
+                            fileData = new byte[model.File.Length];
+                            model.File.OpenReadStream().Read(fileData, 0, (int)model.File.Length);
 
-                            originalContent = model.File.FileName;
+                            var blobFile = BlobStorage.UploadFileToBlob(fileName, fileData, mimeType);
+                            await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
+
+                            originalContent = $"{model.File.FileName}||{blobFile}";
                         }
                         else
                         {
@@ -210,7 +209,7 @@ namespace ProjetCESI.Web.Controllers
                         embed += " ou vous pouvez télécharger <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> pour visualiser le PDF.";
                         embed += "</object>";
 
-                        content = string.Format(embed, @"/uploads/" + originalContent);
+                        content = string.Format(embed, @"/uploads/" + originalContent.Split("||").Last()[(originalContent.Split("||").Last().LastIndexOf("/") + 1)..]);
                     }
                 }
                 else if (model.SelectedTypeRessources == (int)TypeRessources.Video)
@@ -250,8 +249,7 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(model.RessourceId);
 
-                    IEnumerable<int> diff1 = new List<int>(), diff2 = new List<int>();
-                    
+                    IEnumerable<int> diff1 = new List<int>(), diff2 = new List<int>();                    
                     
                     if(model.SelectedTypeRelation != null && ressource.TypeRelationsRessources.Any())
                     {
