@@ -108,6 +108,25 @@ namespace ProjetCESI.Data
             }
         }
 
+        public async Task<IEnumerable<Ressource>> GetRessourcesNonValider(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.Statut == Statut.AttenteValidation)
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
+
         public async Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())

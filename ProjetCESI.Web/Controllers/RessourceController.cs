@@ -64,6 +64,29 @@ namespace ProjetCESI.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("ValidateRessource/{id}")]
+        public async Task<IActionResult> ValidateRessource(int id)
+        {
+            var model = PrepareModel<RessourceViewModel>();
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+
+            model.RessourceId = id;
+            model.Titre = ressource.Titre;
+            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
+            model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.Categorie = ressource.Categorie;
+            model.Commentaires = ressource.Commentaires;
+            model.DateCreation = ressource.DateCreation;
+            model.DateModification = ressource.DateModification;
+            model.Contenu = ressource.Contenu;
+            model.Statut = ressource.Statut;
+
+            return View(model);
+        }
+
         [HttpPost]
         [StatistiqueFilter]
         public async Task<IActionResult> AjouterFavoris(int ressourceId)
@@ -134,6 +157,63 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status200OK);
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ValiderRessource(int ressourceId)
+        {
+            var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            string UserId = Ressource.UtilisateurCreateurId.ToString();
+            var User = await UserManager.FindByIdAsync(UserId);
+            string message = "Votre ressource a été validé !";
+            Ressource.Statut = Statut.Accepter;
+            
+            var result = await ressourceMetier.InsertOrUpdate(Ressource);
+            var model = new GestionViewModel();
+            model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesNonValider()).ToList();
+            model.NomVue = "Validation";
+            if (result)
+            {
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                return View("../Gestion/Gestion", model);
+            } 
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefuserRessource(int ressourceId, string messageRefus)
+        {
+            var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            string UserId = Ressource.UtilisateurCreateurId.ToString();
+            string message = "";
+            if (String.IsNullOrWhiteSpace(messageRefus))
+            {
+                message = "La validation de : " + Ressource.Titre + " a été refusé." ;
+            }
+            else
+            {
+                message = "La validation de : " + Ressource.Titre + " a été refusé. Motif : " + messageRefus;
+            }
+            var User = await UserManager.FindByIdAsync(UserId);
+            Ressource.Statut = Statut.Refuser;
+            var result = await ressourceMetier.InsertOrUpdate(Ressource);
+            var model = new GestionViewModel();
+            model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesNonValider()).ToList();
+            model.NomVue = "Validation";
+            if (result)
+            {
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                return View("../Gestion/Gestion", model);
+            }
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+
         }
     }
 }

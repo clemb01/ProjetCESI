@@ -35,6 +35,27 @@ for details on configuring this project to bundle and minify static web assets. 
     font-weight: bold;
 }
 
+#menu-gestion {
+    margin-bottom: 1em;
+}
+
+    #menu-gestion li {
+        padding: 0;
+    }
+
+    #menu-gestion a {
+        padding: .75rem 1.25rem;
+    }
+
+    #menu-gestion .active {
+        background-color: grey;
+    }
+
+        #menu-gestion .active a {
+            color: white;
+            font-weight: bold;
+        }
+
 #connect-btn {
     margin-top: 0.5em;
 }
@@ -250,7 +271,6 @@ body {
     font-weight: bold
 }
 
-;
 .input-validation-error {
     border: 2px solid #f00;
     background-color: #fee
@@ -285,3 +305,7 @@ input[type="checkbox"].input-validation-error {
     float: right;
 }
 
+.espace-button
+{
+    margin:5%;
+}
