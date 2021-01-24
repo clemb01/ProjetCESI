@@ -166,7 +166,7 @@ namespace ProjetCESI.Web.Controllers
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
             var User = await UserManager.FindByIdAsync(UserId);
-            string message = "Votre ressource a été validé !";
+            string message = "Votre ressource :" + Ressource.Titre + ", a été validé !";
             Ressource.Statut = Statut.Accepter;
             
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
@@ -193,11 +193,11 @@ namespace ProjetCESI.Web.Controllers
             string message = "";
             if (String.IsNullOrWhiteSpace(messageRefus))
             {
-                message = "La validation de : " + Ressource.Titre + " a été refusé." ;
+                message = "La validation de : " + Ressource.Titre + ", a été refusé." ;
             }
             else
             {
-                message = "La validation de : " + Ressource.Titre + " a été refusé. Motif : " + messageRefus;
+                message = "La validation de : " + Ressource.Titre + ", a été refusé. Motif : " + messageRefus;
             }
             var User = await UserManager.FindByIdAsync(UserId);
             Ressource.Statut = Statut.Refuser;
