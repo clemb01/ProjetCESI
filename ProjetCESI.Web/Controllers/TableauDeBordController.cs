@@ -16,18 +16,76 @@ namespace ProjetCESI.Web.Controllers
         {
             PrepareModel(model);
 
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+
             if (model.NomVue == "favoris")
-                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserFavoriteRessources(UserId.Value)).ToList();
+            {
+                var result = await ressourceMetier.GetUserFavoriteRessources(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
             else if (model.NomVue == "exploitee")
-                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesExploitee(UserId.Value)).ToList();
+            {
+                var result = await ressourceMetier.GetUserRessourcesExploitee(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
             else if (model.NomVue == "miscote")
-                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesMiseDeCote(UserId.Value)).ToList();
+            {
+                var result = await ressourceMetier.GetUserRessourcesMiseDeCote(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
             else if (model.NomVue == "crees")
-                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetUserRessourcesCreees(UserId.Value)).ToList();
+            {
+                var result = await ressourceMetier.GetUserRessourcesCreees(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
             else
                 return RedirectToAction("Accueil", "Accueil");
 
+            model.Page = model.Page == default ? 1 : model.Page;
+
             return View(model);
+        }
+
+        public async Task<IActionResult> Search(TableauDeBordViewModel model)
+        {
+            PrepareModel(model);
+
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+
+            if (model.NomVue == "favoris")
+            {
+                var result = await ressourceMetier.GetUserFavoriteRessources(UserId.Value);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
+            else if (model.NomVue == "exploitee")
+            {
+                var result = await ressourceMetier.GetUserRessourcesExploitee(UserId.Value);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
+            else if (model.NomVue == "miscote")
+            {
+                var result = await ressourceMetier.GetUserRessourcesMiseDeCote(UserId.Value);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
+            else if (model.NomVue == "crees")
+            {
+                var result = await ressourceMetier.GetUserRessourcesCreees(UserId.Value);
+                model.Ressources = result.Item1.ToList();
+                model.NombrePages = result.Item2;
+            }
+            else
+                return RedirectToAction("Accueil", "Accueil");
+
+            model.Page = model.Page == default ? 1 : model.Page;
+
+            return View("TableauDeBord", model);
         }
     }
 }

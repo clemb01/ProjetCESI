@@ -38,9 +38,7 @@ namespace ProjetCESI.Metier
         public ITypeRessourceMetier CreateTypeRessourceMetier(IMetierBase metierBase = null) => GetMetier<TypeRessourceMetier>(metierBase);
         public IUtilisateurRessourceMetier CreateUtilisateurRessourceMetier(IMetierBase metierBase = null) => GetMetier<UtilisateurRessourceMetier>(metierBase);
         public IEmailMetier EmailMetier(IMetierBase metierBase = null) => GetMetier<EmailMetier>(metierBase);
-
         public IStatistiqueMetier CreateStatistiqueMetier(IMetierBase metierBase = null) => GetMetier<StatistiqueMetier>(metierBase);
-
         public IAdminMetier CreateUtilisateurMetier(IMetierBase metierBase = null) => GetMetier<AdminMetier>(metierBase);
     }
 }

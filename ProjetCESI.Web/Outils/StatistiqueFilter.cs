@@ -69,9 +69,21 @@ namespace ProjetCESI.Web.Outils
             {
                 stat.Parametre = $"ressourceId={(int)context.ActionArguments["id"]}";
             }
-            else if (stat.Controller == "CreateArticle" && stat.Action == "Upload")
+            else if (stat.Controller == "CreateArticle")
             {
-                // TODO
+                if (context.ActionArguments.ContainsKey("model"))
+                {
+                    var model = (CreateRessourceViewModel)context.ActionArguments["model"];
+
+                    if (model != null)
+                    {
+                        stat.Parametre = GenerateParametreRecherche(model);
+                    }
+                }
+                else
+                {
+                    stat.Parametre = context.ActionArguments.ContainsKey("ressourceId") ? ((int)context.ActionArguments["ressourceId"]).ToString() : string.Empty;
+                }
             }
             else if (stat.Controller == "Ressource" && (stat.Action.Contains("Ajouter") || stat.Action.Contains("Supprimer")))
             {
@@ -91,7 +103,7 @@ namespace ProjetCESI.Web.Outils
             
             foreach (var property in properties)
             {
-                if(property.GetValue(model) != null && (property.Name != "Ressources" && typeof(T) == typeof(RechercheRessourceViewModel)))
+                if(property.GetValue(model) != null && property.Name != "Ressources" && typeof(BaseViewModel).IsAssignableFrom(typeof(T)))
                 {
                     if(parametreRecherche.Length > 0 && parametreRecherche.LastIndexOf('&') != parametreRecherche.Length)
                     {

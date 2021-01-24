@@ -51,11 +51,11 @@ namespace ProjetCESI.Data
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesMiseDeCote(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
             {
-                return await ctx.Set<Ressource>()
+                IQueryable<Ressource> query = ctx.Set<Ressource>()
                         .Include(c => c.UtilisateurCreateur)
                         .Include(c => c.Categorie)
                         .Include(c => c.TypeRessource)
@@ -63,18 +63,28 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId))
-                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId));
+
+                if(!string.IsNullOrEmpty(_search))
+                    query = Search(query, _search);
+
+                int count = await query.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                var result = await query.OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
+
+                return Tuple.Create(result.AsEnumerable(), count);
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesExploitee(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
             {
-                return await ctx.Set<Ressource>()
+                IQueryable<Ressource> query = ctx.Set<Ressource>()
                         .Include(c => c.UtilisateurCreateur)
                         .Include(c => c.Categorie)
                         .Include(c => c.TypeRessource)
@@ -82,18 +92,28 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId))
-                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId));
+
+                if (!string.IsNullOrEmpty(_search))
+                    query = Search(query, _search);
+
+                int count = await query.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                var result = await query.OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
+
+                return Tuple.Create(result.AsEnumerable(), count);
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesCreees(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
             {
-                return await ctx.Set<Ressource>()
+                IQueryable<Ressource> query = ctx.Set<Ressource>()
                         .Include(c => c.UtilisateurCreateur)
                         .Include(c => c.Categorie)
                         .Include(c => c.TypeRessource)
@@ -101,10 +121,20 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.UtilisateurCreateurId == _userId)
-                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Where(c => c.UtilisateurCreateurId == _userId && c.Statut != Statut.Empty);
+
+                if (!string.IsNullOrEmpty(_search))
+                    query = Search(query, _search);
+
+                int count = await query.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                var result = await query.OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
+
+                return Tuple.Create(result.AsEnumerable(), count);
             }
         }
 
@@ -127,11 +157,11 @@ namespace ProjetCESI.Data
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserFavoriteRessources(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())
             {
-                return await ctx.Set<Ressource>()
+                IQueryable<Ressource> query = ctx.Set<Ressource>()
                         .Include(c => c.UtilisateurCreateur)
                         .Include(c => c.Categorie)
                         .Include(c => c.TypeRessource)
@@ -139,10 +169,37 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId))
-                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Where(c => c.Statut == Statut.Accepter && c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId));
+
+                if (!string.IsNullOrEmpty(_search))
+                    query = Search(query, _search);
+
+                int count = await query.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                var result = await query.OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
+
+                return Tuple.Create(result.AsEnumerable(), count);
+            }
+        }
+
+        private IQueryable<Ressource> Search(IQueryable<Ressource> query, string search)
+        {
+            return query.Where(c => c.Titre.Contains(search) ||
+                                    c.Categorie.Nom.Contains(search) ||
+                                    c.TypeRessource.Nom.Contains(search) ||
+                                    c.TypeRelationsRessources.Any(c => c.TypeRelation.Nom.Contains(search)));
+        }
+
+        public async Task<Ressource> GetFirstEmptyRessource(int __userId)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                    .FirstOrDefaultAsync(c => c.UtilisateurCreateurId == __userId && c.Statut == Statut.Empty);
             }
         }
 

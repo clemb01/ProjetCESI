@@ -6,6 +6,6 @@ namespace ProjetCESI.Metier
 {
     public interface ITypeRelationRessourceMetier : IMetier<TypeRelationRessource>
     {
-        Task AjouterRelationsToRessource(List<int> listRelations, int ressourceId);
+        Task AjouterRelationsToRessource(List<int> __listRelations, int __ressourceId);
     }
 }

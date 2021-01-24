@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using ProjetCESI.Core;
 using ProjetCESI.Metier;
 using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,7 @@ namespace ProjetCESI.Web.Controllers
         private IWebHostEnvironment _env;
         private IConfiguration _configuration;
         private ILogger _logger;
+        private ViewToStringRendererService _viewToStringRendererService;
 
         public BaseController()
         {
@@ -157,6 +159,17 @@ namespace ProjetCESI.Web.Controllers
                     _logger = HttpContext.RequestServices.GetService(typeof(ILogger)) as ILogger;
 
                 return _logger;
+            }
+        }
+
+        public ViewToStringRendererService ViewToStringRendererService
+        {
+            get
+            {
+                if (_viewToStringRendererService == null)
+                    _viewToStringRendererService = HttpContext.RequestServices.GetService(typeof(ViewToStringRendererService)) as ViewToStringRendererService;
+
+                return _viewToStringRendererService;
             }
         }
 
