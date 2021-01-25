@@ -68,15 +68,18 @@
                                 <a class="nav-link text-dark" href="/TableauDeBord?nomVue=favoris">Tableau de bord</a>
                             </li>
 
-                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Moderateur)))
                             {
                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Gestion?nomVue=Validation">Gestion</a>
+                                </li>
+                                @*<li class="nav-item">
                                     <a class="nav-link text-dark" href="/Statistiques">Statistiques</a>
                                 </li>
 
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserList">Liste utilisateur</a>
-                                </li>
+                                </li>*@
                             }
                         }
 

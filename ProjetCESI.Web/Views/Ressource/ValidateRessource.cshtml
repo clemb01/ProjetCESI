@@ -1,0 +1,71 @@
+﻿@using ProjetCESI.Web.Models
+@model RessourceViewModel
+
+@{
+    ViewData["Title"] = Model.Titre;
+}
+
+<div class="ressource-header justify-content-between">
+    <h3 class="title">@Model.Titre</h3>
+</div>
+<span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
+<span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
+@foreach (var relation in Model.TypeRelations)
+{
+    <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
+}
+
+<div class="content">
+    @if (Model.TypeRessource.Id != (int)ProjetCESI.Core.TypeRessources.Video)
+    {
+        @Html.Raw(Model.Contenu)
+    }
+    else
+    {
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="@Model.Contenu" allowfullscreen></iframe>
+        </div>
+    }
+</div>
+
+<div class="fixed-div">
+
+    <ul class="nav justify-content-center">
+        <li class="nav-item Espace-form">
+            <form method="post" asp-action="ValiderRessource" asp-controller="Ressource">
+                <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                <input type="submit" value="Valider" class="btn btn-success btn-lg" />
+            </form>
+        </li>
+        <li class="nav-item Espace-form">
+            <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#Refus">Refuser</button>
+        </li>
+    </ul>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="Refus" tabindex="-1" aria-labelledby="Refus" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Refuser la validation</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="RefuserRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageRefus" id="messageRefus"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

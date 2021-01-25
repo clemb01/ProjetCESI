@@ -6,17 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Models
 {
-    public class TableauDeBordViewModel : BaseViewModel
+    public class GestionViewModel : BaseViewModel
     {
         public string NomVue { get; set; }
-
-        public string Tri { get; set; }
-
-        public int Page { get; set; }
-
-        public int NombrePages { get; set; }
-        public string Recherche { get; set; }
-
         public List<Ressource> Ressources { get; set; }
+        public List<User> Users { get; set; }
     }
 }
