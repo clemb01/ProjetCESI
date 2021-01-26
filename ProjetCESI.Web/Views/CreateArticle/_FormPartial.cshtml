@@ -64,9 +64,9 @@
 <br />
 
 <div class="d-flex justify-content-between">
-    <p>
+    <p style="width: 70%;">
         Titre :
-        <input type="text" id="TitreArticle" name="Titre" value="@Model.Titre" />
+        <input type="text" id="TitreArticle" name="Titre" value="@Model.Titre"/>
         @Html.ValidationMessageFor(c => c.Titre, "", new { @style = "font-size: 14px;" })
     </p>
     <p>

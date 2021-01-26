@@ -45,7 +45,7 @@ namespace ProjetCESI.Web.Controllers
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
             model.Statut = ressource.Statut;
-            model.NombreConsultation = ++ressource.NombreConsultation;
+            model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
 
             if (User.Identity.IsAuthenticated)
             {
