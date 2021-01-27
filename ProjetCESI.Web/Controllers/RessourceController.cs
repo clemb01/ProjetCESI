@@ -1,5 +1,4 @@
-﻿using Azure.Storage.Blobs;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ProjetCESI.Web.Outils;
+using ProjetCESI.Metier.Outils;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -56,6 +56,13 @@ namespace ProjetCESI.Web.Controllers
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+            }
+
+            if(ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
+            {
+                string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
+                string blobFile = ressource.ContenuOriginal.Split("||").Last();
+                await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
             }
 
             ressource.TypeRelationsRessources = null;

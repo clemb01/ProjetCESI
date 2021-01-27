@@ -100,7 +100,7 @@
     <h3>Selectionnez un fichier</h3>
     @if (Model.File != null || !string.IsNullOrEmpty(Model.NomPdf))
     {
-        <p>Fichier sélectionné: @(Model.File != null ? Model.File.FileName : Model.NomPdf)</p>
+        <p>Fichier sélectionné: @(Model.File != null ? Model.File.FileName : Model.NomPdf.Split("||").First())</p>
     }
     <input type="file" name="File" id="file" accept=".pdf" /><br><br>
     @Html.ValidationMessage("File")

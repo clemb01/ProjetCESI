@@ -92,7 +92,7 @@ namespace ProjetCESI.Web.Controllers
                         model.Contenu = ressource.Contenu;
                     }
                     else
-                    {
+                    {   
                         model.NomPdf = ressource.ContenuOriginal;
                     }
                 }
