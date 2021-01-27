@@ -36,7 +36,7 @@ namespace ProjetCESI.Web.Controllers
             {
                 return View(model);
             }
-            if (model.NomVue == "suspendu")
+            else if (model.NomVue == "suspendu")
             {
                 model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesSuspendu()).ToList();
                 if (model.Ressources == null)
