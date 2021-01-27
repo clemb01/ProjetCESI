@@ -27,7 +27,7 @@ namespace ProjetCESI.Web.Controllers
             else if (model.NomVue == "UserList")
             {
                 model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
-                if (model.Users == null)
+                if (model.Users == null || model == null)
                 {
                     return View();
                 }

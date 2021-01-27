@@ -65,11 +65,14 @@
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.LockoutEnd)
+                            @if (item.LockoutEnd > DateTimeOffset.Now)
+                            {
+                                @Html.DisplayFor(modelItem => item.LockoutEnd)
+                            }
+
                         </td>
                         <td>
                             <strong>
-                                @*@Html.ActionLink("Modifier Rôle", "UpdateRole", new { id = item.Utilisateur.Id})*@
                                 @Html.ActionLink("Ban", "BanTempo", "Admin", new { id = item.Id })
                                 @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
                                 @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })

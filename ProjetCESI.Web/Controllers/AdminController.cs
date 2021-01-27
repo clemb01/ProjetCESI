@@ -54,7 +54,11 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
-            return RedirectToAction("UserList");
+
+            var model = new GestionViewModel();
+            model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
+            model.NomVue = "UserList";
+            return View("../Gestion/Gestion", model);
         }
 
         public async Task<IActionResult> BanTempo(string id)
@@ -79,9 +83,11 @@ namespace ProjetCESI.Web.Controllers
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().BanUserTemporary(user, time);
             TempData["Utilisateur"] = true;
-                
 
-            return RedirectToAction("UserList");
+            var model = new GestionViewModel();
+            model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
+            model.NomVue = "UserList";
+            return View("../Gestion/Gestion", model);
         }
 
         [HttpPost]
@@ -90,7 +96,10 @@ namespace ProjetCESI.Web.Controllers
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().DeBan(user);
 
-            return RedirectToAction("UserList");
+            var model = new GestionViewModel();
+            model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
+            model.NomVue = "UserList";
+            return View("../Gestion/Gestion", model);
         }
 
         [HttpPost]
@@ -99,7 +108,10 @@ namespace ProjetCESI.Web.Controllers
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().BanUserPermanent(user);
 
-            return RedirectToAction("UserList");
+            var model = new GestionViewModel();
+            model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
+            model.NomVue = "UserList";
+            return View("../Gestion/Gestion", model);
         }
 
         public async Task<IActionResult> UpdateRole(string id)
