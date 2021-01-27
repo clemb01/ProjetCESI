@@ -7,10 +7,9 @@
     {
 <div class="commentaire">
     <div class="d-inline-flex" style="width: 100%;">
-        <a href="#"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FrFZ2w6Uspic%2Fhqdefault.jpg&f=1&nofb=1" /></a>
         <div style="width: 100%;">
             <div class="d-inline-flex">
-                <a href="#">@commentaire.Utilisateur.UserName</a>&nbsp;
+                <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
             @{
@@ -50,10 +49,9 @@
                     {
                         <div class="reponse d-block">
                             <div class="d-inline-flex">
-                                <a href="#"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FrFZ2w6Uspic%2Fhqdefault.jpg&f=1&nofb=1" /></a>
                                 <div>
                                     <div class="d-inline-flex">
-                                        <a href="#">@commentaireEnfant.Utilisateur.UserName</a>&nbsp;
+                                        <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                                         <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
                                     </div>
                                     @{

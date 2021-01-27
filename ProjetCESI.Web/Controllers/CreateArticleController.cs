@@ -68,7 +68,7 @@ namespace ProjetCESI.Web.Controllers
             {
                 List<string> roles = new List<string>() { Enum.GetName(TypeUtilisateur.Admin), Enum.GetName(TypeUtilisateur.SuperAdmin) };
 
-                if (ressource.UtilisateurCreateurId != UserId || !UtilisateurRoles.Any(c => roles.Contains(c)))
+                if (ressource.UtilisateurCreateurId != UserId && !UtilisateurRoles.Any(c => roles.Contains(c)))
                 {
                     return RedirectToAction("Accueil", "Accueil");
                 }
@@ -92,7 +92,7 @@ namespace ProjetCESI.Web.Controllers
                         model.Contenu = ressource.Contenu;
                     }
                     else
-                    {
+                    {   
                         model.NomPdf = ressource.ContenuOriginal;
                     }
                 }
