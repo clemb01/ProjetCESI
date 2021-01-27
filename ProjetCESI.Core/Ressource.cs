@@ -91,7 +91,7 @@ namespace ProjetCESI.Core
         Accepter,
         [Display(Name = "Refusé")]
         Refuser,
-        [Display(Name = "Suspendre")]
+        [Display(Name = "Suspendu")]
         Suspendre
     }
 
