@@ -61,7 +61,7 @@
     <form method="post" asp-action="">
         <div class="card">
             <div class="card-header" id="header3">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Modification mot de passe</button>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">@Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })</button>
             </div>
             <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
                 <div class="card-body">
