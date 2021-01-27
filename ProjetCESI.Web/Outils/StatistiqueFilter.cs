@@ -62,7 +62,7 @@ namespace ProjetCESI.Web.Outils
                 }
                 else
                 {
-                    stat.Parametre = context.ActionArguments.ContainsKey("recherche") ? (string)context.ActionArguments["recherche"] : string.Empty;
+                    stat.Parametre = context.ActionArguments.ContainsKey("recherche") ? "recherche=" + (string)context.ActionArguments["recherche"] : string.Empty;
                 }
             }
             else if (stat.Controller == "Ressource" && stat.Action == "Ressource") 
@@ -82,7 +82,7 @@ namespace ProjetCESI.Web.Outils
                 }
                 else
                 {
-                    stat.Parametre = context.ActionArguments.ContainsKey("ressourceId") ? ((int)context.ActionArguments["ressourceId"]).ToString() : string.Empty;
+                    stat.Parametre = context.ActionArguments.ContainsKey("ressourceId") ? $"ressourceId={(int)context.ActionArguments["ressourceId"]}" : string.Empty;
                 }
             }
             else if (stat.Controller == "Ressource" && (stat.Action.Contains("Ajouter") || stat.Action.Contains("Supprimer")))

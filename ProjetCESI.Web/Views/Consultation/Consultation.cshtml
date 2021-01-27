@@ -9,7 +9,7 @@
     <input id="TypeTri" name="tri" hidden />
 </form>
 
-@if (Model.Ressources != null)
+@if (Model != null)
 {
     @await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
 }

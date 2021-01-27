@@ -1,6 +1,14 @@
 ﻿@using ProjetCESI.Web.Models
 @model RessourceViewModel
 
+
+@if (Model.Statut == ProjetCESI.Core.Statut.Suspendre)
+{
+    <div class="alert alert-danger" role="alert">
+        Cette ressource a été suspendu !
+    </div>
+}
+
 @{
     ViewData["Title"] = Model.Titre;
 }
@@ -31,99 +39,99 @@
             </div>
         }
     }
-    </div>
-    <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
-    <span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
+</div>
+<span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
+<span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
 
-    @foreach (var relation in Model.TypeRelations)
-    {
-        <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
-    }
+@foreach (var relation in Model.TypeRelations)
+{
+    <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
+}
 
-    <div class="content">
-        @Html.Raw(Model.Contenu)
-    </div>
+<div class="content">
+    @Html.Raw(Model.Contenu)
+</div>
 
-    @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
-    {
-        <div class="comment-section">
-            <h2>Commentaires</h2>
-            <div id="response-editor">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <form id="ajout-commentaire">
-                        <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
-                    </form>
-                }
-                <div class="collapse" id="submit-btn">
-                    <div class="d-flex justify-content-end">
-                        <button id="annuler-commentaire">Annuler</button>
-                        <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
-                    </div>
-                </div>
-            </div>
-            <div id="list-commentaire">
-            </div>
-        </div>
-    }
-
-    <!-- Modal suspendre -->
-    <div class="modal fade" id="suspendre" tabindex="-1" aria-labelledby="suspendre" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="suspendre">Suspendre la ressource</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form asp-controller="Ressource" asp-action="SuspendreRessource" method="post">
-                    <div class="modal-body">
-
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Motif :</label>
-                            <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
-                            <textarea class="form-control" name="messageSuspendre" id="messageSuspendre"></textarea>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-danger">Suspendre</button>
-                    </div>
+@if (Model.Statut == ProjetCESI.Core.Statut.Accepter && Model.RessourceSupprime == false)
+{
+    <div class="comment-section">
+        <h2>Commentaires</h2>
+        <div id="response-editor">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form id="ajout-commentaire">
+                    <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal suppression -->
-    <div class="modal fade" id="suppression" tabindex="-1" aria-labelledby="suppression" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="suppression">Supprimer la ressource</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            }
+            <div class="collapse" id="submit-btn">
+                <div class="d-flex justify-content-end">
+                    <button id="annuler-commentaire">Annuler</button>
+                    <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
                 </div>
-                <form asp-controller="Ressource" asp-action="SupprimerRessource" method="post">
-                    <div class="modal-body">
-
-                        <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Motif :</label>
-                            <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
-                            <textarea class="form-control" name="messageSuppression" id="messageSuppression"></textarea>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-danger">Supprimer</button>
-                    </div>
-                </form>
             </div>
         </div>
+        <div id="list-commentaire">
+        </div>
     </div>
+}
 
-    @section Scripts {
-        <script src="~/lib/autosize/dist/autosize.min.js"></script>
-        <script>
+<!-- Modal suspendre -->
+<div class="modal fade" id="suspendre" tabindex="-1" aria-labelledby="suspendre" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suspendre">Suspendre la ressource</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="SuspendreRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageSuspendre" id="messageSuspendre"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-danger">Suspendre</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal suppression -->
+<div class="modal fade" id="suppression" tabindex="-1" aria-labelledby="suppression" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suppression">Supprimer la ressource</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="SupprimerRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageSuppression" id="messageSuppression"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/autosize/dist/autosize.min.js"></script>
+    <script>
     let estFavoris = @Model.EstFavoris.ToString().ToLower();
     let estMisDeCote = @Model.EstMisDeCote.ToString().ToLower();
     let estExploite = @Model.EstExploite.ToString().ToLower();
@@ -284,5 +292,5 @@
                 document.getElementById("list-commentaire").innerHTML = result;
             });
     }
-        </script>
-    }
+    </script>
+}

@@ -254,7 +254,7 @@ namespace ProjetCESI.Web.Controllers
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
             if (result)
             {
-                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suppression de la ressource", message);
                 return View("../Consultation/Consultation");
             }
             else
@@ -283,12 +283,11 @@ namespace ProjetCESI.Web.Controllers
                 message = "La ressource : " + Ressource.Titre + ", a été suspendu. Motif : " + messageSuspendre;
             }
             var User = await UserManager.FindByIdAsync(UserId);
-            Ressource.RessourceSupprime = true;
-            Ressource.DateSuppression = DateTimeOffset.Now;
+            Ressource.Statut = Statut.Suspendre;
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
             if (result)
             {
-                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Susppension de la ressource", message);
                 return View("../Consultation/Consultation");
             }
             else
