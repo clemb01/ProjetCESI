@@ -90,7 +90,9 @@ namespace ProjetCESI.Core
         [Display(Name = "Accepté")]
         Accepter,
         [Display(Name = "Refusé")]
-        Refuser
+        Refuser,
+        [Display(Name = "Suspendre")]
+        Suspendre
     }
 
     public enum TypePartage

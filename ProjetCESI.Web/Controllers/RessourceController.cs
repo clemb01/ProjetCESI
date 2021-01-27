@@ -46,6 +46,8 @@ namespace ProjetCESI.Web.Controllers
             model.Contenu = ressource.Contenu;
             model.Statut = ressource.Statut;
             model.NombreConsultation = ++ressource.NombreConsultation;
+            model.DateSuppression = ressource.DateSuppression;
+            model.RessourceSupprime = ressource.RessourceSupprime;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -213,6 +215,74 @@ namespace ProjetCESI.Web.Controllers
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
                 return View("../Gestion/Gestion", model);
+            }
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SupprimerRessource(int ressourceId, string messageSuppression)
+        {
+            var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            string UserId = Ressource.UtilisateurCreateurId.ToString();
+            string message = "";
+            var model = PrepareModel<ConsultationViewModel>();
+            int tri = 0;
+            model.Ressources.TypeTri = tri;
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
+            if (String.IsNullOrWhiteSpace(messageSuppression))
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été supprimé.";
+            }
+            else
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été supprimé. Motif : " + messageSuppression;
+            }
+            var User = await UserManager.FindByIdAsync(UserId);
+            Ressource.RessourceSupprime = true;
+            Ressource.DateSuppression = DateTimeOffset.Now;
+            var result = await ressourceMetier.InsertOrUpdate(Ressource);
+            if (result)
+            {
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                return View("../Consultation/Consultation");
+            }
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SuspendreRessource(int ressourceId, string messageSuspendre)
+        {
+            var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            string UserId = Ressource.UtilisateurCreateurId.ToString();
+            string message = "";
+            var model = PrepareModel<ConsultationViewModel>();
+            int tri = 0;
+            model.Ressources.TypeTri = tri;
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
+            if (String.IsNullOrWhiteSpace(messageSuspendre))
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été suspendu.";
+            }
+            else
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été suspendu. Motif : " + messageSuspendre;
+            }
+            var User = await UserManager.FindByIdAsync(UserId);
+            Ressource.RessourceSupprime = true;
+            Ressource.DateSuppression = DateTimeOffset.Now;
+            var result = await ressourceMetier.InsertOrUpdate(Ressource);
+            if (result)
+            {
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
+                return View("../Consultation/Consultation");
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);

@@ -1,23 +1,51 @@
 ﻿@using ProjetCESI.Web.Models
 @model RessourceViewModel
 
+@*@if (Model.RessourceSupprime)
+{
+    <div class="alert alert-danger" role="alert">
+        A simple danger alert—check it out!
+    </div>
+}
+@if(Model.Statut == Model.Statut)
+{
+
+}*@
+
 @{
     ViewData["Title"] = Model.Titre;
 }
 
 <div class="ressource-header justify-content-between">
     <h3 class="title">@Model.Titre</h3>
+
     @if (User.Identity.IsAuthenticated)
     {
         <div class="ressource-button">
             <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
             <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
             <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+
+        </div>
+        <div class="ressource-button">
+            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+            {
+                <ul class="nav">
+                    <li class="nav-item Espace-form">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#suppression">Supprimer</button>
+                    </li>
+                    <li class="nav-item Espace-form">
+                        <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#suspendre">Suspendre</button>
+                    </li>
+                </ul>
+            }
+
         </div>
     }
 </div>
 <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
 <span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
+
 @foreach (var relation in Model.TypeRelations)
 {
     <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
@@ -44,6 +72,60 @@
         </div>
     </div>
     <div id="list-commentaire">
+    </div>
+</div>
+
+<!-- Modal suspendre -->
+<div class="modal fade" id="suspendre" tabindex="-1" aria-labelledby="suspendre" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suspendre">Suspendre la ressource</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="SuspendreRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageSuspendre" id="messageSuspendre"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-danger">Suspendre</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal suppression -->
+<div class="modal fade" id="suppression" tabindex="-1" aria-labelledby="suppression" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suppression">Supprimer la ressource</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="SupprimerRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageSuppression" id="messageSuppression"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
