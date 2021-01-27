@@ -5,6 +5,94 @@
     ViewData["Title"] = "ProfilUser";
 }
 
-<h2>Bonjour @Html.DisplayFor(model => model.Utilisateur.UserName)</h2>
 
-@Html.ActionLink("Supprimer le compte", "ConfirmationAnonyme", new { id = Model.Utilisateur.Id })
+<div class="container">
+    <h1>Gestion du Profil : @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)</h1>
+    <form method="post" asp-action="UpdateProfilUser">
+        <div class="accordion" id="exempleAccordeon">
+            <div class="card">
+                <div class="card-header" id="header1">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Modification pseudo</button>
+                </div>
+                <div id="collapse1" class="collapse" aria-labelledby="header1" data-parent="#exempleAccordeon">
+                    <div class="card-body">
+
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                                Nouveau pseudo :
+                                <input placeholder="@Model.Utilisateur.UserName" value="@Model.Utilisateur.UserName" name="newUsername" />
+                            </label>
+
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form method="post" asp-action="UpdateEmail">
+        <div class="card">
+            <div class="card-header" id="header2">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">Modification Email</button>
+            </div>
+            <div id="collapse2" class="collapse" aria-labelledby="header2" data-parent="#exempleAccordeon">
+                <div class="card-body">
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                            Nouvelle adresse Email :
+                            <input placeholder="@Model.Utilisateur.Email" value="@Model.Utilisateur.Email" name="newEmail" />
+
+                        </label>
+
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form method="post" asp-action="">
+        <div class="card">
+            <div class="card-header" id="header3">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">@Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })</button>
+            </div>
+            <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
+                <div class="card-body">
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                            @Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })
+
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="card-header" id="header4">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4" style="color:red;">Suppresion du compte</button>
+        </div>
+        <div id="collapse4" class="collapse" aria-labelledby="header4" data-parent="#exempleAccordeon">
+            <div class="card-body">
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                        <button type="button" class="btn btn-outline-danger">
+                            @Html.ActionLink("Supprimer le compte", "ConfirmationAnonyme", new { id = Model.Utilisateur.Id })
+                        </button>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

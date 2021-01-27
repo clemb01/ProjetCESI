@@ -33,7 +33,7 @@ namespace ProjetCESI.Web.Controllers
             }
             User user = await UserManager.FindByNameAsync(model.Username);
 
-            if(user != null)
+            if (user != null)
             {
                 var CheckEmail = await UserManager.IsEmailConfirmedAsync(user);
 
@@ -175,7 +175,7 @@ namespace ProjetCESI.Web.Controllers
         {
             var id = User.Claims.SingleOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
             var user = await UserManager.FindByIdAsync(id);
-            if(user != null)
+            if (user != null)
             {
                 var model = new UserViewModel();
                 model.Utilisateur = user;
@@ -277,5 +277,73 @@ namespace ProjetCESI.Web.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfilUser(string id, string newUsername)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
+            await SignInManager.RefreshSignInAsync(user);
+            return RedirectToAction("ProfilUser");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateEmail(string id, string newEmail)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            var result = await UserManager.GenerateChangeEmailTokenAsync(user, newEmail);
+
+            var confirmationLink = Url.Action(nameof(ConfirmChangeEmail), "Account", new { token = result, id = user.Id, newEmail }, Request.Scheme);
+
+            var htmlContent = String.Format(
+                    @"Thank you for updating your email. Please confirm the email by clicking this link: 
+        <br><a href='{0}'>Confirm new email</a>",
+                    confirmationLink);
+
+
+            // send email to the user with the confirmation link
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+
+            return RedirectToAction("SuccessRegistration");
+
+
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ConfirmChangeEmail(string token, string id, string newEmail)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null)
+                return View("Error");
+            var result = await UserManager.ChangeEmailAsync(user, newEmail, token);
+            return View(result.Succeeded ? nameof(ConfirmChangeEmail) : "Error");
+        }
+
+
+        public IActionResult UpdatePassword()
+        {       
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await UserManager.ChangePasswordAsync(Utilisateur, model.Password, model.NewPassword);
+                if(!result.Succeeded)
+                {
+                    ModelState.AddModelError("Password", "Mot de passe incorrect");
+                    return View("UpdatePassword", model);
+                }
+                return RedirectToAction("ProfilUser");
+            }
+            return View("UpdatePassword", model);
+        }
     }
 }
+
