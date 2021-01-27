@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ProjetCESI.Web.Outils;
+using ProjetCESI.Metier.Outils;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -55,6 +56,10 @@ namespace ProjetCESI.Web.Controllers
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
             }
+
+            string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
+            string blobFile = ressource.ContenuOriginal.Split("||").Last();
+            await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
 
             ressource.TypeRelationsRessources = null;
             ressource.TypeRessource = null;
