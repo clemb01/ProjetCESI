@@ -1,0 +1,145 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@using ProjetCESI.Web.Models
+@model GestionViewModel
+
+@{
+    ViewData["Title"] = "Gestion";
+}
+@if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+{
+    <div class="d-flex justify-content-around" id="menu-gestion">
+        <ul class="list-group list-group-horizontal-md">
+            <li class="list-group-item @(Model.NomVue == "Validation" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=Validation">Validation des ressources</a>
+            </li>
+            <li class="list-group-item @(Model.NomVue == "UserList" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
+            </li>
+            <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
+            </li>
+        </ul>
+    </div>
+}
+
+
+@if (Model.NomVue == "UserList")
+{
+    <div>
+        <h1>Utilisateurs</h1>
+        <br />
+
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nom d'utilisateur
+                    </th>
+
+                    <th>
+                        Adresse mail
+                    </th>
+                    <th>
+                        Ban jusqu'au
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LockoutEnd)
+                        </td>
+                        <td>
+                            <strong>
+                                @*@Html.ActionLink("Modifier Rôle", "UpdateRole", new { id = item.Utilisateur.Id})*@
+                                @Html.ActionLink("Ban", "BanTempo", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
+                            </strong>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (TempData["Utilisateur"] != null && bool.Parse(TempData["Utilisateur"].ToString()) == true)
+    {
+        <div id="AlertBan">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Compte banni!</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+
+    }
+}
+@if (Model.NomVue == "Validation")
+{
+    <div>
+        <h1>Validation</h1>
+        <br />
+
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Titre ressource
+                    </th>
+
+                    <th>
+                        Date de création
+                    </th>
+                    <th>
+                        Créateur
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Ressources)
+                {
+                    <tr>
+
+                        <td>
+                            <a href="/ValidateRessource/@item.Id">@Html.DisplayFor(modelItem => item.Titre)</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateCreation)
+                        </td>
+                        <td>
+
+                            @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.NomVue == "statistique")
+{
+    <h1>Statistique</h1>
+}

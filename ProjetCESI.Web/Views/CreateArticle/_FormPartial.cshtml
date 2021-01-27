@@ -1,5 +1,110 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using ProjetCESI.Web.Models
+@model CreateRessourceViewModel
+
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(c => c.RessourceId)
+@Html.HiddenFor(c => c.Statut)
+@Html.HiddenFor(c => c.IsEdit)
+@Html.HiddenFor(c => c.NomPdf)
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <select data-placeholder="Sélectionnez une catégorie..." class="chosen-select form-control" name="SelectedCategories" tabindex="1">
+            <option value="0"></option>
+            @foreach (var categorie in Model.Categories)
+            {
+                @if (Model.SelectedCategories == int.Parse(categorie.Value))
+                {
+                    <option value="@categorie.Value" selected>@categorie.Text</option>
+                }
+                else
+                {
+                    <option value="@categorie.Value">@categorie.Text</option>
+                }
+            }
+        </select>
+        @Html.ValidationMessageFor(c => c.SelectedCategories, "", new { @style = "font-size: 14px;" })
+    </div>
+    <div class="form-group col-md-4">
+        <select id="TypeRessource" data-placeholder="Sélectionnez un type de ressource..." class="chosen-select form-control" name="SelectedTypeRessources" tabindex="3" onchange="MajFormulaire()">
+            <option value="0"></option>
+            @foreach (var typeRessource in Model.TypeRessources)
+            {
+                @if (Model.SelectedTypeRessources == int.Parse(typeRessource.Value))
+                {
+                    <option value="@typeRessource.Value" selected>@typeRessource.Text</option>
+                }
+                else
+                {
+                    <option value="@typeRessource.Value">@typeRessource.Text</option>
+                }
+            }
+        </select>
+        @Html.ValidationMessageFor(c => c.SelectedTypeRessources, "", new { @style = "font-size: 14px;" })
+    </div>
+    <div class="form-group col-md-4">
+        <select data-placeholder="Sélectionnez des types de relations..." class="chosen-select form-control" name="SelectedTypeRelation" multiple tabindex="2">
+            <option value=""></option>
+            @foreach (var TypeRelation in Model.TypeRelations)
+            {
+                @if (Model.SelectedTypeRelation != null && Model.SelectedTypeRelation.Contains(int.Parse(TypeRelation.Value)))
+                {
+                    <option value="@TypeRelation.Value" selected>@TypeRelation.Text</option>
+                }
+                else
+                {
+                    <option value="@TypeRelation.Value">@TypeRelation.Text</option>
+                }
+            }
+        </select>
+        @Html.ValidationMessageFor(c => c.SelectedTypeRelation, "", new { @style = "font-size: 14px;" })
+    </div>
+</div>
+<br />
+
+<div class="d-flex justify-content-between">
+    <p style="width: 70%;">
+        Titre :
+        <input type="text" id="TitreArticle" name="Titre" value="@Model.Titre"/>
+        @Html.ValidationMessageFor(c => c.Titre, "", new { @style = "font-size: 14px;" })
+    </p>
+    <p>
+        Type de partage
+        <select data-placeholder="Sélectionnez un type de partage..." class="chosen-select form-control" name="SelectedTypePartage">
+            @foreach (var partage in Enum.GetNames(typeof(ProjetCESI.Core.TypePartage)))
+            {
+                <option value="@((int)Enum.Parse(typeof(ProjetCESI.Core.TypePartage), partage))">@partage</option>
+            }
+        </select>
+    </p>
+</div>
+
+<br />
+
+<div id="formulaire" @(Model.SelectedTypeRessources != (int)ProjetCESI.Core.TypeRessources.PDF && Model.SelectedTypeRessources != (int)ProjetCESI.Core.TypeRessources.Video ? (Model.SelectedTypeRessources == 0 ? "hidden" : "") : "hidden")>
+    @Html.ValidationMessageFor(c => c.Contenu, "", new { @style = "font-size: 14px;" })
+    <textarea name="Contenu" id="editor">@Model.Contenu</textarea>
+</div>
+<div id="video" @(Model.SelectedTypeRessources == (int)ProjetCESI.Core.TypeRessources.Video ? "" : "hidden")>
+    <p>
+        URL de la vidéo (Nous n'hébergons pas nous même les vidéos):
+    </p>
+    @Html.ValidationMessageFor(c => c.urlVideo)
+    <input type="url" id="urlVideo" name="urlVideo" value="@Model.urlVideo" />
+    <br />
+    <br />
+    <p>Le site ne prend en compte que les vidéo venants de Youtube et Dailymotion</p>
+</div>
+<div id="pdf" @(Model.SelectedTypeRessources == (int)ProjetCESI.Core.TypeRessources.PDF ? "" : "hidden")>
+    <h3>Selectionnez un fichier</h3>
+    @if (Model.File != null || !string.IsNullOrEmpty(Model.NomPdf))
+    {
+        <p>Fichier sélectionné: @(Model.File != null ? Model.File.FileName : Model.NomPdf.Split("||").First())</p>
+    }
+    <input type="file" name="File" id="file" accept=".pdf" /><br><br>
+    @Html.ValidationMessage("File")
+    <br><br>
+</div>
+
+<br />

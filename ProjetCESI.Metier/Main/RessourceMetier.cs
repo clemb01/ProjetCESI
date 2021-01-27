@@ -20,13 +20,15 @@ namespace ProjetCESI.Metier
 
         public async Task<IEnumerable<Ressource>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllSearchPaginedRessource(_search, _pagination, _pageOffset);
 
-        public async Task<IEnumerable<Ressource>> GetUserFavoriteRessources(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserFavoriteRessources(_userId, _tri, _pagination, _pageOffset);
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserFavoriteRessources(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserFavoriteRessources(_userId, _search, _tri, _pagination, _pageOffset);
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesMiseDeCote(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesMiseDeCote(_userId, _tri, _pagination, _pageOffset);
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesMiseDeCote(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesMiseDeCote(_userId, _search, _tri, _pagination, _pageOffset);
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesExploitee(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesExploitee(_userId, _tri, _pagination, _pageOffset);
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesExploitee(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesExploitee(_userId, _search, _tri, _pagination, _pageOffset);
 
-        public async Task<IEnumerable<Ressource>> GetUserRessourcesCreees(int _userId, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesCreees(_userId, _tri, _pagination, _pageOffset);
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesCreees(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetUserRessourcesCreees(_userId, _search, _tri, _pagination, _pageOffset);
+
+        public async Task<IEnumerable<Ressource>> GetRessourcesNonValider(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetRessourcesNonValider(_tri, _pagination, _pageOffset);
 
         public async Task SaveRessource(Ressource ressource)
         {
@@ -45,6 +47,24 @@ namespace ProjetCESI.Metier
                 c.TypeRessource.Nom,
                 GenerateContenu(c.Contenu, (TypeRessources)c.TypeRessource.Id)
             ));
+        }
+
+        public async Task<int> InitNewRessource(int __userId)
+        {
+            Ressource result = await DataClass.GetFirstEmptyRessource(__userId);
+
+            if(result == null)
+            {
+                result = new Ressource
+                {
+                    UtilisateurCreateurId = __userId,
+                    Statut = Statut.Empty
+                };
+
+                await DataClass.InsertOrUpdate(result);
+            }
+
+            return result.Id;
         }
 
         private string GenerateContenu(string contenu, TypeRessources typeRessource)
@@ -69,5 +89,7 @@ namespace ProjetCESI.Metier
 
             return content;
         }
+
+        
     }
 }

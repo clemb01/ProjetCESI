@@ -1,0 +1,72 @@
+﻿@using ProjetCESI.Web.Models;
+@model CreateRessourceViewModel
+
+@{
+    ViewData["Title"] = "Création de ressource";
+}
+
+<h2>Création d'un article</h2>
+
+@using (Html.BeginForm("CreateOrUpdateRessource",
+                    "CreateArticle",
+                    FormMethod.Post,
+                    new { enctype = "multipart/form-data", @id = "create-update-ressource" }))
+{
+    @await Html.PartialAsync("_FormPartial", Model)
+
+    <center>
+        <button type="button" class="btn btn-primary" id="later-btn">
+            Finir plus tard
+        </button>
+        <button type="submit" class="btn btn-primary" id="preview-btn">
+            Prévisualiser la ressource
+        </button>
+    </center>
+}
+
+@if (ViewBag.Preview as string == "show")
+{
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="previewModalLabel">@Model.Titre</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="preview-content">
+                    @Html.Raw(ViewBag.Content)
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <form action="/CreateArticle/FinaliserRessource" method="post">
+                        @Html.HiddenFor(c => c.RessourceId)
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary">Valider la création de l'article</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_JSScripts")
+
+<script>
+    $(document).ready(function () {
+        $('#later-btn').click(function () {
+            $('#create-update-ressource').attr('action', '/CreateArticle/FinirPlusTard');
+            $('#create-update-ressource').submit();
+        });
+
+    @if (ViewBag.Preview as string == "show")
+    {
+        <text>
+        $('#previewModal').modal('show');
+        </text>
+    }
+    });
+</script>
+}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Metier.Main
+namespace ProjetCESI.Metier
 {
     public interface IAdminMetier
     {

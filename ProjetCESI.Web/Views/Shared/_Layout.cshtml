@@ -1,12 +1,11 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProjetCESI</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.css" />
+    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -62,25 +61,17 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="CreateArticle" asp-action="Create">Création et partage</a>
                             </li>
-                        }
-                        @if (User.IsInRole("Admin"))
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="/TableauDeBord?nomVue=favoris">Tableau de bord</a>
                             </li>
 
-                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+                            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Moderateur)))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" href="/Statistiques">Statistiques</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserList">Liste utilisateur</a>
+                                    <a class="nav-link text-dark" href="/Gestion?nomVue=Validation">Gestion</a>
                                 </li>
                             }
                         }
-
                     </ul>
                 </div>
             </div>
@@ -176,7 +167,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/chosen/dist/js/chosen.jquery.js"></script>
+    <script src="~/lib/chosen/dist/js/chosen.jquery.min.js"></script>
     <script src="~/lib/chosen/dist/js/init.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

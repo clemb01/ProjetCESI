@@ -48,9 +48,9 @@ namespace ProjetCESI.Data.Context
             builder.Entity<Ressource>().HasMany(c => c.UtilisateurRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Ressource>().HasMany(c => c.Commentaires).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Ressource>().HasMany(c => c.TypeRelationsRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Ressource>().HasMany(c => c.HistoriqueRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Ressource>().HasMany(c => c.HistoriqueRessource).WithOne(c => c.RessourceParent).OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
         }
@@ -63,6 +63,5 @@ namespace ProjetCESI.Data.Context
         public DbSet<TypeRessource> TypeRessources { get; set; }
         public DbSet<Categorie> Categories { get; set; }
         public DbSet<Statistique> Statistiques { get; set; }
-        public DbSet<HistoriqueRessource> HistoriqueRessources { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetCESI.Data.Context;
 
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20210120164304_AjoutHistoriqueRessourceDansRessource")]
+    partial class AjoutHistoriqueRessourceDansRessource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,13 +209,10 @@ namespace ProjetCESI.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("CategorieId")
+                    b.Property<int>("CategorieId")
                         .HasColumnType("int");
 
                     b.Property<string>("Contenu")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContenuOriginal")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("DateCreation")
@@ -243,7 +242,7 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<int>("TypePartage")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TypeRessourceId")
+                    b.Property<int>("TypeRessourceId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UtilisateurCreateurId")
@@ -521,7 +520,9 @@ namespace ProjetCESI.Data.Migrations
                 {
                     b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
                         .WithMany()
-                        .HasForeignKey("CategorieId");
+                        .HasForeignKey("CategorieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.Ressource", "RessourceParent")
                         .WithMany("HistoriqueRessource")
@@ -530,7 +531,9 @@ namespace ProjetCESI.Data.Migrations
 
                     b.HasOne("ProjetCESI.Core.TypeRessource", "TypeRessource")
                         .WithMany()
-                        .HasForeignKey("TypeRessourceId");
+                        .HasForeignKey("TypeRessourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProjetCESI.Core.User", "UtilisateurCreateur")
                         .WithMany("RessourcesCree")

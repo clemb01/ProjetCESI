@@ -19,6 +19,7 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
+using ProjetCESI.Metier.Outils;
 
 namespace ProjetCESI
 {
@@ -90,12 +91,16 @@ namespace ProjetCESI
                 });
             });
 
+            services.AddViewToStringRendererService();
+
             services.AddControllersWithViews().AddJsonOptions(o =>
             {
                 o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
                 o.JsonSerializerOptions.MaxDepth = 0;
             })
                 .AddRazorRuntimeCompilation();
+
+            Outils.SetConfig(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

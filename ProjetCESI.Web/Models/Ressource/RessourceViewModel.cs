@@ -23,5 +23,7 @@ namespace ProjetCESI.Web.Models
         public bool EstMisDeCote { get; set; }
         public List<TypeRelation> TypeRelations { get; set; }
         public List<Commentaire> Commentaires { get; set; }
+        public bool RessourceSupprime { get; set; }
+        public DateTimeOffset DateSuppression { get; set; }
     }
 }

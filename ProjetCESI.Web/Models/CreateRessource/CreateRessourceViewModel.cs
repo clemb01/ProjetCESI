@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace ProjetCESI.Web.Models
 {
     public class CreateRessourceViewModel : BaseViewModel
     {
+        public int RessourceId { get; set; }
+
         [Required(ErrorMessage = "Vous devez selectionner au moins un type de relation")]
         [Display(Name = "Type de relation")]
         public List<int> SelectedTypeRelation { get; set; }
@@ -26,11 +29,19 @@ namespace ProjetCESI.Web.Models
         [Display(Name = "Titre")]
         public string Titre { get; set; }
 
+        public SelectList Categories { get; set; }
+        public SelectList TypeRelations { get; set; }
+        public SelectList TypeRessources { get; set; }
+
+        public Statut Statut { get; set; }
+
         [Required]
         public TypePartage TypePartage { get; set; }
 
         public string Contenu { get; set; }
         public IFormFile File { get; set; }
+        public string NomPdf { get; set; }
         public string urlVideo { get; set; }
+        public bool IsEdit { get; set; }
     }
 }

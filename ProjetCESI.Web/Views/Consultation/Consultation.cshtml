@@ -1,15 +1,24 @@
 ﻿@using ProjetCESI.Web.Models
 @model ConsultationViewModel
 
-@{ 
+@{
     ViewData["Title"] = "Consultation";
 }
 
 <form asp-action="Consultation" asp-controller="Consultation" method="get" id="tri">
-    <input id="TypeTri" name="tri" hidden/>
+    <input id="TypeTri" name="tri" hidden />
 </form>
 
-@await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
+@if (Model.Ressources != null)
+{
+    @await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
+}
+else
+{
+    <h3 class="text-center m-5">
+        Aucune ressource n'a été trouvé
+    </h3>
+}
 
 @section Scripts{
     <script type="text/javascript">
