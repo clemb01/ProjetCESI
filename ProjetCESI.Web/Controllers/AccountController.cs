@@ -33,7 +33,7 @@ namespace ProjetCESI.Web.Controllers
             }
             User user = await UserManager.FindByNameAsync(model.Username);
 
-            if(user != null)
+            if (user != null)
             {
                 var CheckEmail = await UserManager.IsEmailConfirmedAsync(user);
 
@@ -175,7 +175,7 @@ namespace ProjetCESI.Web.Controllers
         {
             var id = User.Claims.SingleOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
             var user = await UserManager.FindByIdAsync(id);
-            if(user != null)
+            if (user != null)
             {
                 var model = new UserViewModel();
                 model.Utilisateur = user;
@@ -283,8 +283,8 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
-
-            return Redirect("/Accueil/Accueil");
+            await SignInManager.RefreshSignInAsync(user);
+            return RedirectToAction("ProfilUser");
         }
 
 
@@ -322,14 +322,28 @@ namespace ProjetCESI.Web.Controllers
             return View(result.Succeeded ? nameof(ConfirmChangeEmail) : "Error");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdatePassword(string id, string password, string newPassword)
-        {
-            var user = await UserManager.FindByIdAsync(id);
-            var result = await UserManager.ChangePasswordAsync(user, password, newPassword);
-            return RedirectToAction("ProfilUser");
+
+        public IActionResult UpdatePassword()
+        {       
+            return View();
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await UserManager.ChangePasswordAsync(Utilisateur, model.Password, model.NewPassword);
+                if(!result.Succeeded)
+                {
+                    ModelState.AddModelError("Password", "Mot de passe incorrect");
+                    return View("UpdatePassword", model);
+                }
+                return RedirectToAction("ProfilUser");
+            }
+            return View("UpdatePassword", model);
+        }
     }
 }
 

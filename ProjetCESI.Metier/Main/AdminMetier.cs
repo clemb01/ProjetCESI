@@ -68,6 +68,7 @@ namespace ProjetCESI.Metier
             if(user != null)
             {
                 user.UserName = newUsername;
+                user.NormalizedUserName = newUsername.ToUpper();
                 var result = await DataClass.InsertOrUpdate(user);
                 return user;
             }

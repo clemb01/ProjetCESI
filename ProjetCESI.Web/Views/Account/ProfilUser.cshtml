@@ -68,14 +68,10 @@
                     <div class="form-group form-check">
                         <label class="form-check-label">
                             <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                            Nouveau mot de passe :
-                            <input name="newEmail" />
+                            @Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })
 
                         </label>
 
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Enregistrer" class="btn btn-primary" />
                     </div>
                 </div>
             </div>
