@@ -10,19 +10,23 @@
 @{
     ViewData["Title"] = "Gestion";
 }
-<div class="d-flex justify-content-around" id="menu-gestion">
-    <ul class="list-group list-group-horizontal-md">
-        <li class="list-group-item @(Model.NomVue == "Validation" ? "active" : "")">
-            <a class="nav-link" href="/Gestion?NomVue=Validation">Validation des ressources</a>
-        </li>
-        <li class="list-group-item @(Model.NomVue == "UserList" ? "active" : "")">
-            <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
-        </li>
-        <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
-            <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
-        </li>
-    </ul>
-</div>
+@if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+{
+    <div class="d-flex justify-content-around" id="menu-gestion">
+        <ul class="list-group list-group-horizontal-md">
+            <li class="list-group-item @(Model.NomVue == "Validation" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=Validation">Validation des ressources</a>
+            </li>
+            <li class="list-group-item @(Model.NomVue == "UserList" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
+            </li>
+            <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
+            </li>
+        </ul>
+    </div>
+}
+
 
 @if (Model.NomVue == "UserList")
 {
@@ -125,7 +129,7 @@
                             @Html.DisplayFor(modelItem => item.DateCreation)
                         </td>
                         <td>
-                            
+
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
