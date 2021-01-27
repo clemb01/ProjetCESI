@@ -302,5 +302,24 @@ namespace ProjetCESI.Data
 
             return tri;
         }
+
+        public async Task<IEnumerable<Ressource>> GetRessourcesSuspendu(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            using (var ctx = GetContext())
+            {
+                return await ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.Statut == Statut.Suspendre && c.RessourceParent == null)
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+            }
+        }
     }
 }
