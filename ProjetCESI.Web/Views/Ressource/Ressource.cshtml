@@ -17,11 +17,19 @@
 }
 
 <div class="ressource-header justify-content-between">
-    <h3 class="title">@Model.Titre</h3>
+    <div class="d-flex" style="width: 80%;">
+        <h3>@Model.Titre</h3>&nbsp;
 
-    @if (User.Identity.IsAuthenticated)
+        @if (User.Identity.IsAuthenticated && (Model.Utilisateur.Id == Model.UtilisateurCreateur.Id || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.Admin || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.SuperAdmin))
+        {
+            <a href="/CreateArticle/Edit/@Model.RessourceId" title="Editer"><img src="~/images/edit.png" width="28" /></a>
+        }
+    </div>
+    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Accepter)
     {
-        <div class="ressource-button">
+    <div class="ressource-button">
+        @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
+        {
             <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
             <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
             <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
@@ -55,25 +63,28 @@
     @Html.Raw(Model.Contenu)
 </div>
 
-<div class="comment-section">
-    <h2>Commentaires</h2>
-    <div id="response-editor">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <form id="ajout-commentaire">
-                <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
-            </form>
-        }
-        <div class="collapse" id="submit-btn">
-            <div class="d-flex justify-content-end">
-                <button id="annuler-commentaire">Annuler</button>
-                <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
+@if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
+{
+    <div class="comment-section">
+        <h2>Commentaires</h2>
+        <div id="response-editor">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form id="ajout-commentaire">
+                    <textarea id="Contenu" class="commentaire-editor" placeholder="Ajouter un commentaire..." rows="1"></textarea>
+                </form>
+            }
+            <div class="collapse" id="submit-btn">
+                <div class="d-flex justify-content-end">
+                    <button id="annuler-commentaire">Annuler</button>
+                    <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
+                </div>
             </div>
         </div>
+        <div id="list-commentaire">
+        </div>
     </div>
-    <div id="list-commentaire">
-    </div>
-</div>
+}
 
 <!-- Modal suspendre -->
 <div class="modal fade" id="suspendre" tabindex="-1" aria-labelledby="suspendre" aria-hidden="true">
