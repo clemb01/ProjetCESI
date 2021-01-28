@@ -23,6 +23,9 @@
             <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
             </li>
+            <li class="list-group-item @(Model.NomVue == "Parametre" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=Parametre">Paramètre</a>
+            </li>
         </ul>
     </div>
 }
@@ -133,6 +136,13 @@
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
+                        <td>
+                            <strong>
+                                @Html.ActionLink("modifier", "BanTempo", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
+                            </strong>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -143,3 +153,74 @@
 {
     <h1>Statistique</h1>
 }
+@if (Model.NomVue == "Parametre")
+ {
+    <div>
+        <h1>Paramètre</h1>
+        <br />
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nom de la catégorie
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.categories)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            <button onclick="GetCategory(@item.Id, '@item.Nom')">Modifier</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+ }
+
+<!-- modal modification paramètre categorie-->
+<div class="modal" tabindex="-1" id="modifParametreCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="ModifParamCategorie" method="post">
+                <div class="modal-body">
+                    <input name="id" id="idCategorie" hidden />
+                    <input name="nomCategorie" id="modificationParametre" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregister</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        function GetCategory(id, nom) {
+            document.getElementById("idCategorie").value = id;
+            document.getElementById("modificationParametre").value = nom;
+            $("#modifParametreCategorie").modal("show");
+
+        }
+    </script>
+}
+

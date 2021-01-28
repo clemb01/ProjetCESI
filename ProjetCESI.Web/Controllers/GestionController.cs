@@ -36,10 +36,48 @@ namespace ProjetCESI.Web.Controllers
             {
                 return View(model);
             }
+            else if (model.NomVue == "Parametre")
+            {
+                model.categories = (await MetierFactory.CreateCategorieMetier().GetAll()).ToList();
+                if (model.categories == null)
+                {
+                    return View();
+                }
+            }
             else
                 return RedirectToAction("Accueil", "Accueil");
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifParamCategorie(int id, string nomCategorie)
+        {
+            var categorie = await MetierFactory.CreateCategorieMetier().GetById(id);
+            categorie.Nom = nomCategorie;
+            var result = await MetierFactory.CreateCategorieMetier().InsertOrUpdate(categorie);
+            return RedirectToAction("Gestion", new { nomVue = "Parametre" });
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifParamTypeRessource(int id, string nomTypeRessource)
+        {
+            var typeRessource = await MetierFactory.CreateTypeRessourceMetier().GetById(id);
+            typeRessource.Nom = nomTypeRessource;
+            var result = await MetierFactory.CreateTypeRessourceMetier().InsertOrUpdate(typeRessource);
+            return RedirectToAction("Gestion", new { nomVue = "Parametre" });
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifParamTypeRelation(int id, string nomTypeRelation)
+        {
+            var typeRelation = await MetierFactory.CreateTypeRelationMetier().GetById(id);
+            typeRelation.Nom = nomTypeRelation;
+            var result = await MetierFactory.CreateTypeRelationMetier().InsertOrUpdate(typeRelation);
+            return RedirectToAction("Gestion", new { nomVue = "Parametre" });
+
         }
     }
 }
