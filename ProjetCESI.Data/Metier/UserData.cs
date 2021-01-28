@@ -14,7 +14,7 @@ namespace ProjetCESI.Data.Metier
         {
             using (DbContext ctx = GetContext())
             {
-                var result = ctx.Set<User>().Where(c => !c.UserName.Contains("UtilisateurSupprimé"));
+                var result = ctx.Set<User>().Where(c => !c.UserName.Contains("UtilisateurSupprimé") && !c.UserName.Contains("Admin") && !c.UserName.Contains("SuperAdmin"));
 
                 return await result.ToListAsync();
             }

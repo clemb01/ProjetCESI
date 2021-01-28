@@ -27,7 +27,7 @@ namespace ProjetCESI.Web.Controllers
             else if (model.NomVue == "UserList")
             {
                 model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
-                if (model.Users == null)
+                if (model.Users == null || model == null)
                 {
                     return View();
                 }
@@ -40,6 +40,14 @@ namespace ProjetCESI.Web.Controllers
             {
                 model.categories = (await MetierFactory.CreateCategorieMetier().GetAll()).ToList();
                 if (model.categories == null)
+                {
+                    return View();
+                }
+            }
+            else if (model.NomVue == "suspendu")
+            {
+                model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesSuspendu()).ToList();
+                if (model.Ressources == null)
                 {
                     return View();
                 }

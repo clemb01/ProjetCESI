@@ -30,9 +30,12 @@ namespace ProjetCESI.Web.Controllers
             
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
-            if(ressource.UtilisateurCreateurId != UserId)
+            if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.Statut != Statut.Accepter)
+                    if(User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
                     return RedirectToAction("Accueil", "Accueil");
+
+
 
             model.RessourceId = id;
             model.Titre = ressource.Titre;
@@ -236,10 +239,6 @@ namespace ProjetCESI.Web.Controllers
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
             string message = "";
-            var model = PrepareModel<ConsultationViewModel>();
-            int tri = 0;
-            model.Ressources.TypeTri = tri;
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
             if (String.IsNullOrWhiteSpace(messageSuppression))
             {
                 message = "La ressource : " + Ressource.Titre + ", a été supprimé.";
@@ -255,7 +254,7 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suppression de la ressource", message);
-                return View("../Consultation/Consultation");
+                return Redirect("../Consultation/Consultation");
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -270,10 +269,6 @@ namespace ProjetCESI.Web.Controllers
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
             string message = "";
-            var model = PrepareModel<ConsultationViewModel>();
-            int tri = 0;
-            model.Ressources.TypeTri = tri;
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
             if (String.IsNullOrWhiteSpace(messageSuspendre))
             {
                 message = "La ressource : " + Ressource.Titre + ", a été suspendu.";
@@ -287,12 +282,38 @@ namespace ProjetCESI.Web.Controllers
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
             if (result)
             {
-                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Susppension de la ressource", message);
-                return View("../Consultation/Consultation");
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suspension de la ressource", message);
+                return Redirect("../Consultation/Consultation");
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
+        {
+            var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            string UserId = Ressource.UtilisateurCreateurId.ToString();
+            string message = "";
+            if (String.IsNullOrWhiteSpace(messageReactivate))
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été réactivé.";
+            }
+            else
+            {
+                message = "La ressource : " + Ressource.Titre + ", a été réactivé. Motif : " + messageReactivate;
+            }
+            var User = await UserManager.FindByIdAsync(UserId);
+            Ressource.Statut = Statut.Accepter;
+            var result = await ressourceMetier.InsertOrUpdate(Ressource);
+            if (result)
+            {
+                await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Réactivation de la ressource", message);
+                return Redirect("../Consultation/Consultation");
+            }
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
 
         }
     }
