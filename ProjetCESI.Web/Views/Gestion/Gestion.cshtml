@@ -23,6 +23,9 @@
             <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
             </li>
+            <li class="list-group-item @(Model.NomVue == "suspendu" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=suspendu">Ressources suspendues</a>
+            </li>
         </ul>
     </div>
 }
@@ -127,6 +130,50 @@
 
                         <td>
                             <a href="/ValidateRessource/@item.Id">@Html.DisplayFor(modelItem => item.Titre)</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateCreation)
+                        </td>
+                        <td>
+
+                            @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.NomVue == "suspendu")
+{
+    <div>
+        <h1>Ressources suspendues</h1>
+        <br />
+
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Titre ressource
+                    </th>
+
+                    <th>
+                        Date de création
+                    </th>
+                    <th>
+                        Créateur
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Ressources)
+                {
+                    <tr>
+
+                        <td>
+                            <a href="/Ressource/@item.Id">@Html.DisplayFor(modelItem => item.Titre)</a>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DateCreation)

@@ -4,7 +4,7 @@
 
 @if (Model.Statut == ProjetCESI.Core.Statut.Suspendre)
 {
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-warning" role="alert">
         Cette ressource a été suspendu !
     </div>
 }
@@ -38,6 +38,12 @@
                 }
             </div>
         }
+    }
+    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
+    {
+        <div class="ressource-button">
+            <span><a data-toggle="modal" data-target="#reactivate"><img title="Réactiver" src="~/images/play_icone.png" width="32" /></a></span>
+        </div>
     }
 </div>
 <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
@@ -74,6 +80,32 @@
         </div>
     </div>
 }
+<!-- Modal reactivate -->
+<div class="modal fade" id="reactivate" tabindex="-1" aria-labelledby="reactivate" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reactivate">Réactiver la ressource</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Ressource" asp-action="ReactivateRessource" method="post">
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Motif :</label>
+                        <input type="number" value="@Model.RessourceId" name="ressourceId" hidden />
+                        <textarea class="form-control" name="messageReactivate" id="messageReactivate"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-success">Réactiver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Modal suspendre -->
 <div class="modal fade" id="suspendre" tabindex="-1" aria-labelledby="suspendre" aria-hidden="true">
