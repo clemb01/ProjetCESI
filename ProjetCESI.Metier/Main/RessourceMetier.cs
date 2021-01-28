@@ -88,6 +88,6 @@ namespace ProjetCESI.Metier
             return content;
         }
 
-        
+        public async Task<IEnumerable<Ressource>> GetRessourcesSuspendu(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetRessourcesSuspendu(_tri, _pagination, _pageOffset);
     }
 }
