@@ -62,7 +62,10 @@ namespace ProjetCESI.Web.Outils
                 }
                 else
                 {
-                    stat.Parametre = context.ActionArguments.ContainsKey("recherche") ? "recherche=" + (string)context.ActionArguments["recherche"] : string.Empty;
+                    stat.Parametre = context.ActionArguments.ContainsKey("recherche") ? "Recherche=" + (string)context.ActionArguments["recherche"] : string.Empty;
+                    
+                    if(string.IsNullOrEmpty(stat.Parametre))
+                        return;
                 }
             }
             else if (stat.Controller == "Ressource" && stat.Action == "Ressource") 

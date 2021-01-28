@@ -12,123 +12,123 @@ using System.Threading.Tasks;
 namespace ProjetCESI.Web.Area
 {
     [ApiController]
-    public class RessourceController : BaseController
+    public class RessourcesController : BaseController
     {
-        //[HttpGet("{id}")]
-        //[AllowAnonymous]
-        //[StatistiqueFilter]
-        //public async Task<RessourceViewModel> Ressource(int id)
-        //{
-        //    var model = PrepareModel<RessourceViewModel>();
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        [StatistiqueFilter]
+        public async Task<RessourceViewModel> Ressource(int id)
+        {
+            var model = PrepareModel<RessourceViewModel>();
 
-        //    var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
 
-        //    Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
-        //    model.RessourceId = id;
-        //    model.Titre = ressource.Titre;
-        //    model.UtilisateurCreateur = ressource.UtilisateurCreateur;
-        //    model.TypeRessource = ressource.TypeRessource;
-        //    model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
-        //    model.Categorie = ressource.Categorie;
-        //    model.Commentaires = ressource.Commentaires;
-        //    model.DateCreation = ressource.DateCreation;
-        //    model.DateModification = ressource.DateModification;
-        //    model.Contenu = ressource.Contenu;
-        //    model.Statut = ressource.Statut;
-        //    model.NombreConsultation = ++ressource.NombreConsultation;
+            model.RessourceId = id;
+            model.Titre = ressource.Titre;
+            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
+            model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.Categorie = ressource.Categorie;
+            model.Commentaires = ressource.Commentaires;
+            model.DateCreation = ressource.DateCreation;
+            model.DateModification = ressource.DateModification;
+            model.Contenu = ressource.Contenu;
+            model.Statut = ressource.Statut;
+            model.NombreConsultation = ++ressource.NombreConsultation;
 
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
+            if (User.Identity.IsAuthenticated)
+            {
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
 
-        //        model.EstExploite = utilisateurRessource.EstExploite;
-        //        model.EstFavoris = utilisateurRessource.EstFavoris;
-        //        model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
-        //    }
+                model.EstExploite = utilisateurRessource.EstExploite;
+                model.EstFavoris = utilisateurRessource.EstFavoris;
+                model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+            }
 
-        //    ressource.TypeRelationsRessources = null;
-        //    ressource.TypeRessource = null;
-        //    ressource.Categorie = null;
-        //    ressource.Commentaires = null;
-        //    ressource.UtilisateurCreateur = null;
-        //    ressource.UtilisateurRessources = null;
+            ressource.TypeRelationsRessources = null;
+            ressource.TypeRessource = null;
+            ressource.Categorie = null;
+            ressource.Commentaires = null;
+            ressource.UtilisateurCreateur = null;
+            ressource.UtilisateurRessources = null;
 
-        //    await ressourceMetier.InsertOrUpdate(ressource);
+            await ressourceMetier.InsertOrUpdate(ressource);
 
-        //    return model;
-        //}
+            return model;
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> AjouterFavoris(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> AjouterFavoris(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> SupprimerFavoris(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SupprimerFavoris(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> AjouterMettreDeCote(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> AjouterMettreDeCote(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> SupprimerMettreDeCote(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SupprimerMettreDeCote(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> AjouterExploite(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> AjouterExploite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> SupprimerExploite(int ressourceId)
-        //{
-        //    bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SupprimerExploite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
 
-        //    if (result)
-        //        return StatusCode(StatusCodes.Status200OK);
-        //    else
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (result)
+                return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
@@ -81,10 +82,7 @@ namespace ProjetCESI.Metier
             }
             else
             {
-                if (!string.IsNullOrEmpty(contenu) && contenu.Length > 100)
-                    content = contenu.Substring(0, 100) + "...";
-                else
-                    content = contenu;
+                content = contenu;
             }
 
             return content;

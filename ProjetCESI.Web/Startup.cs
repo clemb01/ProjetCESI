@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using ProjetCESI.Metier.Outils;
+using Newtonsoft.Json.Serialization;
 
 namespace ProjetCESI
 {
@@ -93,10 +94,12 @@ namespace ProjetCESI
 
             services.AddViewToStringRendererService();
 
-            services.AddControllersWithViews().AddJsonOptions(o =>
+            services.AddControllersWithViews().AddNewtonsoftJson(opt =>
             {
-                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                o.JsonSerializerOptions.MaxDepth = 0;
+                opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                opt.SerializerSettings.MaxDepth = 5;
+                opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             })
                 .AddRazorRuntimeCompilation();
 
@@ -127,6 +130,11 @@ namespace ProjetCESI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                    name: "api",
+                    areaName: "api",
+                    pattern: "api/{controller=Ressource}/{action=Ressource}/{id?}");
+
                 endpoints.MapControllerRoute(
                     name: "Statistiques",
                     pattern: "Statistiques",
