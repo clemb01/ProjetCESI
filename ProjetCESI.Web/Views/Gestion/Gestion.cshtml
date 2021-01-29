@@ -23,6 +23,9 @@
             <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
             </li>
+            <li class="list-group-item @(Model.NomVue == "Parametre" ? "active" : "")">
+                <a class="nav-link" href="/Gestion?NomVue=Parametre">Paramètre</a>
+            </li>
             <li class="list-group-item @(Model.NomVue == "suspendu" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=suspendu">Ressources suspendues</a>
             </li>
@@ -139,6 +142,13 @@
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
+                        <td>
+                            <strong>
+                                @Html.ActionLink("modifier", "BanTempo", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
+                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
+                            </strong>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -189,7 +199,295 @@
         </table>
     </div>
 }
+@if (Model.NomVue == "Parametre")
+{
+    <div>
+        <h1>Paramètre</h1>
+        <br />
+        <br />
+        <button onclick="AddCategorie()">Ajouter une categorie</button>
+        <br />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nom de la catégorie
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.categories)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            <button onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
+                            <button onclick="DeleteCategorie(@item.Id)">Supprimer</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<!-- modal modification paramètre categorie-->
+<div class="modal" tabindex="-1" id="modifParametreCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="ModifParamCategorie" method="post">
+                <div class="modal-body">
+                    <input name="id" id="idCategorie" hidden />
+                    <input name="nomCategorie" id="modificationParametre" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregister</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- modal ajout categorie-->
+<div class="modal" tabindex="-1" id="AjoutCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="AddCategorie" method="post">
+                <div class="modal-body">
+                    <input name="newCategorie" id="newCategorie" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregister</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- modal supprimer categorie-->
+<div class="modal" tabindex="-1" id="SuppCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="DeleteCategorie" method="post">
+                <div class="modal-body">
+                    <input name="id" id="idCategorieForSupp" hidden />
+                    <p>Voulez-vous supprimer la catégorie ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @if (Model.NomVue == "statistique")
 {
-    <h1>Statistique</h1>
+    <h1>Statistiques</h1>
+
+    <div id="topActions">
+        <select id="topActionsStat" name="selectedRange">
+            <option value="1">Aujourd'hui</option>
+            <option value="2">Cette semaine</option>
+            <option value="3" selected>Ce mois-ci</option>
+            <option value="4">Cette année</option>
+        </select>
+
+        <canvas id="topActionsChart" height="400" width="800"></canvas>
+    </div>
+
+    <div id="topRecherche">
+        <select id="topRechercheStat" name="selectedRange">
+            <option value="1">Aujourd'hui</option>
+            <option value="2">Cette semaine</option>
+            <option value="3" selected>Ce mois-ci</option>
+            <option value="4">Cette année</option>
+        </select>
+
+        <canvas id="topRechercheChart" height="400" width="800"></canvas>
+    </div>
+
+    <div id="topConsultation">
+        <select id="topConsultationStat" name="selectedRange">
+            <option value="1">Aujourd'hui</option>
+            <option value="2">Cette semaine</option>
+            <option value="3" selected>Ce mois-ci</option>
+            <option value="4">Cette année</option>
+        </select>
+
+        <canvas id="topConsultationChart" height="400" width="800"></canvas>
+    </div>
 }
+
+
+
+@if (Model.NomVue == "statistique")
+{
+    @section Scripts {
+        <script src="~/lib/chart.js/dist/Chart.min.js"></script>
+        <script type="text/javascript">
+            var recherches = JSON.parse('@Json.Serialize(Model.TopRecherches)');
+            var consultations = JSON.parse('@Json.Serialize(Model.TopConsultations)');
+            var actions = JSON.parse('@Json.Serialize(Model.TopActions)');
+            var topRechercheChart = initCanvas(document.getElementById('topRechercheChart').getContext('2d'), recherches.Count, recherches.Parametres, 'Terme les plus recherchés');
+            var topConsultationChart = initCanvas(document.getElementById('topConsultationChart').getContext('2d'), consultations.Count, consultations.Parametres, 'Ressources les plus consultées');
+            var topActionsChart = initCanvas(document.getElementById('topActionsChart').getContext('2d'), actions.Count, actions.Parametres, 'Actions utilisateurs', 'line');
+
+            $(document).ready(function () {
+                $('#topRechercheStat').change(function () {
+                    $.ajax({
+                        url: '/Gestion/UpdateTopRechercheDisplay',
+                        method: 'GET',
+                        data: $(this).serialize()
+                    })
+                        .done(function (result) {
+                            topRechercheChart.data.labels = result.parametres;
+                            topRechercheChart.data.datasets = [{
+                                label: 'Terme les plus recherchés',
+                                data: result.count,
+                                backgroundColor: "rgba(255,99,132,0.2)",
+                                borderColor: "rgba(255,99,132,1)",
+                                borderWidth: 2,
+                                hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                                hoverBorderColor: "rgba(255,99,132,1)"
+                            }];
+
+                            topRechercheChart.update();
+                        });
+                });
+
+                $('#topConsultationStat').change(function () {
+                    $.ajax({
+                        url: '/Gestion/UpdateTopConsultationDisplay',
+                        method: 'GET',
+                        data: $(this).serialize()
+                    })
+                        .done(function (result) {
+                            topConsultationChart.data.labels = result.parametres;
+                            topConsultationChart.data.datasets = [{
+                                label: 'Ressources les plus consultées',
+                                data: result.count,
+                                backgroundColor: "rgba(255,99,132,0.2)",
+                                borderColor: "rgba(255,99,132,1)",
+                                borderWidth: 2,
+                                hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                                hoverBorderColor: "rgba(255,99,132,1)"
+                            }];
+
+                            topConsultationChart.update();
+                        });
+                });
+
+                $('#topActionsStat').change(function () {
+                    $.ajax({
+                        url: '/Gestion/UpdateTopActionsDisplay',
+                        method: 'GET',
+                        data: $(this).serialize()
+                    })
+                        .done(function (result) {
+                            topActionsChart.data.labels = result.parametres;
+                            topActionsChart.data.datasets = [{
+                                label: 'Actions utilisateurs',
+                                data: result.count,
+                                backgroundColor: "rgba(255,99,132,0.2)",
+                                borderColor: "rgba(255,99,132,1)",
+                                borderWidth: 2,
+                                hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                                hoverBorderColor: "rgba(255,99,132,1)"
+                            }];
+
+
+
+
+                            topActionsChart.update();
+                        });
+                });
+            });
+
+            function initCanvas(ctx, data, labels, title, type = 'bar') {
+                return new Chart(ctx, {
+                    type: type,
+                    data: {
+                        responsive: false,
+                        labels: labels,
+                        datasets: [{
+                            label: title,
+                            data: data,
+                            backgroundColor: "rgba(255,99,132,0.2)",
+                            borderColor: "rgba(255,99,132,1)",
+                            borderWidth: 2,
+                            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                            hoverBorderColor: "rgba(255,99,132,1)"
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        </script>
+    }
+}
+else
+{
+@section Scripts{
+    <script>
+        function GetCategorie(id, nom) {
+            document.getElementById("idCategorie").value = id;
+            document.getElementById("modificationParametre").value = nom;
+            $("#modifParametreCategorie").modal("show");
+
+        }
+    </script>
+
+    <script>
+        function AddCategorie() {
+            $("#AjoutCategorie").modal("show");
+
+        }
+    </script>
+
+    <script>
+        function DeleteCategorie(id) {
+            document.getElementById("idCategorieForSupp").value = id;
+            $("#SuppCategorie").modal("show");
+
+        }
+    </script>
+    
+     }
+    
+}
+
