@@ -5,7 +5,9 @@ using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
@@ -170,14 +172,14 @@ namespace ProjetCESI.Web.Controllers
         public async Task<JsonResult> UpdateTopActionsDisplay(int selectedRange)
         {
             object json = new object();
-            List<TopActions> result;
+            List<TopObject> result;
 
             switch (selectedRange)
             {
                 case 1:
                     result = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Day, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day, 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
 
-                    json = new { parametres = result.Select(c => c.Date), count = result.Select(c => c.Count) };
+                    json = new { parametres = result.Select(c => c.Parametre), count = result.Select(c => c.Count) };
                     break;
                 case 2:
                     {
@@ -190,24 +192,24 @@ namespace ProjetCESI.Web.Controllers
 
                         result = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Week, firstDayOfWeek, lastDayOfWeek)).ToList();
 
-                        json = new { parametres = result.Select(c => CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(c.Date.DayOfWeek)), count = result.Select(c => c.Count) };
+                        json = new { parametres = result.Select(c => c.Parametre), count = result.Select(c => c.Count) };
 
                         break;
                     }
                 case 3:
                     result = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Month, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
 
-                    json = new { parametres = result.Select(c => c.Date.ToShortDateString()), count = result.Select(c => c.Count) };
+                    json = new { parametres = result.Select(c => c.Parametre), count = result.Select(c => c.Count) };
                     break;
                 case 4:
                     result = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Year, new DateTimeOffset(DateTimeOffset.Now.Year, 1, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, 12, 31, 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
 
-                    json = new { parametres = result.Select(c => CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(c.Date.Month)), count = result.Select(c => c.Count) };
+                    json = new { parametres = result.Select(c => c.Parametre), count = result.Select(c => c.Count) };
                     break;
                 default:
                     result = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Month, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
 
-                    json = new { parametres = result.Select(c => c.Date.ToShortDateString()), count = result.Select(c => c.Count) };
+                    json = new { parametres = result.Select(c => c.Parametre), count = result.Select(c => c.Count) };
                     break;
             }
 
@@ -215,16 +217,54 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExportCSV()
+        public async Task<IActionResult> ExportCSV(TimestampFilter periode)
         {
-            string filepath = string.Empty;
             string filename = string.Empty;
 
-            var model = PrepareModel<GestionViewModel>();
+            DateTimeOffset dtBas;
+            DateTimeOffset dtHaut;
 
-            await UpdateStatistique(model);
+            switch (periode)
+            {
+                case TimestampFilter.Day:
+                    dtBas = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day, 0, 0, 0, DateTimeOffset.Now.Offset);
+                    dtHaut = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.Day, 23, 59, 59, DateTimeOffset.Now.Offset);
+                    filename = $"Export_{dtBas.Date.ToShortDateString()}.csv";
+                    break;
+                case TimestampFilter.Week:
+                    var firstDayOfWeek = DateTimeOffset.Now.AddDays(-((int)DateTimeOffset.Now.DayOfWeek - (int)System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek));
+                    dtBas = new DateTimeOffset(firstDayOfWeek.Date, firstDayOfWeek.Offset);
 
-            return File();
+                    int diff = ((int)DateTimeOffset.Now.DayOfWeek - (int)DayOfWeek.Sunday) == 0 ? 7 : ((int)DateTimeOffset.Now.DayOfWeek - (int)DayOfWeek.Sunday);
+                    var lastDayOfWeek = DateTimeOffset.Now.AddDays(7 - diff);
+                    dtHaut = new DateTimeOffset(lastDayOfWeek.Date, lastDayOfWeek.Offset).AddHours(23).AddMinutes(59).AddSeconds(59);
+                    filename = $"Export_Semaine_{System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetWeekOfYear(dtBas.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday)}.csv";
+                    break;
+                case TimestampFilter.Year:
+                    dtBas = new DateTimeOffset(DateTimeOffset.Now.Year, 1, 1, 0, 0, 0, DateTimeOffset.Now.Offset);
+                    dtHaut = new DateTimeOffset(DateTimeOffset.Now.Year, 12, 31, 23, 59, 59, DateTimeOffset.Now.Offset);
+                    filename = $"Export_Annee_{dtBas.Date.Year}.csv";
+                    break;
+                case TimestampFilter.Month:
+                default:
+                    dtBas = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset);
+                    dtHaut = new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset);
+                    filename = $"Export_{System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.GetMonthName(dtBas.Month)}.csv";
+                    break;
+            }
+
+            try
+            {
+                var result = await MetierFactory.CreateStatistiqueMetier().GenerateCSVData(10, dtBas, dtHaut, periode);
+
+                byte[] bytes = Encoding.Unicode.GetBytes(result);
+
+                return File(bytes, "application/octet-stream", filename);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
 
         private async Task UpdateStatistique(GestionViewModel model)
@@ -250,7 +290,7 @@ namespace ProjetCESI.Web.Controllers
             model.TopActions = new TopStats
             {
                 Count = actions.Select(c => c.Count).ToList(),
-                Parametres = actions.Select(c => c.Date.ToString()).ToList()
+                Parametres = actions.Select(c => c.Parametre).ToList()
             };
         }
     }

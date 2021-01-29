@@ -261,9 +261,7 @@
 {
     <div class="d-flex justify-content-between">
         <h1>Statistiques</h1>
-        <form method="get" action="/Gestion/ExportCSV">
-            <input type="submit" class="btn btn-primary" value="Exporter au format CSV" />
-        </form>
+        <div><button class="btn btn-primary" data-toggle="modal" data-target="#modalExportCsv">Exporter au format CSV</button></div>
     </div>
     <br />
     <div id="topActions">
@@ -297,6 +295,36 @@
         </select>
 
         <canvas id="topConsultationChart" height="400" width="800"></canvas>
+    </div>
+
+    <div class="modal" tabindex="-1" id="modalExportCsv">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export CSV</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/Gestion/ExportCSV" method="get">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="periode">Période de l'export</label>
+                            <select class="form-control" id="topConsultationStat" name="periode">
+                                <option value="0">Aujourd'hui</option>
+                                <option value="1">Cette semaine</option>
+                                <option value="2" selected>Ce mois-ci</option>
+                                <option value="3">Cette année</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Valider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 }
 
