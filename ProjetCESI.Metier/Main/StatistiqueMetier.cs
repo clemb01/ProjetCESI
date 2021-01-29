@@ -156,7 +156,19 @@ namespace ProjetCESI.Metier
                 }
             }
 
-            return resultatsFinaux.Take(__nbRecherche);
+            resultatsFinaux = resultatsFinaux.Take(__nbRecherche).ToList();
+
+            if(resultatsFinaux.Any())
+            {
+                var ressourceMetier = MetierFactory.CreateRessourceMetier();
+
+                foreach (var result in resultatsFinaux)
+                {
+                    result.Parametre = (await ressourceMetier.GetById(int.Parse(result.Parametre))).Titre;
+                }
+            }
+
+            return resultatsFinaux;
         }
     }
 }
