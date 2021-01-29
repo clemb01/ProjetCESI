@@ -69,23 +69,22 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ModifParamTypeRessource(int id, string nomTypeRessource)
+        public async Task<IActionResult> AddCategorie(string newCategorie)
         {
-            var typeRessource = await MetierFactory.CreateTypeRessourceMetier().GetById(id);
-            typeRessource.Nom = nomTypeRessource;
-            var result = await MetierFactory.CreateTypeRessourceMetier().InsertOrUpdate(typeRessource);
+            Core.Categorie NewCate = new Core.Categorie();
+            NewCate.Nom = newCategorie;
+            await MetierFactory.CreateCategorieMetier().InsertOrUpdate(NewCate);
             return RedirectToAction("Gestion", new { nomVue = "Parametre" });
-
         }
 
         [HttpPost]
-        public async Task<IActionResult> ModifParamTypeRelation(int id, string nomTypeRelation)
+        public async Task<IActionResult> DeleteCategorie(int id)
         {
-            var typeRelation = await MetierFactory.CreateTypeRelationMetier().GetById(id);
-            typeRelation.Nom = nomTypeRelation;
-            var result = await MetierFactory.CreateTypeRelationMetier().InsertOrUpdate(typeRelation);
+            var categorie = await MetierFactory.CreateCategorieMetier().GetById(id);
+            var result = await MetierFactory.CreateCategorieMetier().Delete(categorie);
             return RedirectToAction("Gestion", new { nomVue = "Parametre" });
-
         }
+
+
     }
 }
