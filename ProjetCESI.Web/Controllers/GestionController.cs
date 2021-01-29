@@ -87,12 +87,9 @@ namespace ProjetCESI.Web.Controllers
         public async Task<IActionResult> DeleteCategorie(int id)
         {
             var categorie = await MetierFactory.CreateCategorieMetier().GetById(id);
-            var result = await MetierFactory.CreateCategorieMetier().Delete(categorie);
+            var result = await MetierFactory.CreateCategorieMetier().DeleteCategorie(categorie);
             return RedirectToAction("Gestion", new { nomVue = "Parametre" });
         }
-
-
-        
 
         [HttpGet]
         public async Task<JsonResult> UpdateTopRechercheDisplay(int selectedRange)

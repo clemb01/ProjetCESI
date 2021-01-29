@@ -19,5 +19,6 @@ namespace ProjetCESI.Data
         Task<Ressource> GetFirstEmptyRessource(int __userId);
         Task<IEnumerable<Ressource>> GetRessourcesNonValider(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
         Task<IEnumerable<Ressource>> GetRessourcesSuspendu(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0);
+        Task<bool> ResetRessourceStatutWhereCategoryIsNull();
     }
 }

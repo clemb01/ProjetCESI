@@ -331,5 +331,19 @@ namespace ProjetCESI.Data
                         .Take(_pagination).ToListAsync();
             }
         }
+
+        public async Task<bool> ResetRessourceStatutWhereCategoryIsNull()
+        {
+            using (DbContext ctx = GetContext())
+            {
+                string query = @"UPDATE [dbo].[Ressources]
+                                SET Statut = 1
+                                WHERE CategorieId IS NULL AND (Statut = 3 OR Statut = 2)";
+
+                int result = await ctx.Database.ExecuteSqlRawAsync(query);
+
+                return result != 0 ? true : false;
+            }
+        }
     }
 }
