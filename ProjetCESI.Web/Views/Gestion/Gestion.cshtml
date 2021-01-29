@@ -200,7 +200,7 @@
     </div>
 }
 @if (Model.NomVue == "Parametre")
- {
+{
     <div>
         <h1>Paramètre</h1>
         <br />
@@ -231,7 +231,7 @@
             </tbody>
         </table>
     </div>
- }
+}
 
 <!-- modal modification paramètre categorie-->
 <div class="modal" tabindex="-1" id="modifParametreCategorie">
@@ -259,8 +259,13 @@
 
 @if (Model.NomVue == "statistique")
 {
-    <h1>Statistiques</h1>
-
+    <div class="d-flex justify-content-between">
+        <h1>Statistiques</h1>
+        <form method="get" action="/Gestion/ExportCSV">
+            <input type="submit" class="btn btn-primary" value="Exporter au format CSV" />
+        </form>
+    </div>
+    <br />
     <div id="topActions">
         <select id="topActionsStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>
@@ -271,7 +276,7 @@
 
         <canvas id="topActionsChart" height="400" width="800"></canvas>
     </div>
-
+    <br />
     <div id="topRecherche">
         <select id="topRechercheStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>
@@ -282,7 +287,7 @@
 
         <canvas id="topRechercheChart" height="400" width="800"></canvas>
     </div>
-
+    <br />
     <div id="topConsultation">
         <select id="topConsultationStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>

@@ -133,7 +133,7 @@ namespace ProjetCESI
                 endpoints.MapAreaControllerRoute(
                     name: "api",
                     areaName: "api",
-                    pattern: "api/{controller=Ressource}/{action=Ressource}/{id?}");
+                    pattern: "api/{controller}/{action}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "Statistiques",

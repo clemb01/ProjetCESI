@@ -214,6 +214,19 @@ namespace ProjetCESI.Web.Controllers
             return Json(json);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ExportCSV()
+        {
+            string filepath = string.Empty;
+            string filename = string.Empty;
+
+            var model = PrepareModel<GestionViewModel>();
+
+            await UpdateStatistique(model);
+
+            return File();
+        }
+
         private async Task UpdateStatistique(GestionViewModel model)
         {
             var recherches = (await MetierFactory.CreateStatistiqueMetier().GetTopRecherche(10, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
