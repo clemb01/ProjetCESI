@@ -13,9 +13,9 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : BaseController
+    public class AccountAPIController : BaseAPIController
     {
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
+        public AccountAPIController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
         { }
 
         [AllowAnonymous]

@@ -9,7 +9,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StatistiquesController : BaseController
+    public class StatistiquesAPIController : BaseAPIController
     {
 
     }

@@ -18,7 +18,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseController : ControllerBase
+    public class BaseAPIController : ControllerBase
     {
         private MetierFactory _metierFactory;
         protected MetierFactory MetierFactory
@@ -87,11 +87,11 @@ namespace ProjetCESI.Web.Area
         private IConfiguration _configuration;
         private ILogger _logger;
 
-        public BaseController()
+        public BaseAPIController()
         {
         }
 
-        public BaseController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public BaseAPIController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

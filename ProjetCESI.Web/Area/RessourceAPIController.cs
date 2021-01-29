@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ProjetCESI.Web.Area
 {
     [ApiController]
-    public class RessourceController : BaseController
+    public class RessourceAPIController : BaseAPIController
     {
         [HttpGet("{id}")]
         [AllowAnonymous]

@@ -10,7 +10,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccueilController : BaseController
+    public class AccueilAPIController : BaseAPIController
     {
         public async Task<AccueilViewModel> Accueil()
         {

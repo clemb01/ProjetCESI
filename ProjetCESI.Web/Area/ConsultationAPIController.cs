@@ -13,7 +13,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ConsultationController : BaseController
+    public class ConsultationAPIController : BaseAPIController
     {
         //[HttpGet]
         //[StatistiqueFilter]

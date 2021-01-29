@@ -16,7 +16,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CreateArticleController : BaseController
+    public class CreateArticleAPIController : BaseAPIController
     {
         private SelectList ToSelectList<T>(List<T> liste)
         {

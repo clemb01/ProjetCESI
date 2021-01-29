@@ -11,7 +11,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommentaireController : BaseController
+    public class CommentaireAPIController : BaseAPIController
     {
         public async Task<CommentairesViewModel> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
         {

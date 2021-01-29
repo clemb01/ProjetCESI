@@ -10,7 +10,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TableauDeBordController : BaseController
+    public class TableauDeBordAPIController : BaseAPIController
     {
         [Route("TableauDeBord")]
         public async Task<TableauDeBordViewModel> TableauDeBord(TableauDeBordViewModel model)

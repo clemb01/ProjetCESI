@@ -11,7 +11,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController : BaseController
+    public class AdminAPIController : BaseAPIController
     {
         public async Task<List<UserViewModel>> UserList()
         {

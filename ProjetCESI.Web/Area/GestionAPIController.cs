@@ -10,7 +10,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GestionController : BaseController
+    public class GestionAPIController : BaseAPIController
     {
         [Route("Gestion")]
         public async Task<GestionViewModel> Gestion(GestionViewModel model)
