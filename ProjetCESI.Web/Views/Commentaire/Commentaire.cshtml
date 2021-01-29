@@ -19,7 +19,7 @@
             {
                 @if (!string.IsNullOrEmpty(comm))
                 {
-                    <span class="d-block">@comm</span>
+                    <span class="d-block" style="word-break: break-word;">@comm</span>
                 }
                 else
                 {
@@ -47,11 +47,11 @@
                 <div class="collapse" id="collapseResponse-@commentaire.Id">
                     @foreach (var commentaireEnfant in commentaire.CommentairesEnfant)
                     {
-                        <div class="reponse d-block">
+                        <div class="reponse">
                             <div class="d-inline-flex">
                                 <div>
                                     <div class="d-inline-flex">
-                                        <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
+                                        <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
                                         <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
                                     </div>
                                     @{
@@ -62,7 +62,7 @@
                                     {
                                         @if (!string.IsNullOrEmpty(comm))
                                         {
-                                            <span class="d-block">@comm</span>
+                                            <span class="d-block" style="word-break: break-word;">@comm</span>
                                         }
                                         else
                                         {
