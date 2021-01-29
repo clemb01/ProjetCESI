@@ -346,6 +346,10 @@
 
         <canvas id="topConsultationChart" height="400" width="800"></canvas>
     </div>
+    <br />
+    <div id="topExploites">
+        <canvas id="topExploitesChart" height="400" width="800"></canvas>
+    </div>
 
     <div class="modal" tabindex="-1" id="modalExportCsv">
         <div class="modal-dialog modal-dialog-centered">
@@ -386,8 +390,10 @@
             var recherches = JSON.parse('@Json.Serialize(Model.TopRecherches)');
             var consultations = JSON.parse('@Json.Serialize(Model.TopConsultations)');
             var actions = JSON.parse('@Json.Serialize(Model.TopActions)');
+            var exploites = JSON.parse('@Json.Serialize(Model.TopExploites)');
             var topRechercheChart = initCanvas(document.getElementById('topRechercheChart').getContext('2d'), recherches.Count, recherches.Parametres, 'Terme les plus recherchés');
             var topConsultationChart = initCanvas(document.getElementById('topConsultationChart').getContext('2d'), consultations.Count, consultations.Parametres, 'Ressources les plus consultées');
+            var topExploitesChart = initCanvas(document.getElementById('topExploitesChart').getContext('2d'), exploites.Count, exploites.Parametres, 'Ressources les plus exploitées');
             var topActionsChart = initCanvas(document.getElementById('topActionsChart').getContext('2d'), actions.Count, actions.Parametres, 'Actions utilisateurs', 'line');
 
             $(document).ready(function () {
@@ -490,32 +496,32 @@
 }
 else
 {
-@section Scripts{
-    <script>
-        function GetCategorie(id, nom) {
-            document.getElementById("idCategorie").value = id;
-            document.getElementById("modificationParametre").value = nom;
-            $("#modifParametreCategorie").modal("show");
+    @section Scripts{
+        <script>
+            function GetCategorie(id, nom) {
+                document.getElementById("idCategorie").value = id;
+                document.getElementById("modificationParametre").value = nom;
+                $("#modifParametreCategorie").modal("show");
 
-        }
-    </script>
+            }
+        </script>
 
-    <script>
-        function AddCategorie() {
-            $("#AjoutCategorie").modal("show");
+        <script>
+            function AddCategorie() {
+                $("#AjoutCategorie").modal("show");
 
-        }
-    </script>
+            }
+        </script>
 
-    <script>
-        function DeleteCategorie(id) {
-            document.getElementById("idCategorieForSupp").value = id;
-            $("#SuppCategorie").modal("show");
+        <script>
+            function DeleteCategorie(id) {
+                document.getElementById("idCategorieForSupp").value = id;
+                $("#SuppCategorie").modal("show");
 
-        }
-    </script>
-    
-     }
-    
+            }
+        </script>
+
+    }
+
 }
 

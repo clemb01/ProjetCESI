@@ -1,5 +1,5 @@
 ﻿using ProjetCESI.Core;
-using ProjetCESI.Data.Metier;
+using ProjetCESI.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -173,6 +173,52 @@ namespace ProjetCESI.Metier
             return resultatsFinaux;
         }
 
+        public async Task<IEnumerable<TopObject>> GetTopExploitee(int __nbRecherche, DateTimeOffset __whereBas, DateTimeOffset __whereHaut)
+        {
+            var resultatsFinaux = new List<TopObject>();
+            int recherche = __nbRecherche;
+            int offset = 0;
+
+            while (resultatsFinaux.Count < __nbRecherche)
+            {
+                var resultats = (await DataClass.GetTopConsultation(recherche, __whereBas, __whereHaut, offset)).ToList();
+
+                if (!resultats.Any())
+                    break;
+
+                foreach (var resultat in resultats)
+                {
+                    if (resultat.Parametre.IndexOf("&") != -1)
+                        resultat.Parametre = resultat.Parametre[(resultat.Parametre.IndexOf("=") + 1)..resultat.Parametre.IndexOf("&")];
+                    else
+                        resultat.Parametre = resultat.Parametre[(resultat.Parametre.IndexOf("=") + 1)..];
+                }
+
+                resultatsFinaux.AddRange(resultats);
+                resultatsFinaux = resultatsFinaux.GroupBy(c => c.Parametre, StringComparer.InvariantCultureIgnoreCase).Select(c => new TopObject { Parametre = c.Key, Count = c.Sum(c => c.Count) }).ToList();
+
+                if (resultatsFinaux.Count < __nbRecherche)
+                {
+                    offset = recherche;
+                    recherche *= 2;
+                }
+            }
+
+            resultatsFinaux = resultatsFinaux.Take(__nbRecherche).ToList();
+
+            if (resultatsFinaux.Any())
+            {
+                var ressourceMetier = MetierFactory.CreateRessourceMetier();
+
+                foreach (var result in resultatsFinaux)
+                {
+                    result.Parametre = (await ressourceMetier.GetById(int.Parse(result.Parametre))).Titre;
+                }
+            }
+
+            return resultatsFinaux;
+        }
+
         public async Task<string> GenerateCSVData(int __nbRecherche, DateTimeOffset __whereBas, DateTimeOffset __whereHaut, TimestampFilter __filter)
         {
             string result = string.Empty;
@@ -180,6 +226,7 @@ namespace ProjetCESI.Metier
             IEnumerable<TopObject> actions = await GetNombreActionsMoyenneParUtilisateurs(__filter, __whereBas, __whereHaut);
             IEnumerable<TopObject> consultations = await GetTopConsultation(__nbRecherche, __whereBas, __whereHaut);
             IEnumerable<TopObject> recherches = await GetTopRecherche(__nbRecherche, __whereBas, __whereHaut);
+            IEnumerable<TopObject> exploitees = await DataClass.CreateNewDataClass<UtilisateurRessourceData>().GetTopExploitee(__nbRecherche);
 
             result += "Nombres d'actions utilisateurs sur le site\r\n\r\n";
             result += "Date;Nombre d'actions\r\n";
@@ -203,6 +250,14 @@ namespace ProjetCESI.Metier
             foreach (var recherche in recherches)
             {
                 result += recherche.Parametre + ";" + recherche.Count + "\r\n";
+            }
+
+            result += "\r\nRessources les plus exploitées\r\n\r\n";
+            result += "Nom;Nombre de fois exploitées\r\n";
+
+            foreach (var exploit in exploitees)
+            {
+                result += exploit.Parametre + ";" + exploit.Count + "\r\n";
             }
 
             return result;

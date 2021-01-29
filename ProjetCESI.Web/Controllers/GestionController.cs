@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ProjetCESI.Data.Metier;
+using ProjetCESI.Data;
 using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -214,7 +214,7 @@ namespace ProjetCESI.Web.Controllers
             }
 
             return Json(json);
-        }
+        }   
 
         [HttpGet]
         public async Task<IActionResult> ExportCSV(TimestampFilter periode)
@@ -275,6 +275,8 @@ namespace ProjetCESI.Web.Controllers
 
             var actions = (await MetierFactory.CreateStatistiqueMetier().GetNombreActionsMoyenneParUtilisateurs(TimestampFilter.Month, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset)));
 
+            var exploites = (await MetierFactory.CreateUtilisateurRessourceMetier().GetTopExploitee(10)).ToList();
+
             model.TopRecherches = new TopStats
             {
                 Count = recherches.Select(c => c.Count).ToList(),
@@ -291,6 +293,12 @@ namespace ProjetCESI.Web.Controllers
             {
                 Count = actions.Select(c => c.Count).ToList(),
                 Parametres = actions.Select(c => c.Parametre).ToList()
+            };
+
+            model.TopExploites = new TopStats
+            {
+                Count = exploites.Select(c => c.Count).ToList(),
+                Parametres = exploites.Select(c => c.Parametre).ToList()
             };
         }
     }

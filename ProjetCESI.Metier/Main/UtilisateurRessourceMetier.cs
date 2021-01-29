@@ -84,5 +84,10 @@ namespace ProjetCESI.Metier
 
             return await DataClass.InsertOrUpdate(ur);
         }
+
+        public async Task<IEnumerable<TopObject>> GetTopExploitee(int __nombreRecherche)
+        {
+            return (await DataClass.GetTopExploitee(__nombreRecherche)).ToList();
+        }
     }
 }

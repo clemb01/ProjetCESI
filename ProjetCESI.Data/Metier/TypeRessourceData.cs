@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Data.Metier
+namespace ProjetCESI.Data
 {
     public class TypeRessourceData : Repository<TypeRessource>, ITypeRessourceData
     {

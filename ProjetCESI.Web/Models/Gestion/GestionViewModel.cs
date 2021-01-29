@@ -1,5 +1,4 @@
 ﻿using ProjetCESI.Core;
-using ProjetCESI.Data.Metier;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +18,7 @@ namespace ProjetCESI.Web.Models
         public TopStats TopRecherches { get; set; }
         public TopStats TopConsultations { get; set; }
         public TopStats TopActions { get; set; }
+        public TopStats TopExploites { get; set; }
     }
 
     public class TopStats

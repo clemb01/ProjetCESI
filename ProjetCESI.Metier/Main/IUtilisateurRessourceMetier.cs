@@ -1,4 +1,6 @@
 ﻿using ProjetCESI.Core;
+using ProjetCESI.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
@@ -12,5 +14,6 @@ namespace ProjetCESI.Metier
         Task<bool> DeMettreDeCote(int _utilisateurId, int _ressourceId);
         Task<bool> EstExploite(int _utilisateurId, int _ressourceId);
         Task<bool> PasExploite(int _utilisateurId, int _ressourceId);
+        Task<IEnumerable<TopObject>> GetTopExploitee(int __nombreRecherche);
     }
 }
