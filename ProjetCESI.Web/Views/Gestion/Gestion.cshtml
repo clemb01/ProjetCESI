@@ -205,6 +205,8 @@
         <h1>Paramètre</h1>
         <br />
         <br />
+        <button onclick="AddCategorie()">Ajouter une categorie</button>
+        <br />
         <table class="table">
             <thead>
                 <tr>
@@ -224,7 +226,8 @@
                             @Html.DisplayFor(modelItem => item.Nom)
                         </td>
                         <td>
-                            <button onclick="GetCategory(@item.Id, '@item.Nom')">Modifier</button>
+                            <button onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
+                            <button onclick="DeleteCategorie(@item.Id)">Supprimer</button>
                         </td>
                     </tr>
                 }
@@ -251,6 +254,53 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                     <button type="submit" class="btn btn-primary">Enregister</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- modal ajout categorie-->
+<div class="modal" tabindex="-1" id="AjoutCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="AddCategorie" method="post">
+                <div class="modal-body">
+                    <input name="newCategorie" id="newCategorie" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregister</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- modal supprimer categorie-->
+<div class="modal" tabindex="-1" id="SuppCategorie">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter une catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Gestion" asp-action="DeleteCategorie" method="post">
+                <div class="modal-body">
+                    <input name="id" id="idCategorieForSupp" hidden />
+                    <p>Voulez-vous supprimer la catégorie ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Valider</button>
                 </div>
             </form>
         </div>
@@ -440,16 +490,32 @@
 }
 else
 {
-    @section Scripts
-    {
-        <script>
-            function GetCategory(id, nom) {
-                document.getElementById("idCategorie").value = id;
-                document.getElementById("modificationParametre").value = nom;
-                $("#modifParametreCategorie").modal("show");
+@section Scripts{
+    <script>
+        function GetCategorie(id, nom) {
+            document.getElementById("idCategorie").value = id;
+            document.getElementById("modificationParametre").value = nom;
+            $("#modifParametreCategorie").modal("show");
 
-            }
-        </script>
-    }
+        }
+    </script>
+
+    <script>
+        function AddCategorie() {
+            $("#AjoutCategorie").modal("show");
+
+        }
+    </script>
+
+    <script>
+        function DeleteCategorie(id) {
+            document.getElementById("idCategorieForSupp").value = id;
+            $("#SuppCategorie").modal("show");
+
+        }
+    </script>
+    
+     }
+    
 }
 

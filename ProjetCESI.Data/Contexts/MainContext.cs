@@ -49,8 +49,10 @@ namespace ProjetCESI.Data.Context
             builder.Entity<Ressource>().HasMany(c => c.Commentaires).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Ressource>().HasMany(c => c.TypeRelationsRessources).WithOne(c => c.Ressource).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Ressource>().HasMany(c => c.HistoriqueRessource).WithOne(c => c.RessourceParent).OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Categorie>().HasMany(c => c.Ressources).WithOne(c => c.Categorie).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.Restrict);
+
 
             base.OnModelCreating(builder);
         }

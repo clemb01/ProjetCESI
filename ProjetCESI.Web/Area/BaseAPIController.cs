@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjetCESI.Core;
@@ -17,7 +18,7 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseController : ControllerBase
+    public class BaseAPIController : ControllerBase
     {
         private MetierFactory _metierFactory;
         protected MetierFactory MetierFactory
@@ -33,8 +34,8 @@ namespace ProjetCESI.Web.Area
             }
         }
 
-        private int _userId;
-        public int UserId
+        private int? _userId;
+        public int? UserId
         {
             get
             {
@@ -65,6 +66,20 @@ namespace ProjetCESI.Web.Area
             }
         }
 
+        private List<string> _utilisateurRoles;
+        public List<string> UtilisateurRoles
+        {
+            get
+            {
+                if (_utilisateur != null)
+                {
+                    _utilisateurRoles = UserManager.GetRolesAsync(Utilisateur).Result.ToList();
+                }
+
+                return _utilisateurRoles;
+            }
+        }
+
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IAuthenticationService _authenticationService;
@@ -72,11 +87,11 @@ namespace ProjetCESI.Web.Area
         private IConfiguration _configuration;
         private ILogger _logger;
 
-        public BaseController()
+        public BaseAPIController()
         {
         }
 
-        public BaseController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public BaseAPIController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -162,5 +177,6 @@ namespace ProjetCESI.Web.Area
         {
             return PrepareModel<T>(new T());
         }
+
     }
 }

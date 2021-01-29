@@ -249,7 +249,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.Categorie != null)
                                  .Where(c => c.Titre.Contains(_search))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -273,7 +273,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.Categorie != null)
                                  .Where(c => c.Titre.Contains(_search));
 
                 if (_categories != null && _categories.Any())

@@ -11,5 +11,6 @@ namespace ProjetCESI.Core
     {
         [DataMember]
         public string Nom { get; set; }
+        public List<Ressource> Ressources { get; set; }
     }
 }
