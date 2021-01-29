@@ -134,7 +134,7 @@ namespace ProjetCESI
 
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Accueil}/{action=Accueil}/{id?}");
+                    pattern: "{controller=Accueil}/{action=Accueil}/{id?}");              
             });
 
             using (var scope = app.ApplicationServices.CreateScope())
