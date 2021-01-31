@@ -22,20 +22,23 @@ namespace ProjetCESI.Web.Controllers
         [AllowAnonymous]
         [StatistiqueFilter]
         [Route("Ressource/{id}")]
-        public async Task<IActionResult> Ressource(int id)
+        public async Task<IActionResult> Ressource(int id, string shareLink = null)
         {
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            
+
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.Statut != Statut.Accepter)
-                    if(User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
+                    if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
+                        return RedirectToAction("Accueil", "Accueil");
+            if (ressource.UtilisateurCreateurId != UserId)
+                if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
+                {
                     return RedirectToAction("Accueil", "Accueil");
-
-
+                }
 
             model.RessourceId = id;
             model.Titre = ressource.Titre;
@@ -51,6 +54,8 @@ namespace ProjetCESI.Web.Controllers
             model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
             model.DateSuppression = ressource.DateSuppression;
             model.RessourceSupprime = ressource.RessourceSupprime;
+            model.TypePartage = ressource.TypePartage;
+            model.ShareURL = ressource.ShareLink;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -61,7 +66,7 @@ namespace ProjetCESI.Web.Controllers
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
             }
 
-            if(ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
+            if (ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
             {
                 string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
                 string blobFile = ressource.ContenuOriginal.Split("||").Last();
@@ -184,7 +189,7 @@ namespace ProjetCESI.Web.Controllers
             var User = await UserManager.FindByIdAsync(UserId);
             string message = "Votre ressource :" + Ressource.Titre + ", a été validé !";
             Ressource.Statut = Statut.Accepter;
-            
+
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
             var model = new GestionViewModel();
             model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesNonValider()).ToList();
@@ -193,7 +198,7 @@ namespace ProjetCESI.Web.Controllers
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
                 return View("../Gestion/Gestion", model);
-            } 
+            }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
@@ -209,7 +214,7 @@ namespace ProjetCESI.Web.Controllers
             string message = "";
             if (String.IsNullOrWhiteSpace(messageRefus))
             {
-                message = "La validation de : " + Ressource.Titre + ", a été refusé." ;
+                message = "La validation de : " + Ressource.Titre + ", a été refusé.";
             }
             else
             {
@@ -316,5 +321,6 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
         }
+
     }
 }

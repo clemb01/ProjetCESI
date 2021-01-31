@@ -142,13 +142,6 @@
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
-                        <td>
-                            <strong>
-                                @Html.ActionLink("modifier", "BanTempo", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
-                            </strong>
-                        </td>
                     </tr>
                 }
             </tbody>

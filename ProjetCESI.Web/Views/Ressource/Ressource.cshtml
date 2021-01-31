@@ -28,18 +28,25 @@
         @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
         {
             <div class="ressource-button">
-                <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
-                <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
-                <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                {
+                    <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
+                    <span class="cote"><img title="@(Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
+                    <span class="exploite"><img title="@(Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+                }
                 @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
                 {
                     <span><a data-toggle="modal" data-target="#suppression"><img title="Supprimer" src="~/images/bin.png" width="32" /></a></span>
                     <span><a data-toggle="modal" data-target="#suspendre"><img title="Suspendre" src="~/images/suspendre.png" width="32" /></a></span>
                 }
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
+                {
+                    <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
+                }
             </div>
         }
     }
-    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
+    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && Model.TypePartage == ProjetCESI.Core.TypePartage.Public && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
     {
         <div class="ressource-button">
             <span><a data-toggle="modal" data-target="#reactivate"><img title="Réactiver" src="~/images/play_icone.png" width="32" /></a></span>
@@ -103,6 +110,27 @@
                     <button type="submit" class="btn btn-success">Réactiver</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Share -->
+<div class="modal fade" id="Share" tabindex="-1" aria-labelledby="Share" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Share">Lien à copier</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex my-2">
+                    <input onClick="this.setSelectionRange(0, this.value.length)" class="form-control p-2 w-100 align-self-end" id="to-copy" value="@Model.ShareURL" aria-label="readonly input example" autofocus readonly>
+                    <button id="copy" class="btn btn-primary btn-sm p-2" type="button">Copier</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
         </div>
     </div>
 </div>
@@ -323,6 +351,17 @@
             .done(function (result) {
                 document.getElementById("list-commentaire").innerHTML = result;
             });
-    }
+
+        function Clipboard(){
+            TextCopy.ClipboardService.SetText("Text to place in clipboard");
+        }
+        }
+        var toCopy = document.getElementById('to-copy'),
+            btnCopy = document.getElementById('copy');
+        btnCopy.addEventListener('click', function () {
+            toCopy.select();
+            document.execCommand('copy');
+            return false;
+        });
     </script>
 }

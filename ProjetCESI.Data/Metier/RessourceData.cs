@@ -23,7 +23,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.TypePartage == TypePartage.Public)
                                  .OrderBy(GenerateOrderFilter(_tri))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);

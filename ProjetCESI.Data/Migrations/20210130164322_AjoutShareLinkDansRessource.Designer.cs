@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetCESI.Data.Context;
 
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20210130164322_AjoutShareLinkDansRessource")]
+    partial class AjoutShareLinkDansRessource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,9 +226,6 @@ namespace ProjetCESI.Data.Migrations
 
                     b.Property<DateTimeOffset>("DateSuppression")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("KeyLink")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NombreConsultation")
                         .HasColumnType("int");

@@ -48,6 +48,10 @@ namespace ProjetCESI.Core
         public Categorie Categorie { get; set; }
         [DataMember]
         public int? CategorieId { get; set; }
+        [DataMember]
+        public string ShareLink { get; set; }
+        [DataMember]
+        public string KeyLink { get; set; }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }

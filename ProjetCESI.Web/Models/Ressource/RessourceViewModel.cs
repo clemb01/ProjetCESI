@@ -25,5 +25,7 @@ namespace ProjetCESI.Web.Models
         public List<Commentaire> Commentaires { get; set; }
         public bool RessourceSupprime { get; set; }
         public DateTimeOffset DateSuppression { get; set; }
+        public TypePartage TypePartage { get; set; }
+        public string ShareURL { get; set; }
     }
 }

@@ -309,3 +309,10 @@ input[type="checkbox"].input-validation-error {
 {
     margin:5%;
 }
+
+.share {
+    -moz-user-select: all;
+    -webkit-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+}

@@ -71,10 +71,18 @@
     </p>
     <p>
         Type de partage
-        <select data-placeholder="Sélectionnez un type de partage..." class="chosen-select form-control" name="SelectedTypePartage">
+        <select data-placeholder="Sélectionnez un type de partage..." class="chosen-select form-control" name="TypePartage">
             @foreach (var partage in Enum.GetNames(typeof(ProjetCESI.Core.TypePartage)))
             {
-                <option value="@((int)Enum.Parse(typeof(ProjetCESI.Core.TypePartage), partage))">@partage</option>
+                if (Model.TypePartage.ToString() == partage)
+                {
+                    <option value="@((int)Enum.Parse(typeof(ProjetCESI.Core.TypePartage), partage))" selected>@partage</option>
+                }
+                else
+                {
+                    <option value="@((int)Enum.Parse(typeof(ProjetCESI.Core.TypePartage), partage))">@partage</option>
+                }
+
             }
         </select>
     </p>
