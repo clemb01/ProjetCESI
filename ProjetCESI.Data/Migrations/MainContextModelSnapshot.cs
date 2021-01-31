@@ -526,8 +526,9 @@ namespace ProjetCESI.Data.Migrations
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
                     b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
-                        .WithMany()
-                        .HasForeignKey("CategorieId");
+                        .WithMany("Ressources")
+                        .HasForeignKey("CategorieId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ProjetCESI.Core.Ressource", "RessourceParent")
                         .WithMany("HistoriqueRessource")
@@ -597,6 +598,11 @@ namespace ProjetCESI.Data.Migrations
                     b.Navigation("Ressource");
 
                     b.Navigation("Utilisateur");
+                });
+
+            modelBuilder.Entity("ProjetCESI.Core.Categorie", b =>
+                {
+                    b.Navigation("Ressources");
                 });
 
             modelBuilder.Entity("ProjetCESI.Core.Commentaire", b =>

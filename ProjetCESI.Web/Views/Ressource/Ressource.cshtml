@@ -5,7 +5,7 @@
 @if (Model.Statut == ProjetCESI.Core.Statut.Suspendre)
 {
     <div class="alert alert-warning" role="alert">
-        Cette ressource a été suspendu !
+        Cette ressource a été suspendue !
     </div>
 }
 
@@ -201,7 +201,7 @@
         autosize(document.querySelector('.commentaire-editor'));
 
         $('.commentaire-editor').focusin(function () {
-            $('#submit-btn').collapse('toggle');
+            $('#submit-btn').collapse('show');
         });
 
         $('#annuler-commentaire').click(function () {
@@ -270,12 +270,12 @@
             })
                 .done(function () {
                     if (estMisDeCote) {
-                        document.getElementById('cote').src = "/images/photo-camera.svg";
+                        document.getElementById('cote').src = "/images/001-clock.svg";
                         document.getElementById('cote').title = "Mettre de côté";
                         estMisDeCote = false;
                     }
                     else {
-                        document.getElementById('cote').src = "/images/001-clock.svg";
+                        document.getElementById('cote').src = "/images/photo-camera.svg";
                         document.getElementById('cote').title = "Supprimer des ressources mise de côté";
                         estMisDeCote = true;
                     }
@@ -301,12 +301,12 @@
             })
                 .done(function () {
                     if (estExploite) {
-                        document.getElementById('exploite').src = "/images/remove.svg";
+                        document.getElementById('exploite').src = "/images/002-check.svg";
                         document.getElementById('exploite').title = "Indiquer comme exploitée";
                         estExploite = false;
                     }
                     else {
-                        document.getElementById('exploite').src = "/images/002-check.svg";
+                        document.getElementById('exploite').src = "/images/remove.svg";
                         document.getElementById('exploite').title = "Supprimer des ressources exploitées";
                         estExploite = true;
                     }

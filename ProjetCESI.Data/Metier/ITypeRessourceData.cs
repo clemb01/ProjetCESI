@@ -1,6 +1,6 @@
 ﻿using ProjetCESI.Core;
 
-namespace ProjetCESI.Data.Metier
+namespace ProjetCESI.Data
 {
     public interface ITypeRessourceData : IData<TypeRessource>
     {

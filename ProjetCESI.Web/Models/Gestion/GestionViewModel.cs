@@ -15,5 +15,15 @@ namespace ProjetCESI.Web.Models
         public List<TypeRessource> typeRessources { get; set; }
         public List<TypeRelation> typeRelations { get; set; }
         public string NomListe { get; set; }
+        public TopStats TopRecherches { get; set; }
+        public TopStats TopConsultations { get; set; }
+        public TopStats TopActions { get; set; }
+        public TopStats TopExploites { get; set; }
+    }
+
+    public class TopStats
+    {
+        public List<string> Parametres { get; set; }
+        public List<int> Count { get; set; }
     }
 }

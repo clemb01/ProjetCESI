@@ -11,7 +11,7 @@ namespace ProjetCESI.Data
 {
     public class RessourceData : Repository<Ressource>, IRessourceData
     {
-        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0, bool __includeShared = false, bool __includePrivate = false)
         {
             using (var ctx = GetContext())
             {
@@ -23,12 +23,22 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.TypePartage == TypePartage.Public)
-                                 .OrderBy(GenerateOrderFilter(_tri))
-                                 .Skip(_pageOffset * _pagination)
-                                 .Take(_pagination);
+                                 .Where(c => c.Statut == Statut.Accepter && c.Categorie != null && c.RessourceSupprime == false && c.RessourceParent == null);
 
-                return await ressources.ToListAsync();
+                if (__includeShared && !__includePrivate)
+                    ressources = ressources.Where(c => c.TypePartage == TypePartage.Public || c.TypePartage == TypePartage.Partage);
+                else if (__includePrivate && !__includeShared)
+                    ressources = ressources.Where(c => c.TypePartage == TypePartage.Public || c.TypePartage == TypePartage.Prive);
+                else if (__includePrivate && __includeShared)
+                    ressources = ressources.Where(c => c.TypePartage == TypePartage.Public || c.TypePartage == TypePartage.Partage || c.TypePartage == TypePartage.Prive);
+                else
+                    ressources = ressources.Where(c => c.TypePartage == TypePartage.Public);
+
+                return await ressources
+                        .OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination)
+                        .ToListAsync();
             }
         }
 
@@ -63,7 +73,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId) && c.RessourceParent == null);
+                        .Where(c => c.Statut == Statut.Accepter && c.Categorie != null && c.RessourceSupprime == false && c.UtilisateurRessources.Any(a => a.EstMisDeCote && a.UtilisateurId == _userId) && c.RessourceParent == null);
 
                 if(!string.IsNullOrEmpty(_search))
                     query = Search(query, _search);
@@ -92,7 +102,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId) && c.RessourceParent == null);
+                        .Where(c => c.Statut == Statut.Accepter && c.Categorie != null && c.RessourceSupprime == false && c.UtilisateurRessources.Any(a => a.EstExploite && a.UtilisateurId == _userId) && c.RessourceParent == null);
 
                 if (!string.IsNullOrEmpty(_search))
                     query = Search(query, _search);
@@ -169,7 +179,7 @@ namespace ProjetCESI.Data
                         .ThenInclude(c => c.TypeRelation)
                         .Include(c => c.TypeRelationsRessources)
                         .ThenInclude(c => c.Ressource)
-                        .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false &&  c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId) && c.RessourceParent == null);
+                        .Where(c => c.Statut == Statut.Accepter && c.Categorie != null && c.RessourceSupprime == false &&  c.UtilisateurRessources.Any(a => a.EstFavoris && a.UtilisateurId == _userId) && c.RessourceParent == null);
 
                 if (!string.IsNullOrEmpty(_search))
                     query = Search(query, _search);
@@ -215,7 +225,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.Categorie != null && c.RessourceSupprime == false && c.RessourceParent == null)
                                  .OrderByDescending(c => c.DateModification)
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -239,7 +249,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.Categorie != null)
                                  .Where(c => c.Titre.Contains(_search))
                                  .Skip(_pageOffset * _pagination)
                                  .Take(_pagination);
@@ -263,7 +273,7 @@ namespace ProjetCESI.Data
                                  .ThenInclude(c => c.TypeRelation)
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
-                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null)
+                                 .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.Categorie != null)
                                  .Where(c => c.Titre.Contains(_search));
 
                 if (_categories != null && _categories.Any())
@@ -319,6 +329,20 @@ namespace ProjetCESI.Data
                         .OrderBy(GenerateOrderFilter(_tri))
                         .Skip(_pageOffset * _pagination)
                         .Take(_pagination).ToListAsync();
+            }
+        }
+
+        public async Task<bool> ResetRessourceStatutWhereCategoryIsNull()
+        {
+            using (DbContext ctx = GetContext())
+            {
+                string query = @"UPDATE [dbo].[Ressources]
+                                SET Statut = 1
+                                WHERE CategorieId IS NULL AND (Statut = 3 OR Statut = 2)";
+
+                int result = await ctx.Database.ExecuteSqlRawAsync(query);
+
+                return result != 0 ? true : false;
             }
         }
     }
