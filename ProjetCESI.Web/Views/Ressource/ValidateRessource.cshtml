@@ -16,16 +16,7 @@
 }
 
 <div class="content">
-    @if (Model.TypeRessource.Id != (int)ProjetCESI.Core.TypeRessources.Video)
-    {
-        @Html.Raw(Model.Contenu)
-    }
-    else
-    {
-        <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="@Model.Contenu" allowfullscreen></iframe>
-        </div>
-    }
+    @Html.Raw(Model.Contenu)
 </div>
 
 <div class="fixed-div">
