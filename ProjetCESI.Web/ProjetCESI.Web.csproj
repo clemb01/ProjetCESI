@@ -5,6 +5,7 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <SignAssembly>false</SignAssembly>
     <DelaySign>true</DelaySign>
+    <UserSecretsId>4e8c874d-24ec-4900-bcee-8748a9dc89a4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

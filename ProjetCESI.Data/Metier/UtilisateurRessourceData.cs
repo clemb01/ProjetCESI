@@ -37,8 +37,8 @@ namespace ProjetCESI.Data
                     using (DbCommand cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = @"SELECT TOP(@count) rs.Titre, COUNT(*) as nombre
-                                            FROM [projetCESI].[dbo].[UtilisateurRessources] as ur
-                                            LEFT OUTER JOIN [projetCESI].[dbo].Ressources as rs ON rs.Id = ur.RessourceId
+                                            FROM [dbo].[UtilisateurRessources] as ur
+                                            LEFT OUTER JOIN [dbo].Ressources as rs ON rs.Id = ur.RessourceId
                                             WHERE EstExploite = 1
                                             GROUP BY rs.Titre";
 
