@@ -21,7 +21,7 @@
                         <div class="form-group form-check">
                             <label class="form-check-label">
                                 <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                                Nombre de jours où le compte d'@Html.DisplayFor(modelItem => Model.Utilisateur.UserName) sera bloqué :
+                                Nombre de jours où le compte de @Html.DisplayFor(modelItem => Model.Utilisateur.UserName) sera bloqué :
                                 @Html.TextBox("time") jours.
                             </label>
 
@@ -36,7 +36,7 @@
 
         <div class="card">
             <div class="card-header" id="header2">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">Bloquer définitivement</button>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">Bloquer définitivement le compte de l'utilisateur</button>
             </div>
             <div id="collapse2" class="collapse" aria-labelledby="header2" data-parent="#exempleAccordeon">
                 <div class="card-body">
@@ -59,7 +59,7 @@
 
         <div class="card">
             <div class="card-header" id="header3">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Débloquer l'user</button>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Débloquer le compte de l'utilisateur</button>
             </div>
             <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
                 <div class="card-body">
