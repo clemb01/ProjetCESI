@@ -12,6 +12,9 @@
                 <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
+            <form asp-controller="Commentaire" asp-action="Suppression" method="post">
+                <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+            </form>
             @{
                 var comms = commentaire.Texte.Split("\\n");
             }
