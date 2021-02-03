@@ -133,7 +133,7 @@ namespace ProjetCESI
                 endpoints.MapAreaControllerRoute(
                     name: "api",
                     areaName: "api",
-                    pattern: "api/{controller=Ressource}/{action=Ressource}/{id?}");
+                    pattern: "api/{controller}/{action}/{id?}");
 
                 endpoints.MapControllerRoute(
                     name: "Statistiques",
@@ -142,7 +142,7 @@ namespace ProjetCESI
 
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Accueil}/{action=Accueil}/{id?}");
+                    pattern: "{controller=Accueil}/{action=Accueil}/{id?}");              
             });
 
             using (var scope = app.ApplicationServices.CreateScope())

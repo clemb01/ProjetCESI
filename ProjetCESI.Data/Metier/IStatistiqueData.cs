@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static ProjetCESI.Data.Metier.StatistiqueData;
 
-namespace ProjetCESI.Data.Metier
+namespace ProjetCESI.Data
 {
     public interface IStatistiqueData : IData<Statistique>
     {

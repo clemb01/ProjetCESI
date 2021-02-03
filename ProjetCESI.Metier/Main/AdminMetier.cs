@@ -1,5 +1,5 @@
 ﻿using ProjetCESI.Core;
-using ProjetCESI.Data.Metier;
+using ProjetCESI.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

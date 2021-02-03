@@ -142,13 +142,6 @@
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
-                        <td>
-                            <strong>
-                                @Html.ActionLink("modifier", "BanTempo", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
-                            </strong>
-                        </td>
                     </tr>
                 }
             </tbody>
@@ -310,8 +303,11 @@
 
 @if (Model.NomVue == "statistique")
 {
-    <h1>Statistiques</h1>
-
+    <div class="d-flex justify-content-between">
+        <h1>Statistiques</h1>
+        <div><button class="btn btn-primary" data-toggle="modal" data-target="#modalExportCsv">Exporter au format CSV</button></div>
+    </div>
+    <br />
     <div id="topActions">
         <select id="topActionsStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>
@@ -322,7 +318,7 @@
 
         <canvas id="topActionsChart" height="400" width="800"></canvas>
     </div>
-
+    <br />
     <div id="topRecherche">
         <select id="topRechercheStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>
@@ -333,7 +329,7 @@
 
         <canvas id="topRechercheChart" height="400" width="800"></canvas>
     </div>
-
+    <br />
     <div id="topConsultation">
         <select id="topConsultationStat" name="selectedRange">
             <option value="1">Aujourd'hui</option>
@@ -344,9 +340,41 @@
 
         <canvas id="topConsultationChart" height="400" width="800"></canvas>
     </div>
+    <br />
+    <div id="topExploites">
+        <canvas id="topExploitesChart" height="400" width="800"></canvas>
+    </div>
+
+    <div class="modal" tabindex="-1" id="modalExportCsv">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export CSV</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/Gestion/ExportCSV" method="get">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="periode">Période de l'export</label>
+                            <select class="form-control" id="topConsultationStat" name="periode">
+                                <option value="0">Aujourd'hui</option>
+                                <option value="1">Cette semaine</option>
+                                <option value="2" selected>Ce mois-ci</option>
+                                <option value="3">Cette année</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Valider</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 }
-
-
 
 @if (Model.NomVue == "statistique")
 {
@@ -356,8 +384,10 @@
             var recherches = JSON.parse('@Json.Serialize(Model.TopRecherches)');
             var consultations = JSON.parse('@Json.Serialize(Model.TopConsultations)');
             var actions = JSON.parse('@Json.Serialize(Model.TopActions)');
+            var exploites = JSON.parse('@Json.Serialize(Model.TopExploites)');
             var topRechercheChart = initCanvas(document.getElementById('topRechercheChart').getContext('2d'), recherches.Count, recherches.Parametres, 'Terme les plus recherchés');
             var topConsultationChart = initCanvas(document.getElementById('topConsultationChart').getContext('2d'), consultations.Count, consultations.Parametres, 'Ressources les plus consultées');
+            var topExploitesChart = initCanvas(document.getElementById('topExploitesChart').getContext('2d'), exploites.Count, exploites.Parametres, 'Ressources les plus exploitées');
             var topActionsChart = initCanvas(document.getElementById('topActionsChart').getContext('2d'), actions.Count, actions.Parametres, 'Actions utilisateurs', 'line');
 
             $(document).ready(function () {
@@ -423,9 +453,6 @@
                                 hoverBorderColor: "rgba(255,99,132,1)"
                             }];
 
-
-
-
                             topActionsChart.update();
                         });
                 });
@@ -463,32 +490,32 @@
 }
 else
 {
-@section Scripts{
-    <script>
-        function GetCategorie(id, nom) {
-            document.getElementById("idCategorie").value = id;
-            document.getElementById("modificationParametre").value = nom;
-            $("#modifParametreCategorie").modal("show");
+    @section Scripts{
+        <script>
+            function GetCategorie(id, nom) {
+                document.getElementById("idCategorie").value = id;
+                document.getElementById("modificationParametre").value = nom;
+                $("#modifParametreCategorie").modal("show");
 
-        }
-    </script>
+            }
+        </script>
 
-    <script>
-        function AddCategorie() {
-            $("#AjoutCategorie").modal("show");
+        <script>
+            function AddCategorie() {
+                $("#AjoutCategorie").modal("show");
 
-        }
-    </script>
+            }
+        </script>
 
-    <script>
-        function DeleteCategorie(id) {
-            document.getElementById("idCategorieForSupp").value = id;
-            $("#SuppCategorie").modal("show");
+        <script>
+            function DeleteCategorie(id) {
+                document.getElementById("idCategorieForSupp").value = id;
+                $("#SuppCategorie").modal("show");
 
-        }
-    </script>
-    
-     }
-    
+            }
+        </script>
+
+    }
+
 }
 

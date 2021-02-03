@@ -104,6 +104,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .commentaire .reponse {
     padding-top: 1em;
+    padding-left: 1em;
 }
 
 .commentaire p {
@@ -308,4 +309,11 @@ input[type="checkbox"].input-validation-error {
 .espace-button
 {
     margin:5%;
+}
+
+.share {
+    -moz-user-select: all;
+    -webkit-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
 }

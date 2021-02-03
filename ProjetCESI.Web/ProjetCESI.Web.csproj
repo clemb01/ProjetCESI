@@ -5,6 +5,7 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <SignAssembly>false</SignAssembly>
     <DelaySign>true</DelaySign>
+    <UserSecretsId>4e8c874d-24ec-4900-bcee-8748a9dc89a4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
     <PackageReference Include="SendGrid" Version="9.22.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="TextCopy" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>

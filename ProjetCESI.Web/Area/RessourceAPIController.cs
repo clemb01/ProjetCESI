@@ -1,44 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ProjetCESI.Web.Outils;
-using ProjetCESI.Metier.Outils;
 
-namespace ProjetCESI.Web.Controllers
+namespace ProjetCESI.Web.Area
 {
-    [Authorize]
-    public class RessourceController : BaseController
+    [ApiController]
+    public class RessourceAPIController : BaseAPIController
     {
-        [HttpGet]
+        [HttpGet("{id}")]
         [AllowAnonymous]
         [StatistiqueFilter]
-        [Route("Ressource/{id}")]
-        public async Task<IActionResult> Ressource(int id, string shareLink = null)
+        public async Task<RessourceViewModel> Ressource(int id)
         {
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
 
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
-
-            if (ressource.UtilisateurCreateurId != UserId)
-                if (ressource.Statut != Statut.Accepter)
-                    if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
-                        return RedirectToAction("Accueil", "Accueil");
-            if (ressource.UtilisateurCreateurId != UserId)
-                if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
-                {
-                    return RedirectToAction("Accueil", "Accueil");
-                }
 
             model.RessourceId = id;
             model.Titre = ressource.Titre;
@@ -51,11 +36,7 @@ namespace ProjetCESI.Web.Controllers
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
             model.Statut = ressource.Statut;
-            model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
-            model.DateSuppression = ressource.DateSuppression;
-            model.RessourceSupprime = ressource.RessourceSupprime;
-            model.TypePartage = ressource.TypePartage;
-            model.ShareURL = ressource.ShareLink;
+            model.NombreConsultation = ++ressource.NombreConsultation;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -64,13 +45,6 @@ namespace ProjetCESI.Web.Controllers
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
-            }
-
-            if (ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
-            {
-                string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
-                string blobFile = ressource.ContenuOriginal.Split("||").Last();
-                await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
             }
 
             ressource.TypeRelationsRessources = null;
@@ -82,30 +56,7 @@ namespace ProjetCESI.Web.Controllers
 
             await ressourceMetier.InsertOrUpdate(ressource);
 
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("ValidateRessource/{id}")]
-        public async Task<IActionResult> ValidateRessource(int id)
-        {
-            var model = PrepareModel<RessourceViewModel>();
-            var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
-
-            model.RessourceId = id;
-            model.Titre = ressource.Titre;
-            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
-            model.TypeRessource = ressource.TypeRessource;
-            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
-            model.Categorie = ressource.Categorie;
-            model.Commentaires = ressource.Commentaires;
-            model.DateCreation = ressource.DateCreation;
-            model.DateModification = ressource.DateModification;
-            model.Contenu = ressource.Contenu;
-            model.Statut = ressource.Statut;
-
-            return View(model);
+            return model;
         }
 
         [HttpPost]
@@ -180,8 +131,31 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [HttpGet]
+        [Route("ValidateRessource/{id}")]
+        public async Task<RessourceViewModel> ValidateRessource(int id)
+        {
+            var model = PrepareModel<RessourceViewModel>();
+            var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+
+            model.RessourceId = id;
+            model.Titre = ressource.Titre;
+            model.UtilisateurCreateur = ressource.UtilisateurCreateur;
+            model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.Categorie = ressource.Categorie;
+            model.Commentaires = ressource.Commentaires;
+            model.DateCreation = ressource.DateCreation;
+            model.DateModification = ressource.DateModification;
+            model.Contenu = ressource.Contenu;
+            model.Statut = ressource.Statut;
+
+            return model;
+        }
+
         [HttpPost]
-        public async Task<IActionResult> ValiderRessource(int ressourceId)
+        public async Task<GestionViewModel> ValiderRessource(int ressourceId)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -197,16 +171,17 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return View("../Gestion/Gestion", model);
+                return model;
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return null;
 
 
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> RefuserRessource(int ressourceId, string messageRefus)
+        public async Task<GestionViewModel> RefuserRessource(int ressourceId, string messageRefus)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -229,10 +204,10 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return View("../Gestion/Gestion", model);
+                return model;
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return null;
 
 
         }
@@ -259,7 +234,7 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suppression de la ressource", message);
-                return Redirect("../Consultation/Consultation");
+                return StatusCode(StatusCodes.Status200OK);
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
@@ -288,12 +263,13 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suspension de la ressource", message);
-                return Redirect("../Consultation/Consultation");
+                return StatusCode(StatusCodes.Status200OK);
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
         }
+
         [HttpPost]
         public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
         {
@@ -315,7 +291,7 @@ namespace ProjetCESI.Web.Controllers
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Réactivation de la ressource", message);
-                return Redirect("../Consultation/Consultation");
+                return StatusCode(StatusCodes.Status200OK);
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);

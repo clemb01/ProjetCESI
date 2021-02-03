@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetCESI.Data.Context;
 
 namespace ProjetCESI.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20210131035930_AjoutKeyLink")]
+    partial class AjoutKeyLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,9 +528,8 @@ namespace ProjetCESI.Data.Migrations
             modelBuilder.Entity("ProjetCESI.Core.Ressource", b =>
                 {
                     b.HasOne("ProjetCESI.Core.Categorie", "Categorie")
-                        .WithMany("Ressources")
-                        .HasForeignKey("CategorieId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany()
+                        .HasForeignKey("CategorieId");
 
                     b.HasOne("ProjetCESI.Core.Ressource", "RessourceParent")
                         .WithMany("HistoriqueRessource")
@@ -598,11 +599,6 @@ namespace ProjetCESI.Data.Migrations
                     b.Navigation("Ressource");
 
                     b.Navigation("Utilisateur");
-                });
-
-            modelBuilder.Entity("ProjetCESI.Core.Categorie", b =>
-                {
-                    b.Navigation("Ressources");
                 });
 
             modelBuilder.Entity("ProjetCESI.Core.Commentaire", b =>

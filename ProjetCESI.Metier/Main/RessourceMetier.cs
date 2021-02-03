@@ -13,7 +13,7 @@ namespace ProjetCESI.Metier
     {
         public async Task<Ressource> GetRessourceComplete(int _ressourceId) => await DataClass.GetRessourceComplete(_ressourceId);
 
-        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllPaginedRessource(_tri, _pagination, _pageOffset);
+        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0, bool __includeShared = false, bool __includePrivate = false) => await DataClass.GetAllPaginedRessource(_tri, _pagination, _pageOffset, __includeShared, __includePrivate);
 
         public async Task<IEnumerable<Ressource>> GetAllPaginedLastRessource(int _pagination = 20, int _pageOffset = 0) => await DataClass.GetAllPaginedLastRessource(_pagination, _pageOffset);
 

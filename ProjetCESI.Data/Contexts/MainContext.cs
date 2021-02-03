@@ -53,7 +53,6 @@ namespace ProjetCESI.Data.Context
 
             builder.Entity<Commentaire>().HasOne(c => c.CommentaireParent).WithMany(c => c.CommentairesEnfant).OnDelete(DeleteBehavior.Restrict);
 
-
             base.OnModelCreating(builder);
         }
 

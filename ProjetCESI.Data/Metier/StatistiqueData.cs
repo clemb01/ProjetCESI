@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetCESI.Data.Metier
+namespace ProjetCESI.Data
 {
     public class StatistiqueData : Repository<Statistique>, IStatistiqueData
     {
@@ -30,7 +30,7 @@ namespace ProjetCESI.Data.Metier
                         if (__filter == TimestampFilter.Day)
                         {
                             cmd.CommandText = @"SELECT dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
-		                                    FROM [projetCESI].[dbo].[Statistiques] 
+		                                    FROM [dbo].[Statistiques] 
 		                                    WHERE UtilisateurId IS NOT NULL AND
                                                 [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
 		                                    GROUP BY dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0)
@@ -39,7 +39,7 @@ namespace ProjetCESI.Data.Metier
                         else if (__filter == TimestampFilter.Month)
                         {
                             cmd.CommandText = @"SELECT dateadd(DAY, datediff(DAY, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
-		                                    FROM [projetCESI].[dbo].[Statistiques] 
+		                                    FROM [dbo].[Statistiques] 
 		                                    WHERE UtilisateurId IS NOT NULL AND
                                                 [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
 		                                    GROUP BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0)
@@ -117,7 +117,7 @@ namespace ProjetCESI.Data.Metier
                     using (DbCommand cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = @"SELECT Parametre, count(Parametre) as 'Nombre de fois consulté'
-                                            FROM [projetCESI].[dbo].[Statistiques] 
+                                            FROM [dbo].[Statistiques] 
                                             WHERE Action = 'Ressource' AND
                                                 [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas AND
                                                 Parametre IS NOT NULL
@@ -191,7 +191,7 @@ namespace ProjetCESI.Data.Metier
                     using (DbCommand cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = @"SELECT Parametre, count(Parametre) as 'Nombre de fois recherché'
-                                            FROM [projetCESI].[dbo].[Statistiques] 
+                                            FROM [dbo].[Statistiques] 
                                             WHERE Action = 'Search' AND
                                                 [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
                                             GROUP BY Parametre

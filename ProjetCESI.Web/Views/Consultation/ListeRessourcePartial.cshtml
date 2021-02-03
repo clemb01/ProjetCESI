@@ -24,26 +24,30 @@
     <div class="row">
         @foreach (var ressource in Model.Ressources)
         {
-            <div class="col-sm-6" id="ressource-card">
-                <a href="/Ressource/@ressource.Id">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
-                                <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
+            @if (ressource.TypePartage == ProjetCESI.Core.TypePartage.Public)
+            {
+                <div class="col-sm-6" id="ressource-card">
+                    <a href="/Ressource/@ressource.Id">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
+                                    <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
+                                </div>
+                                <p class="card-text">
+                                    <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
+                                    <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
+                                    @foreach (var relation in ressource.TypeRelationsRessources)
+                                    {
+                                        <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
+                                    }
+                                </p>
                             </div>
-                            <p class="card-text">
-                                <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
-                                <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
-                                @foreach (var relation in ressource.TypeRelationsRessources)
-                                {
-                                    <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
-                                }
-                            </p>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            }
+
         }
     </div>
 }

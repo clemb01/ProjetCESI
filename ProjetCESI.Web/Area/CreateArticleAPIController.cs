@@ -1,24 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjetCESI.Core;
+using ProjetCESI.Metier.Outils;
+using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
-using ProjetCESI.Core;
-using ProjetCESI.Web.Models;
-using ProjetCESI.Metier;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
-using ProjetCESI.Web.Outils;
-using Microsoft.AspNetCore.Authorization;
-using ProjetCESI.Metier.Outils;
+using System.Threading.Tasks;
 
-namespace ProjetCESI.Web.Controllers
+namespace ProjetCESI.Web.Area
 {
-    [Authorize]
-    public class CreateArticleController : BaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CreateArticleAPIController : BaseAPIController
     {
         private SelectList ToSelectList<T>(List<T> liste)
         {
@@ -27,7 +25,7 @@ namespace ProjetCESI.Web.Controllers
             return selectList;
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<CreateRessourceViewModel> Create()
         {
             CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
 
@@ -35,17 +33,16 @@ namespace ProjetCESI.Web.Controllers
             model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
             model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
 
-            ViewBag.Preview = null;
 
             model.RessourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
-            
-            return View("CreateOrUpdate", model);
+
+            return model;
         }
 
         [HttpPost]
         [StatistiqueFilter]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrUpdateRessource(CreateRessourceViewModel model)
+        public async Task<CreateRessourceViewModel> CreateOrUpdateRessource(CreateRessourceViewModel model)
         {
             PrepareModel(model);
 
@@ -53,24 +50,24 @@ namespace ProjetCESI.Web.Controllers
 
             await UpdateRessource(model);
 
-            return View("CreateOrUpdate", model);
+            return model;
         }
 
         [HttpGet]
         [Route("CreateArticle/Edit/{ressourceId}")]
-        public async Task<IActionResult> Edit(int ressourceId)
+        public async Task<CreateRessourceViewModel> Edit(int ressourceId)
         {
             CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
 
             var ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
 
-            if(ressource != null)
+            if (ressource != null)
             {
                 List<string> roles = new List<string>() { Enum.GetName(TypeUtilisateur.Admin), Enum.GetName(TypeUtilisateur.SuperAdmin) };
 
                 if (ressource.UtilisateurCreateurId != UserId && !UtilisateurRoles.Any(c => roles.Contains(c)))
                 {
-                    return RedirectToAction("Accueil", "Accueil");
+                    return null;
                 }
 
                 model.Titre = ressource.Titre;
@@ -80,8 +77,8 @@ namespace ProjetCESI.Web.Controllers
                 model.TypePartage = ressource.TypePartage;
                 model.Statut = ressource.Statut;
                 model.IsEdit = true;
-                                
-                if(ressource.TypeRessource != null)
+
+                if (ressource.TypeRessource != null)
                 {
                     if (ressource.TypeRessource.Id == (int)TypeRessources.Video)
                     {
@@ -92,7 +89,7 @@ namespace ProjetCESI.Web.Controllers
                         model.Contenu = ressource.Contenu;
                     }
                     else
-                    {   
+                    {
                         model.NomPdf = ressource.ContenuOriginal;
                     }
                 }
@@ -103,10 +100,10 @@ namespace ProjetCESI.Web.Controllers
             }
             else
             {
-                return RedirectToAction("Accueil", "Accueil");
+                return null;
             }
 
-            return View("CreateOrUpdate", model);
+            return model;
         }
 
         [HttpPost]
@@ -127,7 +124,7 @@ namespace ProjetCESI.Web.Controllers
         [StatistiqueFilter]
         [ValidateAntiForgeryToken]
         [Route("CreateArticle/Edit/{ressourceId}")]
-        public async Task<IActionResult> Edit(CreateRessourceViewModel model)
+        public async Task<CreateRessourceViewModel> Edit(CreateRessourceViewModel model)
         {
             PrepareModel(model);
 
@@ -135,7 +132,7 @@ namespace ProjetCESI.Web.Controllers
 
             await UpdateRessource(model);
 
-            return View("CreateOrUpdate", model);
+            return model;
         }
 
         [HttpPost]
@@ -144,17 +141,10 @@ namespace ProjetCESI.Web.Controllers
         public async Task<IActionResult> FinaliserRessource(int ressourceId)
         {
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            Guid g = Guid.NewGuid();
-            string GuidString = Convert.ToBase64String(g.ToByteArray());
-            GuidString = GuidString.Replace("=", "");
-            GuidString = GuidString.Replace("+", "");
 
             Ressource ressource = await ressourceMetier.GetById(ressourceId);
-            var shareLink = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = GuidString }, Request.Scheme);
-            ressource.ShareLink = shareLink;
-            ressource.KeyLink = GuidString;
 
-            if(User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)))
+            if (User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)))
                 ressource.Statut = Statut.Accepter;
             else
                 ressource.Statut = Statut.AttenteValidation;
@@ -181,7 +171,7 @@ namespace ProjetCESI.Web.Controllers
             string originalContent = null;
 
             if (ModelState.IsValid || ignoreModelState)
-            {                
+            {
                 if (model.SelectedTypeRessources == (int)TypeRessources.PDF)
                 {
                     if (!model.IsEdit && (model.File == null || model.File.ContentType != "application/pdf" || model.File.Length == 0))
@@ -190,7 +180,7 @@ namespace ProjetCESI.Web.Controllers
                     }
                     else
                     {
-                        if(!model.IsEdit || (model.File != null && model.File.ContentType == "application/pdf" && model.File.Length > 0))
+                        if (!model.IsEdit || (model.File != null && model.File.ContentType == "application/pdf" && model.File.Length > 0))
                         {
                             var uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
                             bool exists = Directory.Exists(uploads);
@@ -259,9 +249,9 @@ namespace ProjetCESI.Web.Controllers
                 {
                     ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(model.RessourceId);
 
-                    IEnumerable<int> diff1 = new List<int>(), diff2 = new List<int>();                    
-                    
-                    if(model.SelectedTypeRelation != null && ressource.TypeRelationsRessources.Any())
+                    IEnumerable<int> diff1 = new List<int>(), diff2 = new List<int>();
+
+                    if (model.SelectedTypeRelation != null && ressource.TypeRelationsRessources.Any())
                     {
                         diff1 = model.SelectedTypeRelation.Except(ressource.TypeRelationsRessources.Select(c => c.TypeRelationId));
                         diff2 = ressource.TypeRelationsRessources.Select(c => c.TypeRelationId).Except(model.SelectedTypeRelation);
@@ -301,10 +291,12 @@ namespace ProjetCESI.Web.Controllers
                         await MetierFactory.CreateTypeRelationRessourceMetier().AjouterRelationsToRessource(model.SelectedTypeRelation, ressource.Id);
                     }
 
-                    ViewBag.Preview = "show";
-                    ViewBag.Content = ressource.Contenu;
+                    //ViewBag.Preview = "show";
+                    //ViewBag.Content = ressource.Contenu;
                 }
             }
         }
     }
+
 }
+
