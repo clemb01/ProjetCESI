@@ -21,6 +21,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using ProjetCESI.Metier.Outils;
 using Newtonsoft.Json.Serialization;
+using ProjetCESI.Web.SignalR;
 
 namespace ProjetCESI
 {
@@ -92,6 +93,8 @@ namespace ProjetCESI
                 });
             });
 
+            services.AddSignalR();
+
             services.AddViewToStringRendererService();
 
             services.AddControllersWithViews().AddNewtonsoftJson(opt =>
@@ -130,6 +133,8 @@ namespace ProjetCESI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<MessageHub>($"/messageHub");
+
                 endpoints.MapAreaControllerRoute(
                     name: "api",
                     areaName: "api",

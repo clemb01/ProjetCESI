@@ -1,6 +1,9 @@
 ﻿@using ProjetCESI.Web.Models
 @model RessourceViewModel
 
+@section TopScripts {
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+}
 
 @if (Model.Statut == ProjetCESI.Core.Statut.Suspendre)
 {
@@ -189,6 +192,31 @@
     </div>
 </div>
 
+@if (Model.TypeRessource.Id == (int)ProjetCESI.Core.TypeRessources.ActiviteJeu ||
+    Model.TypeRessource.Id == (int)ProjetCESI.Core.TypeRessources.Jeu)
+{
+    <div class="chat">
+        <div id="collapse-chat" class="collapser">
+            <div style="margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">
+                <span style="user-select: none">Discussion</span>
+                <span id="message-count" style="display: none;"></span>
+            </div>
+        </div>
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="mesgs">
+                    <div class="msg_history">
+                        <div style="width: 100%; text-align: center;"><span>Salon de discussion de la ressource @Model.Titre</span></div>
+                    </div>
+                </div>
+            </div>
+            <form id="messageform" style="height: 10%">
+                <textarea placeholder="Ecrivez un message..." type="text" id="messagebox" style="width: 100%; height: 100%" rows="2"></textarea>
+            </form>
+        </div>
+    </div>
+}
+
 @section Scripts {
     <script src="~/lib/autosize/dist/autosize.min.js"></script>
     <script>
@@ -199,6 +227,7 @@
     $(document).ready(function () {
         getComments();
         autosize(document.querySelector('.commentaire-editor'));
+        autosize(document.querySelector('.messagebox'));
 
         $('.commentaire-editor').focusin(function () {
             $('#submit-btn').collapse('show');
@@ -337,24 +366,23 @@
         });
         </text>
         }
-
     });
 
-    function getComments() {
-        $.ajax({
-            url: "/Commentaire/GetCommentaires",
-            method: "GET",
-            data: {
-                ressourceId: @Model.RessourceId,
-            }
-        })
-            .done(function (result) {
-                document.getElementById("list-commentaire").innerHTML = result;
-            });
+        function getComments() {
+            $.ajax({
+                url: "/Commentaire/GetCommentaires",
+                method: "GET",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+                .done(function (result) {
+                    document.getElementById("list-commentaire").innerHTML = result;
+                });
 
-        function Clipboard(){
-            TextCopy.ClipboardService.SetText("Text to place in clipboard");
-        }
+            function Clipboard() {
+                TextCopy.ClipboardService.SetText("Text to place in clipboard");
+            }
         }
         var toCopy = document.getElementById('to-copy'),
             btnCopy = document.getElementById('copy');
@@ -364,4 +392,125 @@
             return false;
         });
     </script>
+
+    @if (Model.TypeRessource.Id == (int)ProjetCESI.Core.TypeRessources.ActiviteJeu ||
+         Model.TypeRessource.Id == (int)ProjetCESI.Core.TypeRessources.Jeu)
+    {
+        <script>
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/messageHub")
+                .build();
+        </script>
+
+        <script>
+        let chatIsToggled = false;
+        let messageCount = 0;
+
+        $(document).ready(function () {
+            $("#messagebox").keypress(function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    let message = $('#messagebox').val();
+                    let sender = '@Model.Username';
+                    $('#messagebox').val('');
+
+                    if (message === null || message.match(/^ *$/) !== null)
+                        return;
+
+                    connection.invoke('SendMessage', sender, message, '@Model.RessourceId').catch(err => console.error(err.toString()));
+
+                    $(this).val("");
+                }
+            });
+
+            connection.on("ReceiveMessage", (user, message) => {
+                appendLine(user, message);
+            });
+
+            connection.start()
+                .then(res => {
+                    connection.invoke('Join', '@Model.RessourceId')
+                        .catch(err => {
+                            console.log(err);
+                        });
+                })
+                .catch(err => console.error(err.toString()));
+
+            $("#collapse-chat").click(function () {
+                if (chatIsToggled) {
+                    $('.chat').animate({
+                        bottom: '-52.5%',
+                        right: '-25%'
+                    }, 500);
+
+                    chatIsToggled = !chatIsToggled;
+                }
+                else {
+                    $('.chat').animate({
+                        bottom: '0px',
+                        right: '0px'
+                    }, 500);
+
+                    chatIsToggled = !chatIsToggled;
+                    document.getElementById('message-count').innerText = '';
+                    document.getElementById('message-count').style.display = 'none';
+                    messageCount = 0;
+                }
+            });
+        });
+
+        function appendLine(user, message) {
+            messageCount++;
+            if (!chatIsToggled && messageCount > 0) {
+                document.getElementById('message-count').innerText = messageCount;
+                document.getElementById('message-count').style.display = 'initial';
+            }
+
+            var dateNow = new Date().toLocaleString();
+
+            if (user === '@Model.Username') {
+                var divElement = document.createElement('div');
+                divElement.className = 'outgoing_msg';
+                var divChildElement = document.createElement('div');
+                divChildElement.className = 'sent_msg';
+                var userElement = document.createElement('strong');
+                userElement.innerText = `${user}`;
+                var text = document.createElement('p');
+                text.innerText = ` ${message}`;
+                var date = document.createElement('span');
+                date.className = 'time_date';
+                date.innerText = `${dateNow}`;
+
+                divChildElement.appendChild(userElement);
+                divChildElement.appendChild(text);
+                divChildElement.appendChild(date);
+                divElement.appendChild(divChildElement);
+            }
+            else {
+                var divElement = document.createElement('div');
+                divElement.className = 'incoming_msg';
+                var divChildElement = document.createElement('div');
+                divChildElement.className = 'received_msg';
+                var divMsg = document.createElement('div');
+                divMsg.className = 'received_withd_msg';
+                var userElement = document.createElement('strong');
+                userElement.innerText = `${user}`;
+                var text = document.createElement('p');
+                text.innerText = ` ${message}`;
+                var date = document.createElement('span');
+                date.className = 'time_date';
+                date.innerText = `${dateNow}`;
+
+                divMsg.appendChild(userElement);
+                divMsg.appendChild(text);
+                divMsg.appendChild(date);
+                divChildElement.appendChild(divMsg);
+                divElement.appendChild(divChildElement);
+            }
+
+            $('.msg_history').append(divElement);
+            document.getElementsByClassName('msg_history')[0].scrollTop = document.getElementsByClassName('msg_history')[0].scrollHeight;
+        };
+        </script>
+    }
 }

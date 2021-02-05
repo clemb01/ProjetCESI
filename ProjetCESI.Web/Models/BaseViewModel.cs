@@ -16,5 +16,6 @@ namespace ProjetCESI.Web.Models
         public string QueryString { get; set; }
         public User Utilisateur { get; set; }
         public TypeUtilisateur UtilisateurRole { get; set; }
+        public string Username { get; set; }
     }
 }
