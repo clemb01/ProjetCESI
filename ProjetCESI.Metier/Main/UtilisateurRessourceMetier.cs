@@ -135,5 +135,10 @@ namespace ProjetCESI.Metier
         {
             return (await DataClass.GetTopExploitee(__nombreRecherche)).ToList();
         }
+
+        public async Task<Tuple<IEnumerable<Ressource>, IEnumerable<StatutActivite>, int>> GetUserActivite(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            return await DataClass.GetUserActivite(_userId, _search, _tri, _pagination, _pageOffset);
+        }
     }
 }
