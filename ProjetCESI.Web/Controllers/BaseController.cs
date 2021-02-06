@@ -174,7 +174,7 @@ namespace ProjetCESI.Web.Controllers
             if (Utilisateur != null)
                 model.Username = Utilisateur.UserName;
             else
-                model.Username = "Anonyme";
+                model.Username = "Anonyme_" + Guid.NewGuid();
 
             if(UtilisateurRoles != null)
                 model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (TypeUtilisateur)(Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault())) : TypeUtilisateur.Citoyen;

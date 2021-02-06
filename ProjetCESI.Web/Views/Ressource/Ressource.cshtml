@@ -206,7 +206,7 @@
             <div class="inbox_msg">
                 <div class="mesgs">
                     <div class="msg_history">
-                        <div style="width: 100%; text-align: center;"><span>Salon de discussion de la ressource @Model.Titre</span></div>
+                        <div style="width: 100%; text-align: center;"><small>Salon de discussion de la ressource @Model.Titre</small></div>
                     </div>
                 </div>
             </div>
@@ -427,9 +427,13 @@
                 appendLine(user, message);
             });
 
+            connection.on("JoinedRoom", (user, message) => {
+                roomEvent(message);
+            });
+
             connection.start()
                 .then(res => {
-                    connection.invoke('Join', '@Model.RessourceId')
+                    connection.invoke('Join', '@Model.RessourceId', '@Model.Username')
                         .catch(err => {
                             console.log(err);
                         });
@@ -473,6 +477,23 @@
             });
         });
 
+        window.onbeforeunload = function () {
+            debugger;
+            connection.invoke('LeaveRoom', '@Model.RessourceId', '@Model.Username').catch(err => console.error(err.toString()));
+            connection.stop();
+        }
+
+        function roomEvent(message) {
+            messageCount++;
+            if (!chatIsToggled && messageCount > 0) {
+                document.getElementById('message-count').innerText = messageCount;
+                document.getElementById('message-count').style.display = 'initial';
+            }
+
+            $('.msg_history').append(`<div style="width: 100%; text-align: center;"><span>${message}</span></div>`);
+            document.getElementsByClassName('msg_history')[0].scrollTop = document.getElementsByClassName('msg_history')[0].scrollHeight;
+        };
+
         function appendLine(user, message) {
             messageCount++;
             if (!chatIsToggled && messageCount > 0) {
@@ -508,6 +529,9 @@
                 var divMsg = document.createElement('div');
                 divMsg.className = 'received_withd_msg';
                 var userElement = document.createElement('strong');
+
+                user = user.includes('Anonyme') ? 'Anonyme' : user;
+
                 userElement.innerText = `${user}`;
                 var text = document.createElement('p');
                 text.innerText = ` ${message}`;
