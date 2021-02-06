@@ -59,11 +59,12 @@ namespace ProjetCESI.Web.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id, model.TypeRessource == TypeRessources.ActiviteJeu);
 
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+                model.StatutActivite = utilisateurRessource.StatutActivite;
             }
 
             if (ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
@@ -176,6 +177,66 @@ namespace ProjetCESI.Web.Controllers
 
             if (result)
                 return StatusCode(StatusCodes.Status200OK);
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> DemarrerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DemarrerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId});
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SuspendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SuspendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> QuitterActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().QuitterActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> ReprendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().ReprendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> TerminerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().TerminerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -294,6 +355,7 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
         }
+
         [HttpPost]
         public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
         {

@@ -49,7 +49,7 @@ namespace ProjetCESI.Web.Outils
             stat.Controller = context.ActionDescriptor.RouteValues["controller"];
             stat.Action = context.ActionDescriptor.RouteValues["action"];
 
-            if (stat.Controller == "Consultation" || stat.Controller == "ConsultationAPI" && stat.Action == "Search")
+            if ((stat.Controller == "Consultation" || stat.Controller == "ConsultationAPI") && stat.Action == "Search")
             {
                 if (context.ActionArguments.ContainsKey("model"))
                 {
@@ -68,7 +68,7 @@ namespace ProjetCESI.Web.Outils
                         return;
                 }
             }
-            else if (stat.Controller == "Ressource" || stat.Controller == "RessourceAPI" && stat.Action == "Ressource") 
+            else if ((stat.Controller == "Ressource" || stat.Controller == "RessourceAPI") && stat.Action == "Ressource") 
             {
                 stat.Parametre = $"ressourceId={(int)context.ActionArguments["id"]}";
             }
@@ -88,7 +88,7 @@ namespace ProjetCESI.Web.Outils
                     stat.Parametre = context.ActionArguments.ContainsKey("ressourceId") ? $"ressourceId={(int)context.ActionArguments["ressourceId"]}" : string.Empty;
                 }
             }
-            else if (stat.Controller == "Ressource" || stat.Controller == "RessourceAPI" && (stat.Action.Contains("Ajouter") || stat.Action.Contains("Supprimer")))
+            else if ((stat.Controller == "Ressource" || stat.Controller == "RessourceAPI") && (stat.Action.Contains("Ajouter") || stat.Action.Contains("Supprimer") || stat.Action.Contains("Activite")))
             {
                 stat.Parametre = $"ressourceId={(int)context.ActionArguments["ressourceId"]}";
             }

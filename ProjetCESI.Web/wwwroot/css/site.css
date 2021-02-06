@@ -327,18 +327,32 @@ input[type="checkbox"].input-validation-error {
 .chat {
     z-index: 9999;
     position: fixed;
-    width: 35%;
     bottom: 0; 
     right: 0;
 }
 
+@media (min-width: 1250px) {
+    .chat {
+        width: 10%;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1250px) {
+    .chat {
+        width: 20%;
+    }
+}
+
+@media (max-width: 600px) {
+    .chat {
+        width: 35%;
+    }
+}
+
 .chat #message-count {
     user-select: none;
-    border-radius: 10%;
     padding: 0 5px 0 5px;
-    background: #fff;
-    border: 1px solid #666;
-    color: #666;
+    color: #f00;
     text-align: center;
 }
 
@@ -534,7 +548,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .messaging {
-    height: 47vh;
+    height: 0;
     background: #fff;
 }
 
