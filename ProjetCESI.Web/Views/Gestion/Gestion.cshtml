@@ -198,7 +198,7 @@
     <h1>Paramètre</h1>
     <br />
     <br />
-    <button onclick="AddCategorie()">Ajouter une categorie</button>
+    <button class="btn btn-primary" onclick="AddCategorie()">Ajouter une categorie</button>
     <br />
     <br />
     <table class="table">
@@ -220,8 +220,8 @@
                         @Html.DisplayFor(modelItem => item.Nom)
                     </td>
                     <td>
-                        <button onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
-                        <button onclick="DeleteCategorie(@item.Id)">Supprimer</button>
+                        <button class="btn btn-primary" onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
+                        <button class="btn btn-danger" onclick="DeleteCategorie(@item.Id)">Supprimer</button>
                     </td>
                 </tr>
             }

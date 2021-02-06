@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProjetCESI.Data;
 
 namespace ProjetCESI.Web.Controllers
 {
@@ -71,6 +72,25 @@ namespace ProjetCESI.Web.Controllers
             await UpdateModel(model);
 
             return PartialView("Commentaire", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        {
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+
+            if(commentaire.CommentairesEnfant.Count() == 0)
+            {
+                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+            }
+            else
+            {
+                commentaire.Texte = "Ce commentaire a été suspendu";
+                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+            }
+
+            return RedirectToAction("Ressource", "Ressource", new { id = RessourceIdComm });
+
         }
     }
 }
