@@ -31,37 +31,41 @@ namespace ProjetCESI.Data
                         {
                             cmd.CommandText = @"SELECT dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
 		                                    FROM [dbo].[Statistiques] 
-		                                    WHERE UtilisateurId IS NOT NULL AND
-                                                [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
+		                                    WHERE [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
 		                                    GROUP BY dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0)
                                             ORDER BY dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0);";
+                        }
+                        else if (__filter == TimestampFilter.Week)
+                        {
+                            cmd.CommandText = @"SELECT dateadd(DAY, datediff(DAY, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
+		                                    FROM [dbo].[Statistiques] 
+		                                    WHERE [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
+		                                    GROUP BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0)
+                                            ORDER BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0);";
                         }
                         else if (__filter == TimestampFilter.Month)
                         {
                             cmd.CommandText = @"SELECT dateadd(DAY, datediff(DAY, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
 		                                    FROM [dbo].[Statistiques] 
-		                                    WHERE UtilisateurId IS NOT NULL AND
-                                                [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
+		                                    WHERE [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
 		                                    GROUP BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0)
                                             ORDER BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0);";
                         }
                         else if (__filter == TimestampFilter.Year)
                         {
                             cmd.CommandText = @"SELECT dateadd(MONTH, datediff(MONTH, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
-		                                    FROM [projetCESI].[dbo].[Statistiques] 
-		                                    WHERE UtilisateurId IS NOT NULL AND
-                                                [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
+		                                    FROM [dbo].[Statistiques] 
+		                                    WHERE [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
 		                                    GROUP BY dateadd(MONTH, datediff(MONTH, 0, DateRecherche), 0)
                                             ORDER BY dateadd(MONTH, datediff(MONTH, 0, DateRecherche), 0);";
                         }
                         else
                         {
-                            cmd.CommandText = @"SELECT dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
-		                                    FROM [projetCESI].[dbo].[Statistiques] 
-		                                    WHERE UtilisateurId IS NOT NULL AND
-                                                [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
-		                                    GROUP BY dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0)
-                                            ORDER BY dateadd(HOUR, datediff(HOUR, 0, DateRecherche), 0);";
+                            cmd.CommandText = @"SELECT dateadd(DAY, datediff(DAY, 0, DateRecherche), 0) as TimeStampHour, Count(*) as 'Nombre actions'
+		                                    FROM [dbo].[Statistiques] 
+		                                    WHERE [DateRecherche] <= @whereHaut AND [DateRecherche] >= @whereBas
+		                                    GROUP BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0)
+                                            ORDER BY dateadd(DAY, datediff(DAY, 0, DateRecherche), 0);";
                         }
 
                         var whereHautParam = cmd.CreateParameter();

@@ -86,7 +86,6 @@ namespace ProjetCESI.Web.Controllers
         private IWebHostEnvironment _env;
         private IConfiguration _configuration;
         private ILogger _logger;
-        private ViewToStringRendererService _viewToStringRendererService;
 
         public BaseController()
         {
@@ -162,17 +161,6 @@ namespace ProjetCESI.Web.Controllers
             }
         }
 
-        public ViewToStringRendererService ViewToStringRendererService
-        {
-            get
-            {
-                if (_viewToStringRendererService == null)
-                    _viewToStringRendererService = HttpContext.RequestServices.GetService(typeof(ViewToStringRendererService)) as ViewToStringRendererService;
-
-                return _viewToStringRendererService;
-            }
-        }
-
         public T PrepareModel<T>(T model) where T : BaseViewModel, new()
         {
             model.Basepath = Request.Host.Value;
@@ -182,6 +170,11 @@ namespace ProjetCESI.Web.Controllers
             model.Controller = Request.RouteValues["Controller"].ToString() ?? "";
             model.Area = Request.RouteValues["Area"] != null ? Request.RouteValues["Area"].ToString() : "";
             model.Utilisateur = Utilisateur;
+
+            if (Utilisateur != null)
+                model.Username = Utilisateur.UserName;
+            else
+                model.Username = "Anonyme_" + Guid.NewGuid();
 
             if(UtilisateurRoles != null)
                 model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (TypeUtilisateur)(Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault())) : TypeUtilisateur.Citoyen;

@@ -40,7 +40,7 @@ namespace ProjetCESI.Web.Area
 
             if (User.Identity.IsAuthenticated)
             {
-                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id, model.TypeRessource == TypeRessources.ActiviteJeu);
 
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;

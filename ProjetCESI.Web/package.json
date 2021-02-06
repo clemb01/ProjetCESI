@@ -1,0 +1,17 @@
+{
+  "name": "ProjetCESI.Web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@microsoft/signalr": "^5.0.2",
+    "chart.js": "^2.9.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

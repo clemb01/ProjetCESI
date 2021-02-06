@@ -435,6 +435,9 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<int>("RessourceId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StatutActivite")
+                        .HasColumnType("int");
+
                     b.Property<int>("UtilisateurId")
                         .HasColumnType("int");
 

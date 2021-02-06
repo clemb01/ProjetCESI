@@ -11,6 +11,16 @@ namespace ProjetCESI.Core
     {
         [DataMember]
         public string Nom { get; set; }
+
+        public static bool operator ==(TypeRessource a, TypeRessources b)
+        {
+            return a.Id == (int)b;
+        }
+
+        public static bool operator !=(TypeRessource a, TypeRessources b)
+        {
+            return a.Id != (int)b;
+        }
     }
 
     public enum TypeRessources

@@ -83,6 +83,14 @@ namespace ProjetCESI.Core
         }
     }
 
+    public enum StatutActivite
+    {
+        NonDemare,
+        Demare,
+        EnPause,
+        Termine
+    }
+
     public enum Statut
     {
         [Display(Name = "Vide")]

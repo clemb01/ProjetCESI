@@ -20,25 +20,25 @@
             </ol>
             <div class="carousel-inner">
                 @for (int i = 0; i < Model.RessourcesPlusRecentes.Count; i++)
-                {                
-                <div class="item carousel-item @(i == 0 ? "active" : "")">
-                    <a href="/Ressource/@Model.RessourcesPlusRecentes[i].Id">
-                        <h2>@Model.RessourcesPlusRecentes[i].Titre</h2>
-                        <div class="carousel-caption" style="position: initial;">
-                            <div style="height:210px; overflow: hidden;">
-                                @Html.Raw(Model.RessourcesPlusRecentes[i].Apercu)
+                {
+                    <div class="item carousel-item @(i == 0 ? "active" : "")">
+                        <a href="/Ressource/@Model.RessourcesPlusRecentes[i].Id">
+                            <h2>@Model.RessourcesPlusRecentes[i].Titre</h2>
+                            <div class="carousel-caption" style="position: initial;">
+                                <div style="height:210px; overflow: hidden;">
+                                    @Html.Raw(Model.RessourcesPlusRecentes[i].Apercu)
+                                </div>
+                                <p>
+                                    <span class="badge badge-pill badge-primary">@Model.RessourcesPlusRecentes[i].Categorie</span><br />
+                                    <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusRecentes[i].TypeRessource</span><br />
+                                    @foreach (var relation in Model.RessourcesPlusRecentes[i].TypeRelations)
+                                    {
+                                        <span class="badge badge-pill badge-success">@relation</span>
+                                    }
+                                </p>
                             </div>
-                            <p>
-                                <span class="badge badge-pill badge-primary">@Model.RessourcesPlusRecentes[i].Categorie</span><br />
-                                <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusRecentes[i].TypeRessource</span><br />
-                                @foreach (var relation in Model.RessourcesPlusRecentes[i].TypeRelations)
-                                {
-                                    <span class="badge badge-pill badge-success">@relation</span>
-                                }
-                            </p>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                 }
             </div>
             <a class="carousel-control-prev" href="#carouselRessourcePlusRecente" role="button" data-slide="prev">
