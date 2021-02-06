@@ -39,14 +39,14 @@ namespace ProjetCESI.Web.Area
         {
             get
             {
-                if (_userId != default(int))
+                if (_userId == default(int) || _userId == null)
                 {
                     string id = UserManager.GetUserId(User);
 
-                    return int.Parse(id);
+                    _userId = !string.IsNullOrEmpty(id) ? int.Parse(id) : null;
                 }
-                else
-                    return _userId;
+
+                return _userId;
             }
         }
 
@@ -169,6 +169,14 @@ namespace ProjetCESI.Web.Area
             model.Controller = Request.RouteValues["Controller"].ToString() ?? "";
             model.Area = Request.RouteValues["Area"] != null ? Request.RouteValues["Area"].ToString() : "";
             model.Utilisateur = Utilisateur;
+
+            if (Utilisateur != null)
+                model.Username = Utilisateur.UserName;
+            else
+                model.Username = "Anonyme";
+
+            if (UtilisateurRoles != null)
+                model.UtilisateurRole = UtilisateurRoles.FirstOrDefault() != null ? (TypeUtilisateur)(Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault())) : TypeUtilisateur.Citoyen;
 
             return model;
         }

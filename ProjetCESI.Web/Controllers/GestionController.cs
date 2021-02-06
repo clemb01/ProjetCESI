@@ -235,7 +235,7 @@ namespace ProjetCESI.Web.Controllers
                     int diff = ((int)DateTimeOffset.Now.DayOfWeek - (int)DayOfWeek.Sunday) == 0 ? 7 : ((int)DateTimeOffset.Now.DayOfWeek - (int)DayOfWeek.Sunday);
                     var lastDayOfWeek = DateTimeOffset.Now.AddDays(7 - diff);
                     dtHaut = new DateTimeOffset(lastDayOfWeek.Date, lastDayOfWeek.Offset).AddHours(23).AddMinutes(59).AddSeconds(59);
-                    filename = $"Export_Semaine_{System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetWeekOfYear(dtBas.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday)}.csv";
+                    filename = $"Export_{dtBas.Year}_Semaine_{System.Threading.Thread.CurrentThread.CurrentCulture.Calendar.GetWeekOfYear(dtBas.Date, CalendarWeekRule.FirstDay, DayOfWeek.Monday)}.csv";
                     break;
                 case TimestampFilter.Year:
                     dtBas = new DateTimeOffset(DateTimeOffset.Now.Year, 1, 1, 0, 0, 0, DateTimeOffset.Now.Offset);

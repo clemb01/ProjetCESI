@@ -11,7 +11,7 @@ namespace ProjetCESI.Metier
 {
     public class StatistiqueMetier : MetierBase<Statistique, StatistiqueData>, IStatistiqueMetier
     {
-        public async Task<IEnumerable<TopObject>> GetNombreActionsMoyenneParUtilisateurs(TimestampFilter __filter, DateTimeOffset __whereBas, DateTimeOffset __whereHaut)
+        public async Task<IEnumerable<TopObject>> GetNombreActionsMoyenneParUtilisateurs(TimestampFilter __filter, DateTimeOffset __whereBas, DateTimeOffset __whereHaut, bool __flagExportCsv = false)
         {
             IEnumerable<TopActions> resultats = await DataClass.GetNombreActionsMoyenneParUtilisateurs(__filter, __whereBas, __whereHaut);
 
@@ -21,12 +21,14 @@ namespace ProjetCESI.Metier
             {
                 case TimestampFilter.Day:
                 {
-                    for (int i = 0; i < 8; i++)
+                    for (int i = 0; i < 24; i++)
                     {
+                        var date = new DateTime(__whereBas.Year, __whereBas.Month, __whereBas.Day, i, 0, 0);
+
                         result.Add(new TopObject
                         {
-                            Parametre = new DateTime(__whereBas.Year, __whereBas.Month, __whereBas.Day, i * 3, 0, 0).ToString(),
-                            Count = resultats.Where(c => c.Date.TimeOfDay >= TimeSpan.FromHours(i * 3) && c.Date.TimeOfDay < TimeSpan.FromHours(i * 3 + 3)).Sum(c => c.Count)
+                            Parametre = __flagExportCsv ? date.ToString() : i % 2 == 0 ? date.ToString() : "",
+                            Count = resultats.Where(c => c.Date.TimeOfDay == TimeSpan.FromHours(i)).Sum(c => c.Count)
                         });
                     }
 
@@ -47,14 +49,14 @@ namespace ProjetCESI.Metier
                 }
                 case TimestampFilter.Month:
                 {
-                    for (int i = 1; i <= 31; i += 5)
+                    for (int i = 1; i <= __whereHaut.Day; i++)
                     {
                         var date = new DateTime(__whereBas.Year, __whereBas.Month, i > DateTime.DaysInMonth(__whereBas.Year, __whereBas.Month) ? DateTime.DaysInMonth(__whereBas.Year, __whereBas.Month) : i, 0, 0, 0);
 
                         result.Add(new TopObject
                         {
-                            Parametre = date.ToShortDateString(),
-                            Count = resultats.Where(c => c.Date >= date && c.Date < date.AddDays(5).AddSeconds(-1)).Sum(c => c.Count)
+                            Parametre = __flagExportCsv ? date.ToShortDateString() : i % 2 == 1 ? date.ToShortDateString() : "",
+                            Count = resultats.Where(c => c.Date.Date == date.Date).Sum(c => c.Count)
                         });
                     }
 
@@ -223,7 +225,7 @@ namespace ProjetCESI.Metier
         {
             string result = string.Empty;
 
-            IEnumerable<TopObject> actions = await GetNombreActionsMoyenneParUtilisateurs(__filter, __whereBas, __whereHaut);
+            IEnumerable<TopObject> actions = await GetNombreActionsMoyenneParUtilisateurs(__filter, __whereBas, __whereHaut, true);
             IEnumerable<TopObject> consultations = await GetTopConsultation(__nbRecherche, __whereBas, __whereHaut);
             IEnumerable<TopObject> recherches = await GetTopRecherche(__nbRecherche, __whereBas, __whereHaut);
             IEnumerable<TopObject> exploitees = await DataClass.CreateNewDataClass<UtilisateurRessourceData>().GetTopExploitee(__nbRecherche);

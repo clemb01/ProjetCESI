@@ -8,7 +8,7 @@ namespace ProjetCESI.Metier
 {
     public interface IStatistiqueMetier : IMetier<Statistique>
     {
-        Task<IEnumerable<TopObject>> GetNombreActionsMoyenneParUtilisateurs(TimestampFilter __filter, DateTimeOffset __whereBas, DateTimeOffset __whereHaut);
+        Task<IEnumerable<TopObject>> GetNombreActionsMoyenneParUtilisateurs(TimestampFilter __filter, DateTimeOffset __whereBas, DateTimeOffset __whereHaut, bool __flagExportCsv = false);
         Task<IEnumerable<TopObject>> GetTopRecherche(int __nbRecherche, DateTimeOffset __whereBas, DateTimeOffset __whereHaut);
         Task<IEnumerable<TopObject>> GetTopConsultation(int __nbRecherche, DateTimeOffset __whereBas, DateTimeOffset __whereHaut);
         Task<IEnumerable<TopObject>> GetTopExploitee(int __nbRecherche, DateTimeOffset __whereBas, DateTimeOffset __whereHaut);

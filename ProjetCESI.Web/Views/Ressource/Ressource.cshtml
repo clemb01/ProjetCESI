@@ -211,7 +211,7 @@
                 </div>
             </div>
             <form id="messageform" style="height: 10%">
-                <textarea placeholder="Ecrivez un message..." type="text" id="messagebox" style="width: 100%; height: 100%" rows="2"></textarea>
+                <input placeholder="Ecrivez un message..." type="text" id="messagebox" style="width: 100%; height: 100%" rows="2"/>
             </form>
         </div>
     </div>
@@ -403,7 +403,7 @@
         </script>
 
         <script>
-        let chatIsToggled = false;
+        let chatIsToggled = true;
         let messageCount = 0;
 
         $(document).ready(function () {
@@ -437,18 +437,32 @@
                 .catch(err => console.error(err.toString()));
 
             $("#collapse-chat").click(function () {
+
                 if (chatIsToggled) {
-                    $('.chat').animate({
-                        bottom: '-52.5%',
-                        right: '-25%'
+                    if (Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) > 1250) {
+                        $('.chat').animate({
+                            width: '10%'
+                        }, 500);
+                    }
+                    else if (Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) > 600) {
+                        $('.chat').animate({
+                            width: '20%'
+                        }, 500);
+                    }
+
+                    $('.messaging').animate({
+                        height: 0
                     }, 500);
 
                     chatIsToggled = !chatIsToggled;
                 }
                 else {
                     $('.chat').animate({
-                        bottom: '0px',
-                        right: '0px'
+                        width: '35%'
+                    }, 500);
+
+                    $('.messaging').animate({
+                        height: '47vh'
                     }, 500);
 
                     chatIsToggled = !chatIsToggled;
