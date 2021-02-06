@@ -95,8 +95,6 @@ namespace ProjetCESI
 
             services.AddSignalR();
 
-            services.AddViewToStringRendererService();
-
             services.AddControllersWithViews().AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.ContractResolver = new DefaultContractResolver();
