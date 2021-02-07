@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
@@ -11,10 +12,17 @@ namespace ProjetCESI.Web.Area
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TableauDeBordAPIController : BaseAPIController
     {
+        [Route("Test")]
+        public IActionResult Test()
+        {
+            return Ok("Test OK !");
+        }
+
         [Route("TableauDeBord")]
-        public async Task<TableauDeBordViewModel> TableauDeBord(TableauDeBordViewModel model)
+        public async Task<IActionResult> TableauDeBord(TableauDeBordViewModel model)
         {
             PrepareModel(model);
 
@@ -47,7 +55,7 @@ namespace ProjetCESI.Web.Area
             UpdateModel(model, result);
             model.Page = model.Page == default ? 1 : model.Page;
 
-            return model;
+            return Ok(model);
         }
 
         private static void UpdateModel(TableauDeBordViewModel model, Tuple<IEnumerable<Ressource>, IEnumerable<StatutActivite>, int> result)

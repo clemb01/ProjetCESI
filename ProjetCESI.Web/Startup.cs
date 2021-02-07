@@ -22,6 +22,11 @@ using Microsoft.AspNetCore.Http;
 using ProjetCESI.Metier.Outils;
 using Newtonsoft.Json.Serialization;
 using ProjetCESI.Web.SignalR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ProjetCESI
 {
@@ -60,16 +65,6 @@ namespace ProjetCESI
                 options.ValidationInterval = TimeSpan.FromMinutes(30);
             });
 
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
-                options.LoginPath = "/Account/login";
-                options.LogoutPath = "/Account/logOff";
-                options.SlidingExpiration = true;
-                
-            });
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential 
@@ -103,6 +98,52 @@ namespace ProjetCESI
                 opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             })
                 .AddRazorRuntimeCompilation();
+
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.Cookie.HttpOnly = true;
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+            //    options.LoginPath = "/Account/login";
+            //    options.LogoutPath = "/Account/logOff";
+            //    options.SlidingExpiration = true;
+
+            //});
+
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                opt.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+                    options.LoginPath = "/Account/login";
+                    options.LogoutPath = "/Account/logOff";
+                    options.SlidingExpiration = true;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JWTSettings:validIssuer"],
+                        ValidAudience = Configuration["JWTSettings:validAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTSettings:securityKey"]))
+                    };
+                });
+
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "APITest", Version = "v1" });
+            //});
 
             Outils.SetConfig(Configuration);
         }

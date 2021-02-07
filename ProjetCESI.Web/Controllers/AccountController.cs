@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : BaseController
     {
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
@@ -43,17 +47,31 @@ namespace ProjetCESI.Web.Controllers
                     ViewBag.RenvoieMail = $"<p>Vous n'avez pas reçu le mail ? <a href='/Account/RenvoyerEmailConfirm?Username={model.Username}' >Renvoyer le mail</a></p>";
                     return View(model);
                 }
-
-                var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
-
+                                                
                 if (await UserManager.IsLockedOutAsync(user))
                 {
                     ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
                     return View();
                 }
 
-                if (result.Succeeded)
+                //var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
+                var checkPassword = await UserManager.CheckPasswordAsync(user, model.Password);
+
+                if (checkPassword)
                 {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, (await UserManager.GetRolesAsync(user)).First()),
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                    //await SignInManager.SignInAsync(user, true, CookieAuthenticationDefaults.AuthenticationScheme);
                     return RedirectToAction("Accueil", "Accueil");
                 }
                 else
@@ -72,7 +90,7 @@ namespace ProjetCESI.Web.Controllers
 
         public async Task<IActionResult> LogOff()
         {
-            await SignInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Login");
         }
@@ -208,7 +226,7 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
-            await SignInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/Accueil/Accueil");
         }
 
@@ -283,7 +301,20 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
-            await SignInManager.RefreshSignInAsync(user);
+
+            var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, (await UserManager.GetRolesAsync(user)).First()),
+                    };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
             return RedirectToAction("ProfilUser");
         }
 
