@@ -50,7 +50,7 @@ namespace ProjetCESI.Web.Area
                     var tokenOptions = GenerateTokenOptions(signingCredentials, await claims);
                     var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-                    return Ok(token);
+                    return Ok(new { accessToken = token, accessTokenExpiration = "", refreshToken = "" });
                 }
             }            
 
