@@ -16,7 +16,7 @@ namespace ProjetCESI.Web.Controllers
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : BaseController
     {
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
+        public AccountController(UserManager<User> userManager) : base(userManager)
         { }
 
         [AllowAnonymous]
@@ -71,7 +71,6 @@ namespace ProjetCESI.Web.Controllers
                         claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                    //await SignInManager.SignInAsync(user, true, CookieAuthenticationDefaults.AuthenticationScheme);
                     return RedirectToAction("Accueil", "Accueil");
                 }
                 else
@@ -144,7 +143,6 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var CheckUser = new User();
@@ -303,12 +301,17 @@ namespace ProjetCESI.Web.Controllers
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
 
             var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Role, (await UserManager.GetRolesAsync(user)).First()),
-                    };
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+
+            var roles = await UserManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -327,14 +330,13 @@ namespace ProjetCESI.Web.Controllers
 
             var confirmationLink = Url.Action(nameof(ConfirmChangeEmail), "Account", new { token = result, id = user.Id, newEmail }, Request.Scheme);
 
-            var htmlContent = String.Format(
-                    @"Thank you for updating your email. Please confirm the email by clicking this link: 
-        <br><a href='{0}'>Confirm new email</a>",
+            var htmlContent = string.Format(
+                    @"Vous avez demandé à modifié votre adresse email. S'il s'agissait bien de vous, vous pouvez cliquer sur le <a href='{0}'>lien</a> suivant pour confirmer la nouvelle adresse.<br />S'il ne s'agissait pas de vous, ne faites rien et nous vous invitons à modifier votre mot de passe au plus vite.<br /><br />Cordialement, l'équipe FishOn",
                     confirmationLink);
 
 
             // send email to the user with the confirmation link
-            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", htmlContent);
 
             return RedirectToAction("SuccessRegistration");
 
@@ -365,7 +367,8 @@ namespace ProjetCESI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.ChangePasswordAsync(Utilisateur, model.Password, model.NewPassword);
+                var user = await UserManager.FindByIdAsync(UserId.ToString());
+                var result = await UserManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
                 if(!result.Succeeded)
                 {
                     ModelState.AddModelError("Password", "Mot de passe incorrect");

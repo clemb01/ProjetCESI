@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TableauDeBordAPIController : BaseAPIController
     {
         [Route("Test")]

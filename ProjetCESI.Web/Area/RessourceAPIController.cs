@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
@@ -12,13 +13,17 @@ using System.Threading.Tasks;
 namespace ProjetCESI.Web.Area
 {
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RessourceAPIController : BaseAPIController
     {
         [HttpGet("{id}")]
         [AllowAnonymous]
         [StatistiqueFilter]
-        public async Task<RessourceViewModel> Ressource(int id)
+        public async Task<ResponseAPI> Ressource(int id)
         {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -56,79 +61,106 @@ namespace ProjetCESI.Web.Area
 
             await ressourceMetier.InsertOrUpdate(ressource);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
-        [HttpPost]
+        [HttpPost("AjouterFavoris")]
         [StatistiqueFilter]
-        public async Task<IActionResult> AjouterFavoris(int ressourceId)
+        public async Task<ResponseAPI> AjouterFavoris(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost]
         [StatistiqueFilter]
-        public async Task<IActionResult> SupprimerFavoris(int ressourceId)
+        public async Task<ResponseAPI> SupprimerFavoris(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost]
         [StatistiqueFilter]
-        public async Task<IActionResult> AjouterMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> AjouterMettreDeCote(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost]
         [StatistiqueFilter]
-        public async Task<IActionResult> SupprimerMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> SupprimerMettreDeCote(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost]
         [StatistiqueFilter]
-        public async Task<IActionResult> AjouterExploite(int ressourceId)
+        public async Task<ResponseAPI> AjouterExploite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost]
         [StatistiqueFilter]
-        public async Task<IActionResult> SupprimerExploite(int ressourceId)
+        public async Task<ResponseAPI> SupprimerExploite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpGet]

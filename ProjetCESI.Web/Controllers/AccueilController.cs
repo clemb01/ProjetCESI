@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
+    [AllowAnonymous]
     public class AccueilController : BaseController
     {
         public async Task<IActionResult> Accueil()
@@ -47,7 +48,6 @@ namespace ProjetCESI.Web.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult CookiePolicy()
         {

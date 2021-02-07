@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +16,12 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AuthController : BaseController
     {
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -77,7 +80,8 @@ namespace ProjetCESI.Web.Area
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             };
 
             var roles = await UserManager.GetRolesAsync(user);

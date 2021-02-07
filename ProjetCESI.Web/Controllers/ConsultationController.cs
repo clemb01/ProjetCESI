@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
+    [AllowAnonymous]
     public class ConsultationController : BaseController
     {
         [HttpGet]

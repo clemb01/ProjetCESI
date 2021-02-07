@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Models
 {
-    public class BaseViewModel
+    public class ResponseAPI
     {
+        public string StatusCode { get; set; }
+        public bool IsError { get; set; }
+        public string Message { get; set; }
+        public object Data { get; set; }
+    }
+
+    public class BaseViewModel
+    { 
         public string Basepath { get; set; }
         public string Action { get; set; }
         public string Controller { get; set; }

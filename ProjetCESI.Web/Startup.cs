@@ -99,16 +99,6 @@ namespace ProjetCESI
             })
                 .AddRazorRuntimeCompilation();
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
-            //    options.LoginPath = "/Account/login";
-            //    options.LogoutPath = "/Account/logOff";
-            //    options.SlidingExpiration = true;
-
-            //});
-
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -139,11 +129,6 @@ namespace ProjetCESI
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTSettings:securityKey"]))
                     };
                 });
-
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "APITest", Version = "v1" });
-            //});
 
             Outils.SetConfig(Configuration);
         }

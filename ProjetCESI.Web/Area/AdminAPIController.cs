@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
@@ -9,8 +11,9 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AdminAPIController : BaseAPIController
     {
         public async Task<List<UserViewModel>> UserList()

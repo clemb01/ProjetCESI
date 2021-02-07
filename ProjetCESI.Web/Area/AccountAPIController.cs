@@ -11,110 +11,18 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
+    [Route("api/[controller]")]
     public class AccountAPIController : BaseAPIController
     {
-        public AccountAPIController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
+        public AccountAPIController(UserManager<User> userManager) : base(userManager)
         { }
 
-        [AllowAnonymous]
-        public LoginViewModel Login()
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            LoginViewModel model = new LoginViewModel();
-
-            return model;
-        }
-
-        //[AllowAnonymous]
-        //[HttpPost]
-        //public async Task<LoginViewModel> Login(LoginViewModel model, string returnUrl)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return model;
-        //    }
-        //    User user = await UserManager.FindByNameAsync(model.Username);
-
-        //    if (user != null)
-        //    {
-        //        var CheckEmail = await UserManager.IsEmailConfirmedAsync(user);
-
-        //        if (!CheckEmail)
-        //        {
-        //            ModelState.AddModelError("", "Veuillez vérifier votre boite mail pour valider votre Email.");
-        //            ViewBag.RenvoieMail = $"<p>Vous n'avez pas reçu le mail ? <a href='/Account/RenvoyerEmailConfirm?Username={model.Username}' >Renvoyer le mail</a></p>";
-        //            return model;
-        //        }
-
-        //        var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
-
-        //        if (await UserManager.IsLockedOutAsync(user))
-        //        {
-        //            return View();
-        //        }
-
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("Accueil", "Accueil");
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "Identifiant ou mot de passe invalide");
-        //            return View(model);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError("", "Veuillez créer un compte avant de vous connecter");
-        //        return View(model);
-        //    }
-
-        //}
-
-        //public async Task<IActionResult> LogOff()
-        //{
-        //    await SignInManager.SignOutAsync();
-
-        //    return RedirectToAction("Login");
-        //}
-
-        [AllowAnonymous]
-        public RegisterViewModel Register()
-        {
-            RegisterViewModel model = new RegisterViewModel();
-
-            return model;
-        }
-
-
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> RenvoyerEmailConfirm(string Username)
-        {
-            var user = await UserManager.FindByNameAsync(Username);
-            var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
-            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
-            return StatusCode(StatusCodes.Status200OK);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string token, string email)
-        {
-            var user = await UserManager.FindByEmailAsync(email);
-            if (user == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            var result = await UserManager.ConfirmEmailAsync(user, token);
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<RegisterViewModel> RegisterAsync(RegisterViewModel model)
-        {
+            string message = string.Empty;
 
             if (ModelState.IsValid)
             {
@@ -130,15 +38,15 @@ namespace ProjetCESI.Web.Area
                 CheckUser = await UserManager.FindByNameAsync(model.Username);
                 if (CheckUser != null)
                 {
-                    ModelState.AddModelError("", "Ce nom d'utilisateur existe déjà");
-                    return model;
+                    message = "Ce nom d'utilisateur existe déjà";
+                    return BadRequest(new { message });
                 }
 
                 CheckUser = await UserManager.FindByEmailAsync(model.Email);
                 if (CheckUser != null)
                 {
-                    ModelState.AddModelError("", "Email déjà utilisé");
-                    return model;
+                    message = "Email déjà utilisé";
+                    return BadRequest(new { message });
                 }
 
                 result = await UserManager.CreateAsync(user, model.Password);
@@ -149,35 +57,47 @@ namespace ProjetCESI.Web.Area
                     var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
                     await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
                     result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
-                    return model;
+
+                    message = "Compte créé, veuillez consulter vos mails";
+                    return StatusCode(201, new { message });
                 }
+            }
 
-            }
-            else
-            {
-                return model;
-            }
-            return model;
+            message = "Une erreur c'est produite.";
+            return BadRequest(new { message });
         }
 
-        public async Task<UserViewModel> ProfilUser()
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> RenvoyerEmailConfirm(string Username)
         {
-            var id = User.Claims.SingleOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
-            var user = await UserManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                var model = new UserViewModel();
-                model.Utilisateur = user;
+            var user = await UserManager.FindByNameAsync(Username);
+            var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
 
-                return model;
-            }
-            return null;
-
+            return StatusCode(StatusCodes.Status200OK);
         }
 
-        public async Task<UserViewModel> ConfirmationAnonyme(string id)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
-            if (id != null)
+            var user = await UserManager.FindByEmailAsync(email);
+            if (user == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Une erreur interne c'est produite" });
+
+            var result = await UserManager.ConfirmEmailAsync(user, token);
+
+            return StatusCode(200, new { message = "Mail renvoyé" });
+        }        
+
+        [HttpGet("Profil")]
+        public async Task<IActionResult> Profil()
+        {
+            var id = UserId.Value.ToString();
+
+            if (!string.IsNullOrEmpty(id))
             {
                 var user = await UserManager.FindByIdAsync(id);
                 if (user != null)
@@ -185,11 +105,11 @@ namespace ProjetCESI.Web.Area
                     var model = new UserViewModel();
                     model.Utilisateur = user;
 
-                    return model;
+                    return Ok(model);
                 }
-
             }
-            return null;
+
+            return StatusCode(500, new { message = "Une erreur c'est produite" });
         }
 
         [HttpPost]
@@ -197,10 +117,12 @@ namespace ProjetCESI.Web.Area
         {
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
-            await SignInManager.SignOutAsync();
-            return Redirect("/Accueil/Accueil");
-        }
 
+            if (result)
+                return Ok(new { message = "Compte supprimé" });
+            else
+                return StatusCode(500, new { message = "Une erreur c'est produite" });
+        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -208,23 +130,18 @@ namespace ProjetCESI.Web.Area
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordModel)
         {
             if (!ModelState.IsValid)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status400BadRequest, new { message = "Le mail est incorrect" });
+
             var user = await UserManager.FindByEmailAsync(forgotPasswordModel.Email);
+
             if (user == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status400BadRequest, new { message = "Aucun compte associé à cet email trouvé" });
+
             var token = await UserManager.GeneratePasswordResetTokenAsync(user);
             var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
             await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Réinitialisation du mot de passe", callback);
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
 
-
-        [AllowAnonymous]
-        [HttpGet]
-        public ResetPasswordViewModel ResetPassword(string token, string email)
-        {
-            var model = new ResetPasswordViewModel { Token = token, Email = email };
-            return model;
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -233,10 +150,13 @@ namespace ProjetCESI.Web.Area
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordModel)
         {
             if (!ModelState.IsValid)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(new { message = "Les données sont incorrectes" });
+
             var user = await UserManager.FindByEmailAsync(resetPasswordModel.Email);
+
             if (user == null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(new { message = "L'utilisateur n'a pas été trouvé" });
+
             var resetPassResult = await UserManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.Password);
             if (!resetPassResult.Succeeded)
             {
@@ -244,22 +164,22 @@ namespace ProjetCESI.Web.Area
                 {
                     ModelState.TryAddModelError(error.Code, error.Description);
                 }
-                return null;
+
+                return StatusCode(500, new { message = "Une erreur inconnue c'est produite" });
             }
-            return StatusCode(StatusCodes.Status500InternalServerError);
+
+            return Ok();
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateProfilUser(string id, string newUsername)
         {
             var user = await UserManager.FindByIdAsync(id);
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
-            await SignInManager.RefreshSignInAsync(user);
+            //await SignInManager.RefreshSignInAsync(user);
+
             return RedirectToAction("ProfilUser");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateEmail(string id, string newEmail)
@@ -269,19 +189,15 @@ namespace ProjetCESI.Web.Area
 
             var confirmationLink = Url.Action(nameof(ConfirmChangeEmail), "Account", new { token = result, id = user.Id, newEmail }, Request.Scheme);
 
-            var htmlContent = String.Format(
-                    @"Thank you for updating your email. Please confirm the email by clicking this link: 
-        <br><a href='{0}'>Confirm new email</a>",
+            var htmlContent = string.Format(
+                    @"Vous avez demandé à modifié votre adresse email. S'il s'agissait bien de vous, vous pouvez cliquer sur le <a href='{0}'>lien</a> suivant pour confirmer la nouvelle adresse.<br />S'il ne s'agissait pas de vous, ne faites rien et nous vous invitons à modifier votre mot de passe au plus vite.<br /><br />Cordialement, l'équipe FishOn",
                     confirmationLink);
 
 
             // send email to the user with the confirmation link
-            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", htmlContent);
 
-            return RedirectToAction("SuccessRegistration");
-
-
-
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -289,15 +205,17 @@ namespace ProjetCESI.Web.Area
         public async Task<IActionResult> ConfirmChangeEmail(string token, string id, string newEmail)
         {
             var user = await UserManager.FindByIdAsync(id);
+
             if (user == null)
                 return StatusCode(StatusCodes.Status500InternalServerError);
+
             var result = await UserManager.ChangeEmailAsync(user, newEmail, token);
-            return StatusCode(StatusCodes.Status500InternalServerError);
+
+            return Ok();
         }
 
-
         [HttpPost]
-        public async Task<UpdatePasswordViewModel> UpdatePassword(UpdatePasswordViewModel model)
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -305,11 +223,13 @@ namespace ProjetCESI.Web.Area
                 if (!result.Succeeded)
                 {
                     ModelState.AddModelError("Password", "Mot de passe incorrect");
-                    return model;
+                    return BadRequest(new { message = "Mot de passe incorrect" });
                 }
-                return null;
+
+                return Ok();
             }
-            return model;
+
+            return StatusCode(500);
         }
     }
 }
