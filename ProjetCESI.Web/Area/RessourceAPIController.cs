@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
+using ProjetCESI.Metier.Outils;
 using ProjetCESI.Web.Models;
 using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +22,7 @@ namespace ProjetCESI.Web.Area
         [HttpGet("{id}")]
         [AllowAnonymous]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> Ressource(int id)
+        public async Task<ResponseAPI> Ressource(int id, string shareLink = null)
         {
             var response = new ResponseAPI();
 
@@ -29,6 +31,27 @@ namespace ProjetCESI.Web.Area
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
 
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
+
+            if (ressource.UtilisateurCreateurId != UserId)
+                if (ressource.Statut != Statut.Accepter)
+                    if (User.IsInRole(Enum.GetName(TypeUtilisateur.Citoyen)))
+                    {
+                        response.IsError = false;
+                        response.Message = "Vous ne pouvez pas consulter cette ressource!";
+                        response.StatusCode = "401";
+
+                        return response;
+                    }
+
+            if (ressource.UtilisateurCreateurId != UserId)
+                if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
+                {
+                    response.IsError = false;
+                    response.Message = "Vous ne pouvez pas consulter cette ressource!";
+                    response.StatusCode = "401";
+
+                    return response;
+                }
 
             model.RessourceId = id;
             model.Titre = ressource.Titre;
@@ -41,7 +64,11 @@ namespace ProjetCESI.Web.Area
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
             model.Statut = ressource.Statut;
-            model.NombreConsultation = ++ressource.NombreConsultation;
+            model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
+            model.DateSuppression = ressource.DateSuppression;
+            model.RessourceSupprime = ressource.RessourceSupprime;
+            model.TypePartage = ressource.TypePartage;
+            model.ShareURL = ressource.ShareLink;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -50,6 +77,14 @@ namespace ProjetCESI.Web.Area
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+                model.StatutActivite = utilisateurRessource.StatutActivite;
+            }
+
+            if (ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
+            {
+                string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
+                string blobFile = ressource.ContenuOriginal.Split("||").Last();
+                await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
             }
 
             ressource.TypeRelationsRessources = null;
@@ -67,104 +102,7 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterFavoris")]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterFavoris(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpPost]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerFavoris(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpPost]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterMettreDeCote(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpPost]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerMettreDeCote(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpPost]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterExploite(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpPost]
-        [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerExploite(int ressourceId)
-        {
-            var response = new ResponseAPI();
-
-            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
-
-            if (result)
-                response.StatusCode = "200";
-            else
-                response.StatusCode = "500";
-
-            return response;
-        }
-
-        [HttpGet]
-        [Route("ValidateRessource/{id}")]
+        [HttpGet("ValidateRessource/{id}")]
         public async Task<RessourceViewModel> ValidateRessource(int id)
         {
             var model = PrepareModel<RessourceViewModel>();
@@ -186,8 +124,164 @@ namespace ProjetCESI.Web.Area
             return model;
         }
 
-        [HttpPost]
-        public async Task<GestionViewModel> ValiderRessource(int ressourceId)
+        [HttpPost("AjouterFavoris")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> AjouterFavoris(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().AjouterFavoris(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("SupprimerFavoris")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> SupprimerFavoris(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SupprimerFavoris(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("AjouterMettreDeCote")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> AjouterMettreDeCote(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().MettreDeCote(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("SupprimerMettreDeCote")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> SupprimerMettreDeCote(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DeMettreDeCote(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("AjouterExploite")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> AjouterExploite(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().EstExploite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("SupprimerExploite")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> SupprimerExploite(int ressourceId)
+        {
+            var response = new ResponseAPI();
+
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().PasExploite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                response.StatusCode = "200";
+            else
+                response.StatusCode = "500";
+
+            return response;
+        }
+
+        [HttpPost("DemarrerActivite")]
+        [StatistiqueFilter]
+        public async Task<IActionResult> DemarrerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DemarrerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("SuspendreActivite")]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SuspendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SuspendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("QuitterActivite")]
+        [StatistiqueFilter]
+        public async Task<IActionResult> QuitterActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().QuitterActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("ReprendreActivite")]
+        [StatistiqueFilter]
+        public async Task<IActionResult> ReprendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().ReprendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("TerminerActivite")]
+        [StatistiqueFilter]
+        public async Task<IActionResult> TerminerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().TerminerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost("ValiderRessource")]
+        public async Task<IActionResult> ValiderRessource(int ressourceId)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -203,17 +297,14 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return model;
+                return StatusCode(StatusCodes.Status200OK);
             }
             else
-                return null;
-
-
+                return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-
-        [HttpPost]
-        public async Task<GestionViewModel> RefuserRessource(int ressourceId, string messageRefus)
+        [HttpPost("RefuserRessource")]
+        public async Task<IActionResult> RefuserRessource(int ressourceId, string messageRefus)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -236,15 +327,13 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return model;
+                return StatusCode(StatusCodes.Status200OK);
             }
             else
-                return null;
-
-
+                return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpPost]
+        [HttpPost("SupprimerRessource")]
         public async Task<IActionResult> SupprimerRessource(int ressourceId, string messageSuppression)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
@@ -270,11 +359,9 @@ namespace ProjetCESI.Web.Area
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
-        [HttpPost]
+        [HttpPost("SuspendreRessource")]
         public async Task<IActionResult> SuspendreRessource(int ressourceId, string messageSuspendre)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
@@ -299,10 +386,9 @@ namespace ProjetCESI.Web.Area
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
         }
 
-        [HttpPost]
+        [HttpPost("ReactivateRessource")]
         public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
@@ -327,8 +413,6 @@ namespace ProjetCESI.Web.Area
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
         }
-
     }
 }

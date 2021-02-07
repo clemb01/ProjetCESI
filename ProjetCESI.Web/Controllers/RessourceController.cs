@@ -263,8 +263,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -325,8 +323,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -354,7 +350,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
         }
 
         [HttpPost]
