@@ -25,8 +25,10 @@ namespace ProjetCESI.Web.Area
     {
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<ResponseAPI> Login(LoginViewModel model)
         {
+            var response = new ResponseAPI();
+
             if (ModelState.IsValid)
             {
                 User user = await UserManager.FindByNameAsync(model.Username);
@@ -37,14 +39,22 @@ namespace ProjetCESI.Web.Area
 
                     if (!checkEmail)
                     {
-                        return Unauthorized(new { message = "Mail non validé. Veuillez vérifier votre boite mail pour valider votre Email. Lien renvoi email: " + Url.Action(nameof(AccountController.RenvoyerEmailConfirm), "Account", new { username = model.Username }, Request.Scheme) });
+                        response.IsError = true;
+                        response.StatusCode = "401";
+                        response.Message = "Mail non validé. Veuillez vérifier votre boite mail pour valider votre Email. Lien renvoi email: " + Url.Action(nameof(AccountController.RenvoyerEmailConfirm), "Account", new { username = model.Username }, Request.Scheme);
+
+                        return response;
                     }
 
                     var checkPassword = await UserManager.CheckPasswordAsync(user, model.Password);
 
                     if (!checkPassword)
                     {
-                        return BadRequest(new { message = "Mot de passe incorrect" });
+                        response.IsError = true;
+                        response.StatusCode = "400";
+                        response.Message = "Mot de passe incorrect";
+
+                        return response;
                     }
 
                     var signingCredentials = JwtUtils.GetSigningCredentials(Configuration);
@@ -52,11 +62,18 @@ namespace ProjetCESI.Web.Area
                     var tokenOptions = JwtUtils.GenerateTokenOptions(signingCredentials, await claims, Configuration);
                     var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-                    return Ok(new { accessToken = token, user });
-                }
-            }            
+                    response.StatusCode = "200";
+                    response.Data = new { accessToken = token, user };
 
-            return BadRequest("Invalid Authentication");
+                    return response;
+                }
+            }
+
+            response.IsError = true;
+            response.StatusCode = "400";
+            response.Message = "Invalid Authentication";
+
+            return response;
         }
     }
 
