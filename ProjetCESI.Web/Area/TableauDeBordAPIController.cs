@@ -16,13 +16,7 @@ namespace ProjetCESI.Web.Area
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TableauDeBordAPIController : BaseAPIController
     {
-        [Route("Test")]
-        public IActionResult Test()
-        {
-            return Ok("Test OK !");
-        }
-
-        [Route("TableauDeBord")]
+        [HttpGet("")]
         public async Task<IActionResult> TableauDeBord(TableauDeBordViewModel model)
         {
             PrepareModel(model);
@@ -79,6 +73,7 @@ namespace ProjetCESI.Web.Area
             model.NombrePages = result.Item3;
         }
 
+        [HttpGet("Search")]
         public async Task<TableauDeBordViewModel> Search(TableauDeBordViewModel model)
         {
             PrepareModel(model);
