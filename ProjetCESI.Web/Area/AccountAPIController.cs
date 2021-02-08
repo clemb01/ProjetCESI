@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
+using ProjetCESI.Web.Outils;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -176,9 +178,13 @@ namespace ProjetCESI.Web.Area
         {
             var user = await UserManager.FindByIdAsync(id);
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
-            //await SignInManager.RefreshSignInAsync(user);
 
-            return RedirectToAction("ProfilUser");
+            var signingCredentials = JwtUtils.GetSigningCredentials(Configuration);
+            var claims = JwtUtils.GetClaims(user, UserManager);
+            var tokenOptions = JwtUtils.GenerateTokenOptions(signingCredentials, await claims, Configuration);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            return Ok(new { accessToken = token, result });
         }
 
         [HttpPost]

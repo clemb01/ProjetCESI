@@ -18,6 +18,7 @@ namespace ProjetCESI.Core
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
         public List<Ressource> RessourcesCree { get; set; }
+        public List<RefreshToken> RefreshTokens { get; set; }
     }
 
     public enum TypeUtilisateur
