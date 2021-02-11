@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ProjetCESI.Web.Outils;
 using ProjetCESI.Metier.Outils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class RessourceController : BaseController
     {
         [HttpGet]
@@ -32,7 +33,7 @@ namespace ProjetCESI.Web.Controllers
 
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.Statut != Statut.Accepter)
-                    if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
+                    if (User.IsInRole(Enum.GetName(TypeUtilisateur.Citoyen)))
                         return RedirectToAction("Accueil", "Accueil");
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
@@ -262,8 +263,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -324,8 +323,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -353,7 +350,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
         }
 
         [HttpPost]

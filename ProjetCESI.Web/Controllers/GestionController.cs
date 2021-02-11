@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Data;
 using ProjetCESI.Web.Models;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class GestionController : BaseController
     {
         [Route("Gestion")]

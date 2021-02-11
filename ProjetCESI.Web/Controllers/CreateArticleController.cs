@@ -14,10 +14,11 @@ using System.Text.RegularExpressions;
 using ProjetCESI.Web.Outils;
 using Microsoft.AspNetCore.Authorization;
 using ProjetCESI.Metier.Outils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CreateArticleController : BaseController
     {
         private SelectList ToSelectList<T>(List<T> liste)

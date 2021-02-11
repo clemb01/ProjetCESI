@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
 using System;
@@ -9,8 +11,10 @@ using ProjetCESI.Data;
 
 namespace ProjetCESI.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CommentaireController : BaseController
     {
+        [HttpPost]
         public async Task<IActionResult> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
         {
             var date = DateTimeOffset.Now;
@@ -33,6 +37,7 @@ namespace ProjetCESI.Web.Controllers
             return PartialView("Commentaire", model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
         {
             var date = DateTimeOffset.Now;

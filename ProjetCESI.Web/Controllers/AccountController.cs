@@ -1,18 +1,22 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : BaseController
     {
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager) : base(userManager, signInManager)
+        public AccountController(UserManager<User> userManager) : base(userManager)
         { }
 
         [AllowAnonymous]
@@ -43,17 +47,36 @@ namespace ProjetCESI.Web.Controllers
                     ViewBag.RenvoieMail = $"<p>Vous n'avez pas reçu le mail ? <a href='/Account/RenvoyerEmailConfirm?Username={model.Username}' >Renvoyer le mail</a></p>";
                     return View(model);
                 }
-
-                var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
-
+                                                
                 if (await UserManager.IsLockedOutAsync(user))
                 {
                     ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
-                    return View();
+                    return View(model);
                 }
 
-                if (result.Succeeded)
+                if (user.UtilisateurSupprime)
                 {
+                    ViewData["Message"] = "Ce compte à été supprimé";
+                    return View(model);
+                }
+
+                //var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);
+                var checkPassword = await UserManager.CheckPasswordAsync(user, model.Password);
+
+                if (checkPassword)
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, (await UserManager.GetRolesAsync(user)).First()),
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                     return RedirectToAction("Accueil", "Accueil");
                 }
                 else
@@ -72,7 +95,7 @@ namespace ProjetCESI.Web.Controllers
 
         public async Task<IActionResult> LogOff()
         {
-            await SignInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Login");
         }
@@ -126,7 +149,6 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var CheckUser = new User();
@@ -208,7 +230,7 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
-            await SignInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Redirect("/Accueil/Accueil");
         }
 
@@ -283,7 +305,25 @@ namespace ProjetCESI.Web.Controllers
         {
             var user = await UserManager.FindByIdAsync(id);
             var result = await MetierFactory.CreateUtilisateurMetier().UpdateInfoUser(user, newUsername);
-            await SignInManager.RefreshSignInAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+
+            var roles = await UserManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
             return RedirectToAction("ProfilUser");
         }
 
@@ -296,14 +336,13 @@ namespace ProjetCESI.Web.Controllers
 
             var confirmationLink = Url.Action(nameof(ConfirmChangeEmail), "Account", new { token = result, id = user.Id, newEmail }, Request.Scheme);
 
-            var htmlContent = String.Format(
-                    @"Thank you for updating your email. Please confirm the email by clicking this link: 
-        <br><a href='{0}'>Confirm new email</a>",
+            var htmlContent = string.Format(
+                    @"Vous avez demandé à modifié votre adresse email. S'il s'agissait bien de vous, vous pouvez cliquer sur le <a href='{0}'>lien</a> suivant pour confirmer la nouvelle adresse.<br />S'il ne s'agissait pas de vous, ne faites rien et nous vous invitons à modifier votre mot de passe au plus vite.<br /><br />Cordialement, l'équipe FishOn",
                     confirmationLink);
 
 
             // send email to the user with the confirmation link
-            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
+            await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", htmlContent);
 
             return RedirectToAction("SuccessRegistration");
 
@@ -334,7 +373,8 @@ namespace ProjetCESI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.ChangePasswordAsync(Utilisateur, model.Password, model.NewPassword);
+                var user = await UserManager.FindByIdAsync(UserId.ToString());
+                var result = await UserManager.ChangePasswordAsync(user, model.Password, model.NewPassword);
                 if(!result.Succeeded)
                 {
                     ModelState.AddModelError("Password", "Mot de passe incorrect");

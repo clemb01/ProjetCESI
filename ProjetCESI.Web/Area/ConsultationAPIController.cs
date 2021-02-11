@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
@@ -11,26 +13,31 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [AllowAnonymous]
     public class ConsultationAPIController : BaseAPIController
     {
-        //[HttpGet]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> Search(string recherche)
-        //{
-        //    var model = PrepareModel<RechercheRessourceViewModel>();
+        [HttpGet("Search")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> Search([FromQuery] string recherche)
+        {
+            var response = new ResponseAPI();
 
-        //    model.Recherche = recherche;
-        //    model.Ressources.TypeTri = 0;
-        //    model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllSearchPaginedRessource(model.Recherche, _pageOffset: model.Page)).ToList();
+            var model = PrepareModel<RechercheRessourceViewModelAPI>();
 
-        //    ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
-        //    ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
-        //    ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+            model.Recherche = recherche;
+            model.Ressources.TypeTri = 0;
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllSearchPaginedRessource(model.Recherche, _pageOffset: model.Page)).ToList();
+            model.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+            model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+            model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
 
-        //    return View(model);
-        //}
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
+        }
 
         private SelectList ToSelectList<T>(List<T> liste)
         {
@@ -39,33 +46,41 @@ namespace ProjetCESI.Web.Area
             return selectList;
         }
 
-        //[HttpPost]
-        //[StatistiqueFilter]
-        //public async Task<IActionResult> Search(RechercheRessourceViewModel model)
-        //{
-        //    model = PrepareModel(model);
-
-        //    if (model.DateFin.HasValue)
-        //        model.DateFin = model.DateFin.Value.AddDays(1).AddTicks(-1);
-
-        //    model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.Ressources.TypeTri, _pageOffset: model.Page)).ToList();
-
-        //    ViewBag.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
-        //    ViewBag.TypeRelation = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
-        //    ViewBag.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
-
-        //    return View("Search", model);
-        //}
-
-        [HttpGet]
-        public async Task<ConsultationViewModel> Consultation(int tri = 0)
+        [HttpPost("Search")]
+        [StatistiqueFilter]
+        public async Task<ResponseAPI> Search([FromBody] RechercheRessourceViewModelAPI model)
         {
+            var response = new ResponseAPI();
+            model = PrepareModel(model);
+
+            if (model.DateFin.HasValue)
+                model.DateFin = model.DateFin.Value.AddDays(1).AddTicks(-1);
+
+            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.Ressources.TypeTri, _pageOffset: model.Page)).ToList();
+            model.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+            model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+            model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
+        }
+
+        [HttpGet("Consultation")]
+        public async Task<ResponseAPI> Consultation(int tri = 0)
+        {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<ConsultationViewModel>();
 
             model.Ressources.TypeTri = tri;
             model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
     }
 }

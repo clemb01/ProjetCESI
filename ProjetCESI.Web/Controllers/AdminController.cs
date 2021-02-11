@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = "Admin,SuperAdmin")]
     public class AdminController : BaseController
     {
 
@@ -24,10 +27,7 @@ namespace ProjetCESI.Web.Controllers
             List<UserViewModel> userList = new List<UserViewModel>();
             var users = await MetierFactory.CreateUtilisateurMetier().GetUser();
 
-            foreach (var user in users)
-            {
-                userList.Add(new UserViewModel { Utilisateur = user });
-            }
+            userList = users.Select(c => new UserViewModel { Utilisateur = c }).ToList();
 
             return View(userList);
         }

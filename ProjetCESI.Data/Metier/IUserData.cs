@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Data
 {
-    public interface IUserData
+    public interface IUserData : IData<User>
     {
         Task<IEnumerable<User>> GetUsers();
     }

@@ -85,9 +85,13 @@ namespace ProjetCESI.Core
 
     public enum StatutActivite
     {
+        [Display(Name = "Non démarré")]
         NonDemare,
+        [Display(Name = "Démarré")]
         Demare,
+        [Display(Name = "En pause")]
         EnPause,
+        [Display(Name = "Terminé")]
         Termine
     }
 

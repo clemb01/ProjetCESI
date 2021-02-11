@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjetCESI.Core;
@@ -14,8 +16,9 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CreateArticleAPIController : BaseAPIController
     {
         private SelectList ToSelectList<T>(List<T> liste)
@@ -25,18 +28,26 @@ namespace ProjetCESI.Web.Area
             return selectList;
         }
 
-        public async Task<CreateRessourceViewModel> Create()
+        public async Task<ResponseAPI> GetBaseInfos()
         {
-            CreateRessourceViewModel model = PrepareModel<CreateRessourceViewModel>();
+            var response = new ResponseAPI();
 
-            model.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
-            model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
-            model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+            var categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
+            var typeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
+            var typeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
 
+            var ressourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
 
-            model.RessourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
+            response.StatusCode = "200";
+            response.Data = new
+            {
+                Categories = categories,
+                TypeRelations = typeRelations,
+                TypeRessources = typeRessources,
+                RessourceId = ressourceId
+            };
 
-            return model;
+            return response;
         }
 
         [HttpPost]

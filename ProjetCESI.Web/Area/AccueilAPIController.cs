@@ -12,8 +12,11 @@ namespace ProjetCESI.Web.Area
     [ApiController]
     public class AccueilAPIController : BaseAPIController
     {
-        public async Task<AccueilViewModel> Accueil()
+        [HttpGet("")]
+        public async Task<ResponseAPI> Accueil()
         {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<AccueilViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -41,7 +44,10 @@ namespace ProjetCESI.Web.Area
                 Apercu = c.Item6
             }).ToList();
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
     }
 }

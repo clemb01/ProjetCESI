@@ -53,11 +53,23 @@ namespace ProjetCESI.Web.Outils
             {
                 if (context.ActionArguments.ContainsKey("model"))
                 {
-                    var model = (RechercheRessourceViewModel)context.ActionArguments["model"];
-
-                    if (model != null)
+                    if (stat.Controller == "Consultation")
                     {
-                        stat.Parametre = GenerateParametreRecherche(model);
+                        var model = (RechercheRessourceViewModel)context.ActionArguments["model"];
+
+                        if (model != null)
+                        {
+                            stat.Parametre = GenerateParametreRecherche(model);
+                        }
+                    }
+                    else
+                    {
+                        var model = (RechercheRessourceViewModelAPI)context.ActionArguments["model"];
+
+                        if (model != null)
+                        {
+                            stat.Parametre = GenerateParametreRecherche(model);
+                        }
                     }
                 }
                 else

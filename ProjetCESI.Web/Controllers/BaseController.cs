@@ -40,7 +40,7 @@ namespace ProjetCESI.Web.Controllers
             {
                 if (_userId == default(int) || _userId == null)
                 {
-                    string id = UserManager.GetUserId(User);
+                    string id = User.Claims.FirstOrDefault(c => c.Type.Contains("nameidentifier"))?.Value;
 
                     _userId = !string.IsNullOrEmpty(id) ? int.Parse(id) : null;
                 }
@@ -56,9 +56,12 @@ namespace ProjetCESI.Web.Controllers
             {
                 if (_utilisateur == null)
                 {
-                    User user = UserManager.GetUserAsync(User).Result;
+                    if (UserId != null)
+                    {
+                        User user = MetierFactory.CreateUtilisateurMetier().GetById(UserId.Value).Result;
+                        _utilisateur = user;
+                    }
 
-                    _utilisateur = user;
                 }
 
                 return _utilisateur;
@@ -72,7 +75,7 @@ namespace ProjetCESI.Web.Controllers
             {
                 if(_utilisateur != null)
                 {
-                    _utilisateurRoles = UserManager.GetRolesAsync(Utilisateur).Result.ToList();
+                    _utilisateurRoles = User.Claims.Where(c => c.Type.Contains("role")).Select(c => c.Value).ToList();
                 }
 
                 return _utilisateurRoles;
@@ -81,7 +84,6 @@ namespace ProjetCESI.Web.Controllers
 
 
         private UserManager<User> _userManager;
-        private SignInManager<User> _signInManager;
         private IAuthenticationService _authenticationService;
         private IWebHostEnvironment _env;
         private IConfiguration _configuration;
@@ -91,13 +93,12 @@ namespace ProjetCESI.Web.Controllers
         {
         }
 
-        public BaseController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public BaseController(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
-    public UserManager<User> UserManager
+        public UserManager<User> UserManager
         {
             get
             {
@@ -105,17 +106,6 @@ namespace ProjetCESI.Web.Controllers
                     _userManager = HttpContext.RequestServices.GetService(typeof(UserManager<User>)) as UserManager<User>;
 
                 return _userManager;
-            }
-        }
-
-        public SignInManager<User> SignInManager
-        {
-            get
-            {
-                if (_signInManager == null)
-                    _signInManager = HttpContext.RequestServices.GetService(typeof(SignInManager<User>)) as SignInManager<User>;
-
-                return _signInManager;
             }
         }
 
