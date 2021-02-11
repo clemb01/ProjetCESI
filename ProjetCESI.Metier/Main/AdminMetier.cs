@@ -18,6 +18,7 @@ namespace ProjetCESI.Metier
             if(user != null)
             {
                 user.UserName = $"UtilisateurSupprimé_{DateTime.Now.Ticks}";
+                user.NormalizedUserName = $"UTILISATEURSUPPRIME_{DateTime.Now.Ticks}";
                 user.Email = "";
 
                 var result = await DataClass.InsertOrUpdate(user);
