@@ -16,8 +16,11 @@ namespace ProjetCESI.Web.Area
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CommentaireAPIController : BaseAPIController
     {
-        public async Task<CommentairesViewModel> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
+        [HttpPost("AjouterCommentaire")]
+        public async Task<ResponseAPI> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
         {
+            var response = new ResponseAPI();
+
             var date = DateTimeOffset.Now;
 
             Commentaire commentaire = new Commentaire()
@@ -35,11 +38,17 @@ namespace ProjetCESI.Web.Area
 
             await UpdateModel(model);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
-        public async Task<CommentairesViewModel> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
+        [HttpPost("RepondreCommentaire")]
+        public async Task<ResponseAPI> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
         {
+            var response = new ResponseAPI();
+
             var date = DateTimeOffset.Now;
 
             Commentaire commentaire = new Commentaire()
@@ -58,7 +67,10 @@ namespace ProjetCESI.Web.Area
 
             await UpdateModel(model);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
         private async Task UpdateModel(CommentairesViewModel model)
@@ -68,15 +80,46 @@ namespace ProjetCESI.Web.Area
             model.Commentaires = (await MetierFactory.CreateCommentaireMetier().GetAllCommentairesParentByRessourceId(model.RessourceId)).ToList();
         }
 
-        public async Task<CommentairesViewModel> GetCommentaires(int ressourceId)
+        [HttpGet("GetCommentaires")]
+        public async Task<ResponseAPI> GetCommentaires(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<CommentairesViewModel>();
 
             model.RessourceId = ressourceId;
 
             await UpdateModel(model);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
+        }
+
+        [HttpPost("SuppressionCommentaire")]
+        public async Task<ResponseAPI> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        {
+            var response = new ResponseAPI();
+
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+
+            if (commentaire.CommentairesEnfant.Count() == 0)
+            {
+                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+                response.Message = "Commentaire supprimé";
+            }
+            else
+            {
+                commentaire.Texte = "Ce commentaire a été suspendu";
+                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+                response.Message = "Commentaire suspendu";
+            }
+
+            response.StatusCode = "200";
+
+            return response;
+
         }
     }
 }

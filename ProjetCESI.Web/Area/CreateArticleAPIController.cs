@@ -28,6 +28,7 @@ namespace ProjetCESI.Web.Area
             return selectList;
         }
 
+        [HttpGet("GetBaseInfos")]
         public async Task<ResponseAPI> GetBaseInfos()
         {
             var response = new ResponseAPI();
@@ -50,7 +51,7 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost]
+        [HttpPost("CreateOrUpdateRessource")]
         [StatistiqueFilter]
         [ValidateAntiForgeryToken]
         public async Task<CreateRessourceViewModel> CreateOrUpdateRessource(CreateRessourceViewModel model)

@@ -72,7 +72,7 @@ namespace ProjetCESI.Web.Area
                     var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
                     response.StatusCode = "200";
-                    response.Data = new { accessToken = token, user };
+                    response.Data = new { accessToken = token, expiration = tokenOptions.ValidTo, user };
 
                     return response;
                 }

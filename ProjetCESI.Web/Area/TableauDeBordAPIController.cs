@@ -17,8 +17,10 @@ namespace ProjetCESI.Web.Area
     public class TableauDeBordAPIController : BaseAPIController
     {
         [HttpGet("")]
-        public async Task<IActionResult> TableauDeBord(TableauDeBordViewModel model)
+        public async Task<ResponseAPI> TableauDeBord(TableauDeBordViewModel model)
         {
+            var response = new ResponseAPI();
+
             PrepareModel(model);
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -50,7 +52,10 @@ namespace ProjetCESI.Web.Area
             UpdateModel(model, result);
             model.Page = model.Page == default ? 1 : model.Page;
 
-            return Ok(model);
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
         private static void UpdateModel(TableauDeBordViewModel model, Tuple<IEnumerable<Ressource>, IEnumerable<StatutActivite>, int> result)
@@ -74,8 +79,10 @@ namespace ProjetCESI.Web.Area
         }
 
         [HttpGet("Search")]
-        public async Task<TableauDeBordViewModel> Search(TableauDeBordViewModel model)
+        public async Task<ResponseAPI> Search(TableauDeBordViewModel model)
         {
+            var response = new ResponseAPI();
+
             PrepareModel(model);
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
@@ -107,7 +114,10 @@ namespace ProjetCESI.Web.Area
             UpdateModel(model, result);
             model.Page = model.Page == default ? 1 : model.Page;
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
     }
 }
