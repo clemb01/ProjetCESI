@@ -57,6 +57,15 @@ namespace ProjetCESI.Web.Area
                         return response;
                     }
 
+                    if (user.UtilisateurSupprime)
+                    {
+                        response.IsError = true;
+                        response.StatusCode = "400";
+                        response.Message = "Ce compte à été supprimé";
+
+                        return response;
+                    }
+
                     var signingCredentials = JwtUtils.GetSigningCredentials(Configuration);
                     var claims = JwtUtils.GetClaims(user, UserManager);
                     var tokenOptions = JwtUtils.GenerateTokenOptions(signingCredentials, await claims, Configuration);

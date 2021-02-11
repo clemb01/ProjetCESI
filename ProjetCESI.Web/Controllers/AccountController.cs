@@ -51,7 +51,13 @@ namespace ProjetCESI.Web.Controllers
                 if (await UserManager.IsLockedOutAsync(user))
                 {
                     ViewData["Message"] = "Votre Compte est bloqué, veuillez contacter l'administrateur";
-                    return View();
+                    return View(model);
+                }
+
+                if (user.UtilisateurSupprime)
+                {
+                    ViewData["Message"] = "Ce compte à été supprimé";
+                    return View(model);
                 }
 
                 //var result = await SignInManager.PasswordSignInAsync(user, model.Password, true, false);

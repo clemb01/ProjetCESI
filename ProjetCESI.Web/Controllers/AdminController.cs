@@ -27,10 +27,7 @@ namespace ProjetCESI.Web.Controllers
             List<UserViewModel> userList = new List<UserViewModel>();
             var users = await MetierFactory.CreateUtilisateurMetier().GetUser();
 
-            foreach (var user in users)
-            {
-                userList.Add(new UserViewModel { Utilisateur = user });
-            }
+            userList = users.Select(c => new UserViewModel { Utilisateur = c }).ToList();
 
             return View(userList);
         }
