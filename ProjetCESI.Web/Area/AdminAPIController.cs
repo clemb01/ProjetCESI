@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
@@ -9,12 +11,16 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Area
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AdminAPIController : BaseAPIController
     {
-        public async Task<List<UserViewModel>> UserList()
+        [HttpGet("UserList")]
+        public async Task<ResponseAPI> UserList()
         {
+            var response = new ResponseAPI();
+
             List<UserViewModel> userList = new List<UserViewModel>();
             var users = await MetierFactory.CreateUtilisateurMetier().GetUser();
 
@@ -23,11 +29,17 @@ namespace ProjetCESI.Web.Area
                 userList.Add(new UserViewModel { Utilisateur = user });
             }
 
-            return userList;
+            response.StatusCode = "200";
+            response.Data = userList;
+
+            return response;
         }
 
-        public async Task<UserViewModel> AnonymeUser(string id)
+        [HttpGet("AnonymeUser")]
+        public async Task<ResponseAPI> AnonymeUser(string id)
         {
+            var response = new ResponseAPI();
+
             if (id != null)
             {
                 var user = await UserManager.FindByIdAsync(id);
@@ -36,27 +48,49 @@ namespace ProjetCESI.Web.Area
                     var model = new UserViewModel();
                     model.Utilisateur = user;
 
-                    return model;
+                    response.StatusCode = "200";
+                    response.Data = model;
                 }
-
+                else
+                {
+                    response.StatusCode = "500";
+                    response.IsError = true;
+                    response.Message = "Une erreur est survenue";
+                }
             }
-            return null;
+            else
+            {
+                response.StatusCode = "500";
+                response.IsError = true;
+                response.Message = "Une erreur est survenue";
+            }
+
+            return response;
         }
 
-        [HttpPost]
-        public async Task<GestionViewModel> Anonymise(string id)
+        [HttpPost("Anonymise")]
+        public async Task<ResponseAPI> Anonymise(string id)
         {
+            var response = new ResponseAPI();
+
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().AnonymiseUser(user);
 
             var model = new GestionViewModel();
             model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
             model.NomVue = "UserList";
-            return model;
+
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
-        public async Task<UserViewModel> BanTempo(string id)
+        [HttpGet("BanTempo")]
+        public async Task<ResponseAPI> BanTempo(string id)
         {
+            var response = new ResponseAPI();
+
             if (id != null)
             {
                 var user = await UserManager.FindByIdAsync(id);
@@ -64,48 +98,82 @@ namespace ProjetCESI.Web.Area
                 {
                     var model = new UserViewModel();
                     model.Utilisateur = user;
-                    return model;
+
+                    response.StatusCode = "200";
+                    response.Data = model;
+                }
+                else
+                {
+                    response.StatusCode = "500";
+                    response.IsError = true;
+                    response.Message = "Une erreur est survenue";
                 }
             }
-            return null;
+            else
+            {
+                response.StatusCode = "500";
+                response.IsError = true;
+                response.Message = "Une erreur est survenue";
+            }
+
+            return response;
         }
 
         [HttpPost]
-        public async Task<GestionViewModel> BanTemporary(string id, int time)
+        public async Task<ResponseAPI> BanTemporary(string id, int time)
         {
+            var response = new ResponseAPI();
+
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().BanUserTemporary(user, time);
 
             var model = new GestionViewModel();
             model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
             model.NomVue = "UserList";
-            return model;
+
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
         [HttpPost]
-        public async Task<GestionViewModel> DebanUser(string id)
+        public async Task<ResponseAPI> DebanUser(string id)
         {
+            var response = new ResponseAPI();
+
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().DeBan(user);
 
             var model = new GestionViewModel();
             model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
             model.NomVue = "UserList";
-            return model;
+
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
         [HttpPost]
-        public async Task<GestionViewModel> BanPermanent(string id)
+        public async Task<ResponseAPI> BanPermanent(string id)
         {
+            var response = new ResponseAPI();
+
             var user = await UserManager.FindByIdAsync(id);
             bool result = await MetierFactory.CreateUtilisateurMetier().BanUserPermanent(user);
 
             var model = new GestionViewModel();
             model.Users = (await MetierFactory.CreateUtilisateurMetier().GetUser()).ToList();
             model.NomVue = "UserList";
-            return model;
+
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
+        //[HttpGet("UpdateRole")]
         //public async Task<UserViewModel> UpdateRole(string id)
         //{
         //    if (id != null)
@@ -123,23 +191,31 @@ namespace ProjetCESI.Web.Area
         //    return null;
         //}
 
-        //[HttpPost]
-        //public async Task<IActionResult> UpdateRole(string id, int roleid)
-        //{
-        //    var user = await UserManager.FindByIdAsync(id);
-        //    if (user != null)
-        //    {
-        //        var model = new UserViewModel();
-        //        model.Utilisateur = user;
-        //        var result = await UserManager.RemoveFromRolesAsync(user, await UserManager.GetRolesAsync(user));
-        //        var result1 = await UserManager.AddToRoleAsync(user, Enum.GetName((TypeUtilisateur)roleid));
-        //        model.Role = (await UserManager.GetRolesAsync(user)).FirstOrDefault();
-        //        ViewBag.Roles = new SelectList(await MetierFactory.CreateApplicationRoleMetier().GetAll(), "Id", "Name");
+        [HttpPost("UpdateRole")]
+        public async Task<ResponseAPI> UpdateRole(string id, int roleid)
+        {
+            var response = new ResponseAPI();
 
-        //        return View(model);
-        //    }
-        //    return View(null);
-        //}
+            var user = await UserManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var model = new UserViewModel();
+                model.Utilisateur = user;
+                var result = await UserManager.RemoveFromRolesAsync(user, await UserManager.GetRolesAsync(user));
+                var result1 = await UserManager.AddToRoleAsync(user, Enum.GetName((TypeUtilisateur)roleid));
+                model.Role = (await UserManager.GetRolesAsync(user)).FirstOrDefault();
+
+                response.StatusCode = "200";
+            }
+            else
+            {
+                response.StatusCode = "500";
+                response.IsError = true;
+                response.Message = "Une erreur est survenue";
+            }
+
+            return response;
+        }
 
     }  
 }

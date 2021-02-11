@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjetCESI.Core;
 using ProjetCESI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProjetCESI.Data;
 
 namespace ProjetCESI.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CommentaireController : BaseController
     {
+        [HttpPost]
         public async Task<IActionResult> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
         {
             var date = DateTimeOffset.Now;
@@ -32,6 +37,7 @@ namespace ProjetCESI.Web.Controllers
             return PartialView("Commentaire", model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
         {
             var date = DateTimeOffset.Now;
@@ -71,6 +77,25 @@ namespace ProjetCESI.Web.Controllers
             await UpdateModel(model);
 
             return PartialView("Commentaire", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        {
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+
+            if(commentaire.CommentairesEnfant.Count() == 0)
+            {
+                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+            }
+            else
+            {
+                commentaire.Texte = "Ce commentaire a été suspendu";
+                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+            }
+
+            return RedirectToAction("Ressource", "Ressource", new { id = RessourceIdComm });
+
         }
     }
 }

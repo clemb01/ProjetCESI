@@ -225,6 +225,9 @@ namespace ProjetCESI.Data.Migrations
                     b.Property<DateTimeOffset>("DateSuppression")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("KeyLink")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("NombreConsultation")
                         .HasColumnType("int");
 
@@ -233,6 +236,9 @@ namespace ProjetCESI.Data.Migrations
 
                     b.Property<bool>("RessourceSupprime")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ShareLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Statut")
                         .HasColumnType("int");
@@ -397,6 +403,9 @@ namespace ProjetCESI.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("UtilisateurSupprime")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -427,6 +436,9 @@ namespace ProjetCESI.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("RessourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StatutActivite")
                         .HasColumnType("int");
 
                     b.Property<int>("UtilisateurId")

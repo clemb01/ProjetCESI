@@ -16,6 +16,9 @@
         <li class="list-group-item @(Model.NomVue == "miscote" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=miscote">Ressources mises de côté</a>
         </li>
+        <li class="list-group-item @(Model.NomVue == "activites" ? "active" : "")">
+            <a class="nav-link" href="/TableauDeBord?nomVue=activites">Mes activités</a>
+        </li>
         <li class="list-group-item @(Model.NomVue == "crees" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=crees">Ressource créées</a>
         </li>
@@ -78,27 +81,40 @@
                 {
                     <th scope="col">Statut</th>
                 }
+                else if (Model.NomVue == "activites")
+                {
+                    <th scope="col">Statut Activité</th>
+                }
 
-                <th scope="col">Actions</th>
+                @if (Model.NomVue != "activites")
+                {
+                    <th scope="col">Actions</th>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var ressource in Model.Ressources)
             {
-                <tr id="ressource-id-@ressource.Id">
-                    <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
-                    <td><span class="badge badge-pill badge-primary">@ressource.Categorie?.Nom</span></td>
-                    <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource?.Nom</span></td>
-                    <td>
-                        @foreach (var relation in ressource.TypeRelationsRessources)
-                        {
-                            <span class="badge badge-pill badge-success text-center">@relation.TypeRelation?.Nom</span>
-                        }
-                    </td>
-                    @if (Model.NomVue == "crees")
+            <tr id="ressource-id-@ressource.Id">
+                <th scope="row"><a href="/Ressource/@ressource.Id">@ressource.Titre</a></th>
+                <td><span class="badge badge-pill badge-primary">@ressource.Categorie?.Nom</span></td>
+                <td><span class="badge badge-pill badge-secondary">@ressource.TypeRessource?.Nom</span></td>
+                <td>
+                    @foreach (var relation in ressource.TypeRelationsRessources)
                     {
-                        <td>@Html.DisplayFor(c => ressource.Statut)</td>
+                        <span class="badge badge-pill badge-success text-center">@relation.TypeRelation?.Nom</span>
                     }
+                </td>
+                @if (Model.NomVue == "crees")
+                {
+                    <td>@Html.DisplayFor(c => ressource.Statut)</td>
+                }
+                else if (Model.NomVue == "activites")
+                {
+                    <td>@Html.DisplayFor(c => ressource.StatutActivite)</td>
+                }
+                @if (Model.NomVue != "activites")
+                {
                     <td>
                         @if (Model.NomVue == "favoris")
                         {
@@ -117,7 +133,8 @@
                             <a href="/CreateArticle/Edit/@ressource.Id">Editer la ressource</a>
                         }
                     </td>
-                </tr>
+                }
+            </tr>
             }
         </tbody>
     </table>
@@ -142,6 +159,10 @@ else
             else if (Model.NomVue == "crees")
             {
                 <text>Vous n'avez pas encore crée de ressource, vous pouvez en créer un cliquant <a href="/CreateArticle/Create">ici</a></text>
+            }
+            else if (Model.NomVue == "activites")
+            {
+                <text>Vous n'avez participé à aucunes activités</text>
             }
         </h1>
     }

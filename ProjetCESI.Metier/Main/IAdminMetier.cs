@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Metier
 {
-    public interface IAdminMetier
+    public interface IAdminMetier : IMetier<User>
     {
         Task<IEnumerable<User>> GetUser();
         Task<bool> AnonymiseUser(User user);

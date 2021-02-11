@@ -1,6 +1,9 @@
 ﻿@using ProjetCESI.Web.Models
 @model RessourceViewModel
 
+@section TopScripts {
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+}
 
 @if (Model.Statut == ProjetCESI.Core.Statut.Suspendre)
 {
@@ -28,18 +31,25 @@
         @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
         {
             <div class="ressource-button">
-                <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
-                <span class="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(!Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
-                <span class="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(!Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                {
+                    <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
+                    <span class="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
+                    <span class="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
+                }
                 @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
                 {
                     <span><a data-toggle="modal" data-target="#suppression"><img title="Supprimer" src="~/images/bin.png" width="32" /></a></span>
                     <span><a data-toggle="modal" data-target="#suspendre"><img title="Suspendre" src="~/images/suspendre.png" width="32" /></a></span>
                 }
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
+                {
+                    <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
+                }
             </div>
         }
     }
-    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
+    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && Model.TypePartage == ProjetCESI.Core.TypePartage.Public && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
     {
         <div class="ressource-button">
             <span><a data-toggle="modal" data-target="#reactivate"><img title="Réactiver" src="~/images/play_icone.png" width="32" /></a></span>
@@ -52,6 +62,60 @@
 @foreach (var relation in Model.TypeRelations)
 {
     <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
+}
+
+@if (Model.TypeRessource == ProjetCESI.Core.TypeRessources.ActiviteJeu)
+{
+    @if (Model.StatutActivite == ProjetCESI.Core.StatutActivite.NonDemare)
+    {
+        <div class="d-flex justify-content-center p-2">
+            <form action="/Ressource/DemarrerActivite" method="post">
+                <input value="@Model.RessourceId" name="ressourceId" hidden />
+                <input type="submit" class="btn btn-danger" value="Démarrer l'activité" />
+            </form>
+        </div>
+    }
+    else
+    {
+        @if (Model.StatutActivite == ProjetCESI.Core.StatutActivite.EnPause)
+        {
+            <div class="d-flex justify-content-center p-2">
+                <span class="align-middle p-3">Cette activité est en pause</span>
+                <form action="/Ressource/ReprendreActivite" method="post" class="p-2">
+                    <input value="@Model.RessourceId" name="ressourceId" hidden />
+                    <input type="submit" class="btn btn-primary" value="Suspendre l'activité" />
+                </form>
+                <form action="/Ressource/QuitterActivite" method="post" class="p-2">
+                    <input value="@Model.RessourceId" name="ressourceId" hidden />
+                    <input type="submit" class="btn btn-danger" value="Quitter l'activité" />
+                </form>
+            </div>
+        }
+        else if (Model.StatutActivite == ProjetCESI.Core.StatutActivite.Demare)
+        {
+            <div class="d-flex justify-content-center p-2">
+                <span class="align-middle p-3">Vous avez démarré cette activité</span>
+                <form action="/Ressource/SuspendreActivite" method="post" class="p-2">
+                    <input value="@Model.RessourceId" name="ressourceId" hidden />
+                    <input type="submit" class="btn btn-primary" value="Suspendre l'activité" />
+                </form>
+                <form action="/Ressource/QuitterActivite" method="post" class="p-2">
+                    <input value="@Model.RessourceId" name="ressourceId" hidden />
+                    <input type="submit" class="btn btn-danger" value="Quitter l'activité" />
+                </form>
+                <form action="/Ressource/TerminerActivite" method="post" class="p-2">
+                    <input value="@Model.RessourceId" name="ressourceId" hidden />
+                    <input type="submit" class="btn btn-success" value="J'ai terminé l'activité" />
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex justify-content-center p-2">
+                <strong class="align-middle">Vous avez terminé cette activité</strong>
+            </div>
+        }
+    }
 }
 
 <div class="content">
@@ -103,6 +167,27 @@
                     <button type="submit" class="btn btn-success">Réactiver</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Share -->
+<div class="modal fade" id="Share" tabindex="-1" aria-labelledby="Share" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Share">Lien à copier</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex my-2">
+                    <input onClick="this.setSelectionRange(0, this.value.length)" class="form-control p-2 w-100 align-self-end" id="to-copy" value="@Model.ShareURL" aria-label="readonly input example" autofocus readonly>
+                    <button id="copy" class="btn btn-primary btn-sm p-2" type="button">Copier</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
         </div>
     </div>
 </div>
@@ -161,6 +246,27 @@
     </div>
 </div>
 
+<div class="chat">
+    <div id="collapse-chat" class="collapser">
+        <div style="margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">
+            <span style="user-select: none">Discussion</span>
+            <span id="message-count" style="display: none;"></span>
+        </div>
+    </div>
+    <div class="messaging">
+        <div class="inbox_msg">
+            <div class="mesgs">
+                <div class="msg_history">
+                    <div style="width: 100%; text-align: center;"><small>Salon de discussion de la ressource @Model.Titre</small></div>
+                </div>
+            </div>
+        </div>
+        <form id="messageform" style="height: 10%">
+            <input placeholder="Ecrivez un message..." type="text" id="messagebox" style="width: 100%; height: 100%" />
+        </form>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/lib/autosize/dist/autosize.min.js"></script>
     <script>
@@ -171,6 +277,7 @@
     $(document).ready(function () {
         getComments();
         autosize(document.querySelector('.commentaire-editor'));
+        autosize(document.querySelector('.messagebox'));
 
         $('.commentaire-editor').focusin(function () {
             $('#submit-btn').collapse('show');
@@ -242,12 +349,12 @@
             })
                 .done(function () {
                     if (estMisDeCote) {
-                        document.getElementById('cote').src = "/images/001-clock.svg";
+                        document.getElementById('cote').src = "/images/photo-camera.svg";
                         document.getElementById('cote').title = "Mettre de côté";
                         estMisDeCote = false;
                     }
                     else {
-                        document.getElementById('cote').src = "/images/photo-camera.svg";
+                        document.getElementById('cote').src = "/images/001-clock.svg";
                         document.getElementById('cote').title = "Supprimer des ressources mise de côté";
                         estMisDeCote = true;
                     }
@@ -273,12 +380,12 @@
             })
                 .done(function () {
                     if (estExploite) {
-                        document.getElementById('exploite').src = "/images/002-check.svg";
+                        document.getElementById('exploite').src = "/images/remove.svg";
                         document.getElementById('exploite').title = "Indiquer comme exploitée";
                         estExploite = false;
                     }
                     else {
-                        document.getElementById('exploite').src = "/images/remove.svg";
+                        document.getElementById('exploite').src = "/images/002-check.svg";
                         document.getElementById('exploite').title = "Supprimer des ressources exploitées";
                         estExploite = true;
                     }
@@ -309,20 +416,178 @@
         });
         </text>
         }
-
     });
 
-    function getComments() {
-        $.ajax({
-            url: "/Commentaire/GetCommentaires",
-            method: "GET",
-            data: {
-                ressourceId: @Model.RessourceId,
+        function getComments() {
+            $.ajax({
+                url: "/Commentaire/GetCommentaires",
+                method: "GET",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                }
+            })
+                .done(function (result) {
+                    document.getElementById("list-commentaire").innerHTML = result;
+                });
+
+            function Clipboard() {
+                TextCopy.ClipboardService.SetText("Text to place in clipboard");
             }
-        })
-            .done(function (result) {
-                document.getElementById("list-commentaire").innerHTML = result;
+        }
+        var toCopy = document.getElementById('to-copy'),
+            btnCopy = document.getElementById('copy');
+        btnCopy.addEventListener('click', function () {
+            toCopy.select();
+            document.execCommand('copy');
+            return false;
+        });
+    </script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/messageHub")
+            .build();
+    </script>
+
+    <script>
+        let chatIsToggled = false;
+        let messageCount = 0;
+
+        $(document).ready(function () {
+            $("#messagebox").keypress(function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    let message = $('#messagebox').val();
+                    let sender = '@Model.Username';
+                    $('#messagebox').val('');
+
+                    if (message === null || message.match(/^ *$/) !== null)
+                        return;
+
+                    connection.invoke('SendMessage', sender, message, '@Model.RessourceId').catch(err => console.error(err.toString()));
+
+                    $(this).val("");
+                }
             });
-    }
+
+            connection.on("ReceiveMessage", (user, message) => {
+                appendLine(user, message);
+            });
+
+            connection.on("JoinedRoom", (user, message) => {
+                roomEvent(message);
+            });
+
+            connection.start()
+                .then(res => {
+                    connection.invoke('Join', '@Model.RessourceId', '@Model.Username')
+                        .catch(err => {
+                            console.log(err);
+                        });
+                })
+                .catch(err => console.error(err.toString()));
+
+            $("#collapse-chat").click(function () {
+
+                if (chatIsToggled) {
+                    if (Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) > 1250) {
+                        $('.chat').animate({
+                            width: '10%'
+                        }, 500);
+                    }
+                    else if (Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) > 600) {
+                        $('.chat').animate({
+                            width: '20%'
+                        }, 500);
+                    }
+
+                    $('.messaging').animate({
+                        height: 0
+                    }, 500);
+
+                    chatIsToggled = !chatIsToggled;
+                }
+                else {
+                    $('.chat').animate({
+                        width: '35%'
+                    }, 500);
+
+                    $('.messaging').animate({
+                        height: '47vh'
+                    }, 500);
+
+                    chatIsToggled = !chatIsToggled;
+                    document.getElementById('message-count').innerText = '';
+                    document.getElementById('message-count').style.display = 'none';
+                    messageCount = 0;
+                }
+            });
+        });
+
+        window.onbeforeunload = function () {
+            connection.invoke('LeaveRoom', '@Model.RessourceId', '@Model.Username').catch(err => console.error(err.toString()));
+            connection.stop();
+        }
+
+        function roomEvent(message) {
+            $('.msg_history').append(`<div style="width: 100%; text-align: center;"><span>${message}</span></div>`);
+            document.getElementsByClassName('msg_history')[0].scrollTop = document.getElementsByClassName('msg_history')[0].scrollHeight;
+        };
+
+        function appendLine(user, message) {
+            messageCount++;
+            if (!chatIsToggled && messageCount > 0) {
+                document.getElementById('message-count').innerText = messageCount;
+                document.getElementById('message-count').style.display = 'initial';
+            }
+
+            var dateNow = new Date().toLocaleString();
+
+            if (user === '@Model.Username') {
+                var divElement = document.createElement('div');
+                divElement.className = 'outgoing_msg';
+                var divChildElement = document.createElement('div');
+                divChildElement.className = 'sent_msg';
+                var userElement = document.createElement('strong');
+                userElement.innerText = `Vous`;
+                var text = document.createElement('p');
+                text.innerText = ` ${message}`;
+                var date = document.createElement('span');
+                date.className = 'time_date';
+                date.innerText = `${dateNow}`;
+
+                divChildElement.appendChild(userElement);
+                divChildElement.appendChild(text);
+                divChildElement.appendChild(date);
+                divElement.appendChild(divChildElement);
+            }
+            else {
+                var divElement = document.createElement('div');
+                divElement.className = 'incoming_msg';
+                var divChildElement = document.createElement('div');
+                divChildElement.className = 'received_msg';
+                var divMsg = document.createElement('div');
+                divMsg.className = 'received_withd_msg';
+                var userElement = document.createElement('strong');
+
+                user = user.includes('Anonyme') ? 'Anonyme' : user;
+
+                userElement.innerText = `${user}`;
+                var text = document.createElement('p');
+                text.innerText = ` ${message}`;
+                var date = document.createElement('span');
+                date.className = 'time_date';
+                date.innerText = `${dateNow}`;
+
+                divMsg.appendChild(userElement);
+                divMsg.appendChild(text);
+                divMsg.appendChild(date);
+                divChildElement.appendChild(divMsg);
+                divElement.appendChild(divChildElement);
+            }
+
+            $('.msg_history').append(divElement);
+            document.getElementsByClassName('msg_history')[0].scrollTop = document.getElementsByClassName('msg_history')[0].scrollHeight;
+        };
     </script>
 }

@@ -14,10 +14,11 @@ using System.Text.RegularExpressions;
 using ProjetCESI.Web.Outils;
 using Microsoft.AspNetCore.Authorization;
 using ProjetCESI.Metier.Outils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CreateArticleController : BaseController
     {
         private SelectList ToSelectList<T>(List<T> liste)
@@ -144,8 +145,15 @@ namespace ProjetCESI.Web.Controllers
         public async Task<IActionResult> FinaliserRessource(int ressourceId)
         {
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
+            Guid g = Guid.NewGuid();
+            string GuidString = Convert.ToBase64String(g.ToByteArray());
+            GuidString = GuidString.Replace("=", "");
+            GuidString = GuidString.Replace("+", "");
 
             Ressource ressource = await ressourceMetier.GetById(ressourceId);
+            var shareLink = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = GuidString }, Request.Scheme);
+            ressource.ShareLink = shareLink;
+            ressource.KeyLink = GuidString;
 
             if(User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)))
                 ressource.Statut = Statut.Accepter;

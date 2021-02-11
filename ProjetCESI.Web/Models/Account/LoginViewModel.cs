@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Models
 {
-    public class LoginViewModel : BaseViewModel
+    public class LoginViewModel
     {
         [Required(ErrorMessage = "Votre identifiant est requis")]
         [Display(Name = "Username")]

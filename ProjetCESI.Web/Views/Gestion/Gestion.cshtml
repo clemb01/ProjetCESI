@@ -21,7 +21,7 @@
                 <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
             </li>
             <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
-                <a class="nav-link" href="/Gestion?NomVue=statistique">Statistique</a>
+                <a class="nav-link" href="/Gestion?NomVue=statistique">Statistiques</a>
             </li>
             <li class="list-group-item @(Model.NomVue == "Parametre" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=Parametre">Paramètre</a>
@@ -142,13 +142,6 @@
                             @Html.DisplayFor(modelItem => item.UtilisateurCreateur.UserName)
 
                         </td>
-                        <td>
-                            <strong>
-                                @Html.ActionLink("modifier", "BanTempo", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
-                            </strong>
-                        </td>
                     </tr>
                 }
             </tbody>
@@ -201,39 +194,40 @@
 }
 @if (Model.NomVue == "Parametre")
 {
-    <div>
-        <h1>Paramètre</h1>
-        <br />
-        <br />
-        <button onclick="AddCategorie()">Ajouter une categorie</button>
-        <br />
-        <table class="table">
-            <thead>
+<div>
+    <h1>Paramètre</h1>
+    <br />
+    <br />
+    <button class="btn btn-primary" onclick="AddCategorie()">Ajouter une categorie</button>
+    <br />
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Nom de la catégorie
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.categories)
+            {
                 <tr>
-                    <th>
-                        Nom de la catégorie
-                    </th>
-                    <th>
-                        Actions
-                    </th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
+                        <button class="btn btn-danger" onclick="DeleteCategorie(@item.Id)">Supprimer</button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.categories)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nom)
-                        </td>
-                        <td>
-                            <button onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
-                            <button onclick="DeleteCategorie(@item.Id)">Supprimer</button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
+</div>
 }
 
 <!-- modal modification paramètre categorie-->

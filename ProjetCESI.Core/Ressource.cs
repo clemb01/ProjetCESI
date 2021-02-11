@@ -48,6 +48,10 @@ namespace ProjetCESI.Core
         public Categorie Categorie { get; set; }
         [DataMember]
         public int? CategorieId { get; set; }
+        [DataMember]
+        public string ShareLink { get; set; }
+        [DataMember]
+        public string KeyLink { get; set; }
 
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<TypeRelationRessource> TypeRelationsRessources { get; set; }
@@ -77,6 +81,18 @@ namespace ProjetCESI.Core
 
             return clone;
         }
+    }
+
+    public enum StatutActivite
+    {
+        [Display(Name = "Non démarré")]
+        NonDemare,
+        [Display(Name = "Démarré")]
+        Demare,
+        [Display(Name = "En pause")]
+        EnPause,
+        [Display(Name = "Terminé")]
+        Termine
     }
 
     public enum Statut

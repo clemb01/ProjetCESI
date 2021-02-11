@@ -15,6 +15,8 @@ namespace ProjetCESI.Core
             return Id;
         }
 
+        public bool UtilisateurSupprime { get; set; }
+
         public List<UtilisateurRessource> UtilisateurRessources { get; set; }
         public List<Commentaire> Commentaires { get; set; }
         public List<Ressource> RessourcesCree { get; set; }

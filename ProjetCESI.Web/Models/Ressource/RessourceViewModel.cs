@@ -21,9 +21,12 @@ namespace ProjetCESI.Web.Models
         public bool EstFavoris { get; set; }
         public bool EstExploite { get; set; }
         public bool EstMisDeCote { get; set; }
+        public StatutActivite? StatutActivite { get; set; }
         public List<TypeRelation> TypeRelations { get; set; }
         public List<Commentaire> Commentaires { get; set; }
         public bool RessourceSupprime { get; set; }
         public DateTimeOffset DateSuppression { get; set; }
+        public TypePartage TypePartage { get; set; }
+        public string ShareURL { get; set; }
     }
 }

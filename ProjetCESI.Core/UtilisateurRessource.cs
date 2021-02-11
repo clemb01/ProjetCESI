@@ -15,6 +15,8 @@ namespace ProjetCESI.Core
         public bool EstExploite { get; set; }
         [DataMember]
         public bool EstMisDeCote { get; set; }
+        [DataMember]
+        public StatutActivite? StatutActivite { get; set; }
 
         [DataMember]
         public User Utilisateur { get; set; }

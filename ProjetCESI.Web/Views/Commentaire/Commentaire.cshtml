@@ -12,6 +12,11 @@
                 <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
+            <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+            </form>
             @{
                 var comms = commentaire.Texte.Split("\\n");
             }
@@ -50,10 +55,18 @@
                         <div class="reponse">
                             <div class="d-inline-flex">
                                 <div>
-                                    <div class="d-inline-flex">
-                                        <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
-                                        <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
+                                    <div class="d-inline-flex justify-content-between" >
+                                        <div>
+                                            <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
+                                            <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
+                                        </div>
+                                        <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                                            <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                                            <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                                            <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+                                        </form>
                                     </div>
+                                    
                                     @{
                                         comms = commentaireEnfant.Texte.Split("\\n");
                                     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjetCESI.Web.Models
 {
-    public class RegisterViewModel : BaseViewModel
+    public class RegisterViewModel
     {
         [Required(ErrorMessage = "Le nom d'utilisateur est requis")]
         [StringLength(15, ErrorMessage = "Le nom d'utilisateur doit comporter au moins {2} caractères.", MinimumLength = 5)]

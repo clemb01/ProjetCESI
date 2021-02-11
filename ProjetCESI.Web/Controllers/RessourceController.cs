@@ -12,30 +12,34 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ProjetCESI.Web.Outils;
 using ProjetCESI.Metier.Outils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ProjetCESI.Web.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class RessourceController : BaseController
     {
         [HttpGet]
         [AllowAnonymous]
         [StatistiqueFilter]
         [Route("Ressource/{id}")]
-        public async Task<IActionResult> Ressource(int id)
+        public async Task<IActionResult> Ressource(int id, string shareLink = null)
         {
             var model = PrepareModel<RessourceViewModel>();
 
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            
+
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.Statut != Statut.Accepter)
-                    if(User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Citoyen)))
+                    if (User.IsInRole(Enum.GetName(TypeUtilisateur.Citoyen)))
+                        return RedirectToAction("Accueil", "Accueil");
+            if (ressource.UtilisateurCreateurId != UserId)
+                if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
+                {
                     return RedirectToAction("Accueil", "Accueil");
-
-
+                }
 
             model.RessourceId = id;
             model.Titre = ressource.Titre;
@@ -51,17 +55,20 @@ namespace ProjetCESI.Web.Controllers
             model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
             model.DateSuppression = ressource.DateSuppression;
             model.RessourceSupprime = ressource.RessourceSupprime;
+            model.TypePartage = ressource.TypePartage;
+            model.ShareURL = ressource.ShareLink;
 
             if (User.Identity.IsAuthenticated)
             {
-                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id);
+                UtilisateurRessource utilisateurRessource = await MetierFactory.CreateUtilisateurRessourceMetier().GetByUtilisateurAndRessourceId(Utilisateur.Id, id, model.TypeRessource == TypeRessources.ActiviteJeu);
 
                 model.EstExploite = utilisateurRessource.EstExploite;
                 model.EstFavoris = utilisateurRessource.EstFavoris;
                 model.EstMisDeCote = utilisateurRessource.EstMisDeCote;
+                model.StatutActivite = utilisateurRessource.StatutActivite;
             }
 
-            if(ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
+            if (ressource.TypeRessource.Id == (int)TypeRessources.PDF && !string.IsNullOrEmpty(ressource.ContenuOriginal))
             {
                 string uploads = Path.Combine(HostingEnvironnement.WebRootPath, "uploads");
                 string blobFile = ressource.ContenuOriginal.Split("||").Last();
@@ -176,6 +183,66 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> DemarrerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DemarrerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId});
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> SuspendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SuspendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> QuitterActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().QuitterActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> ReprendreActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().ReprendreActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [StatistiqueFilter]
+        public async Task<IActionResult> TerminerActivite(int ressourceId)
+        {
+            bool result = await MetierFactory.CreateUtilisateurRessourceMetier().TerminerActivite(Utilisateur.Id, ressourceId);
+
+            if (result)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> ValiderRessource(int ressourceId)
         {
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
@@ -184,7 +251,7 @@ namespace ProjetCESI.Web.Controllers
             var User = await UserManager.FindByIdAsync(UserId);
             string message = "Votre ressource :" + Ressource.Titre + ", a été validé !";
             Ressource.Statut = Statut.Accepter;
-            
+
             var result = await ressourceMetier.InsertOrUpdate(Ressource);
             var model = new GestionViewModel();
             model.Ressources = (await MetierFactory.CreateRessourceMetier().GetRessourcesNonValider()).ToList();
@@ -193,11 +260,9 @@ namespace ProjetCESI.Web.Controllers
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
                 return View("../Gestion/Gestion", model);
-            } 
+            }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -209,7 +274,7 @@ namespace ProjetCESI.Web.Controllers
             string message = "";
             if (String.IsNullOrWhiteSpace(messageRefus))
             {
-                message = "La validation de : " + Ressource.Titre + ", a été refusé." ;
+                message = "La validation de : " + Ressource.Titre + ", a été refusé.";
             }
             else
             {
@@ -258,8 +323,6 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
-
         }
 
         [HttpPost]
@@ -287,8 +350,8 @@ namespace ProjetCESI.Web.Controllers
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
-
         }
+
         [HttpPost]
         public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
         {
@@ -316,5 +379,6 @@ namespace ProjetCESI.Web.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
         }
+
     }
 }
