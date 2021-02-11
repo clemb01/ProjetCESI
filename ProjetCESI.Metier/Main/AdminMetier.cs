@@ -21,7 +21,7 @@ namespace ProjetCESI.Metier
                 user.NormalizedUserName = user.UserName.ToUpper();
                 user.Email = "";
                 user.NormalizedEmail = "";
-                user.UtilisateurSupprime = true; ;
+                user.UtilisateurSupprime = true;
 
                 var result = await DataClass.InsertOrUpdate(user);
                 return result;
