@@ -22,9 +22,9 @@ namespace ProjetCESI.Web.Area
         { }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<ResponseAPI> Register(RegisterViewModel model)
         {
-            string message = string.Empty;
+            var response = new ResponseAPI();
 
             if (ModelState.IsValid)
             {
@@ -40,15 +40,19 @@ namespace ProjetCESI.Web.Area
                 CheckUser = await UserManager.FindByNameAsync(model.Username);
                 if (CheckUser != null)
                 {
-                    message = "Ce nom d'utilisateur existe déjà";
-                    return BadRequest(new { message });
+                    response.StatusCode = "400";
+                    response.Message = "Ce nom d'utilisateur existe déjà";
+                    response.IsError = false;
+                    return response;
                 }
 
                 CheckUser = await UserManager.FindByEmailAsync(model.Email);
                 if (CheckUser != null)
                 {
-                    message = "Email déjà utilisé";
-                    return BadRequest(new { message });
+                    response.StatusCode = "400";
+                    response.Message = "Email déjà utilisé";
+                    response.IsError = false;
+                    return response;
                 }
 
                 result = await UserManager.CreateAsync(user, model.Password);
@@ -60,13 +64,17 @@ namespace ProjetCESI.Web.Area
                     await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
                     result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
 
-                    message = "Compte créé, veuillez consulter vos mails";
-                    return StatusCode(201, new { message });
+                    response.StatusCode = "201";
+                    response.Message = "Compte créé";
+                    response.IsError = false;
+                    return response;
                 }
             }
 
-            message = "Une erreur c'est produite.";
-            return BadRequest(new { message });
+            response.StatusCode = "400";
+            response.Message = "Une erreur c'est produite";
+            response.IsError = true;
+            return response;
         }
 
         [AllowAnonymous]
