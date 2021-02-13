@@ -57,11 +57,12 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
-            model.TypeRelations = string.Empty;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelationsString = string.Empty;
 
-            foreach(var relation in ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList())
+            foreach (var relation in model.TypeRelations)
             {
-                model.TypeRelations += @"<span style='display: inline-block;
+                model.TypeRelationsString += @"<span style='display: inline-block;
                                           padding: 0.25em 0.4em;
                                           font - size: 75 %;
                                           font - weight: 700;
@@ -135,11 +136,12 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
-            model.TypeRelations = string.Empty;
+            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelationsString = string.Empty;
 
-            foreach (var relation in ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList())
+            foreach (var relation in model.TypeRelations)
             {
-                model.TypeRelations += @"<span style='display: inline-block;
+                model.TypeRelationsString += @"<span style='display: inline-block;
                                           padding: 0.25em 0.4em;
                                           font - size: 75 %;
                                           font - weight: 700;
