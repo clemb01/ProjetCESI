@@ -57,7 +57,27 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
-            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelations = string.Empty;
+
+            foreach(var relation in ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList())
+            {
+                model.TypeRelations += @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #28a745;'>" + relation.Nom + "</span> ";
+            }
+
             model.Categorie = ressource.Categorie;
             model.Commentaires = ressource.Commentaires;
             model.DateCreation = ressource.DateCreation;
@@ -115,7 +135,27 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
-            model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelations = string.Empty;
+
+            foreach (var relation in ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList())
+            {
+                model.TypeRelations += @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #28a745;'>" + relation.Nom + "</span> ";
+            }
+
             model.Categorie = ressource.Categorie;
             model.Commentaires = ressource.Commentaires;
             model.DateCreation = ressource.DateCreation;
