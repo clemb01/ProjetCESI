@@ -80,7 +80,7 @@ namespace ProjetCESI.Web.Area
 
             response.IsError = true;
             response.StatusCode = "400";
-            response.Message = "Invalid Authentication";
+            response.Message = "Cet utilisateur n'a pas été trouvé";
 
             return response;
         }
