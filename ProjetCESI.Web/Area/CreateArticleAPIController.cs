@@ -33,9 +33,9 @@ namespace ProjetCESI.Web.Area
         {
             var response = new ResponseAPI();
 
-            var categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
-            var typeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
-            var typeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
+            var categories = (await MetierFactory.CreateCategorieMetier().GetAll()).ToList().Select(c => new { c.Id, c.Nom });
+            var typeRelations = (await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList().Select(c => new { c.Id, c.Nom });
+            var typeRessources = (await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList().Select(c => new { c.Id, c.Nom });
 
             var ressourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
 
