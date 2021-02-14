@@ -12,11 +12,14 @@
                 <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
-            <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-            </form>
+            @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+            {
+                <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                    <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                    <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                    <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+                </form>
+            }
             @{
                 var comms = commentaire.Texte.Split("\\n");
             }
@@ -33,13 +36,13 @@
             }
             @if (User.Identity.IsAuthenticated)
             {
-                <button class="d-block" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
+                <button class="d-block btn btn-primary" id="button-@commentaire.Id" onclick="$('#collapseEditor-@commentaire.Id').collapse('show');">Répondre</button>
                 <div class="reponse-editor collapse" id="collapseEditor-@commentaire.Id">
                     <textarea class="commentaire-editor" id="response-editor-@commentaire.Id" placeholder="Ajouter une réponse..." rows="1" onkeyup="updateSubmitButton(@commentaire.Id)" onfocus="autosize(document.getElementById('response-editor-@commentaire.Id'));"></textarea>
                     <div id="submit-btn-@commentaire.Id">
                         <div class="d-flex justify-content-end">
-                            <button id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
-                            <button id="response-submit-@commentaire.Id" form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)" disabled>Envoyer</button>
+                            <button class="btn btn-danger" id="annuler-commentaire" onclick="$('#collapseEditor-@commentaire.Id').collapse('toggle'); resetEditor(document.getElementById('response-editor-@commentaire.Id')); ">Annuler</button>
+                            <button class="btn btn-primary" id="response-submit-@commentaire.Id" form="form-@commentaire.Id" onclick="submitReponseForm(@commentaire.Id, @commentaire.RessourceId, @Model.Utilisateur.Id)" disabled>Envoyer</button>
                         </div>
                     </div>
                 </div>
@@ -55,18 +58,21 @@
                         <div class="reponse">
                             <div class="d-inline-flex">
                                 <div>
-                                    <div class="d-inline-flex justify-content-between" >
+                                    <div class="d-inline-flex justify-content-between">
                                         <div>
                                             <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
                                             <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
                                         </div>
-                                        <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                                            <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                                            <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                                            <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-                                        </form>
+                                        @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+                                        {
+                                            <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                                                <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                                                <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                                                <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+                                            </form>
+                                        }
                                     </div>
-                                    
+
                                     @{
                                         comms = commentaireEnfant.Texte.Split("\\n");
                                     }

@@ -68,6 +68,7 @@ namespace ProjetCESI.Web.Controllers
             model.Commentaires = (await MetierFactory.CreateCommentaireMetier().GetAllCommentairesParentByRessourceId(model.RessourceId)).ToList();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> GetCommentaires(int ressourceId)
         {
             var model = PrepareModel<CommentairesViewModel>();
