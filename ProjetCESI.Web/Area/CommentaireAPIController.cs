@@ -17,7 +17,7 @@ namespace ProjetCESI.Web.Area
     public class CommentaireAPIController : BaseAPIController
     {
         [HttpPost("AjouterCommentaire")]
-        public async Task<ResponseAPI> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
+        public async Task<ResponseAPI> AjouterCommentaire(string contenu, int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -29,7 +29,7 @@ namespace ProjetCESI.Web.Area
                 DateModification = date,
                 RessourceId = ressourceId,
                 Texte = contenu.Replace("\n", "\\n"),
-                UtilisateurId = utilisateurId
+                UtilisateurId = Utilisateur.Id
             };
 
             await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
@@ -45,7 +45,7 @@ namespace ProjetCESI.Web.Area
         }
 
         [HttpPost("RepondreCommentaire")]
-        public async Task<ResponseAPI> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
+        public async Task<ResponseAPI> RepondreCommentaire(string contenu, int ressourceId, int commentaireParentId)
         {
             var response = new ResponseAPI();
 
@@ -57,7 +57,7 @@ namespace ProjetCESI.Web.Area
                 DateModification = date,
                 RessourceId = ressourceId,
                 Texte = contenu.Replace("\n", "\\n"),
-                UtilisateurId = utilisateurId,
+                UtilisateurId = Utilisateur.Id,
                 CommentaireParentId = commentaireParentId
             };
 
