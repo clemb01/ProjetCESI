@@ -17,7 +17,7 @@ namespace ProjetCESI.Web.Area
     public class CommentaireAPIController : BaseAPIController
     {
         [HttpPost("AjouterCommentaire")]
-        public async Task<ResponseAPI> AjouterCommentaire(string contenu, int ressourceId)
+        public async Task<ResponseAPI> AjouterCommentaire([FromBody] CommentaireViewModel model)
         {
             var response = new ResponseAPI();
 
@@ -27,25 +27,25 @@ namespace ProjetCESI.Web.Area
             {
                 DateCreation = date,
                 DateModification = date,
-                RessourceId = ressourceId,
-                Texte = contenu.Replace("\n", "\\n"),
+                RessourceId = model.RessourceId,
+                Texte = model.Contenu.Replace("\n", "\\n"),
                 UtilisateurId = Utilisateur.Id
             };
 
             await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
-            var model = new CommentairesViewModel() { RessourceId = ressourceId };
+            var models = new CommentairesViewModel() { RessourceId = model.RessourceId };
 
-            await UpdateModel(model);
+            await UpdateModel(models);
 
             response.StatusCode = "200";
-            response.Data = model;
+            response.Data = models;
 
             return response;
         }
 
         [HttpPost("RepondreCommentaire")]
-        public async Task<ResponseAPI> RepondreCommentaire(string contenu, int ressourceId, int commentaireParentId)
+        public async Task<ResponseAPI> RepondreCommentaire([FromBody] CommentaireViewModel model)
         {
             var response = new ResponseAPI();
 
@@ -55,20 +55,20 @@ namespace ProjetCESI.Web.Area
             {
                 DateCreation = date,
                 DateModification = date,
-                RessourceId = ressourceId,
-                Texte = contenu.Replace("\n", "\\n"),
+                RessourceId = model.RessourceId,
+                Texte = model.Contenu.Replace("\n", "\\n"),
                 UtilisateurId = Utilisateur.Id,
-                CommentaireParentId = commentaireParentId
+                CommentaireParentId = model.CommentaireParentId
             };
 
             await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
-            var model = new CommentairesViewModel() { RessourceId = ressourceId };
+            var models = new CommentairesViewModel() { RessourceId = model.RessourceId };
 
-            await UpdateModel(model);
+            await UpdateModel(models);
 
             response.StatusCode = "200";
-            response.Data = model;
+            response.Data = models;
 
             return response;
         }
@@ -98,11 +98,11 @@ namespace ProjetCESI.Web.Area
         }
 
         [HttpPost("SuppressionCommentaire")]
-        public async Task<ResponseAPI> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        public async Task<ResponseAPI> SuppressionCommentaire([FromBody] SuppressionModel model)
         {
             var response = new ResponseAPI();
 
-            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(model.IdComm);
 
             if (commentaire.CommentairesEnfant.Count() == 0)
             {
@@ -121,5 +121,11 @@ namespace ProjetCESI.Web.Area
             return response;
 
         }
+    }
+
+    public class SuppressionModel
+    {
+        public int IdComm { get; set; }
+        public int RessourceIdComm { get; set; }
     }
 }
