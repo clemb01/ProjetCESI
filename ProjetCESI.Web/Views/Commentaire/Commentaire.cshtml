@@ -12,13 +12,16 @@
                 <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
                 <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
             </div>
-            @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+            @if (User.Identity.IsAuthenticated)
             {
-                <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                    <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                    <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                    <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-                </form>
+                if (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+                {
+                    <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                        <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                        <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                        <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+                    </form>
+                }
             }
             @{
                 var comms = commentaire.Texte.Split("\\n");
@@ -65,11 +68,14 @@
                                         </div>
                                         @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
                                         {
-                                            <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                                                <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                                                <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                                                <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-                                            </form>
+                                            if (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+                                            {
+                                                <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
+                                                    <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
+                                                    <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
+                                                    <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
+                                                </form>
+                                            }
                                         }
                                     </div>
 
