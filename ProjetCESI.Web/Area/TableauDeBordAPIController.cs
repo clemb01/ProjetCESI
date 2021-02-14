@@ -17,7 +17,7 @@ namespace ProjetCESI.Web.Area
     public class TableauDeBordAPIController : BaseAPIController
     {
         [HttpGet("")]
-        public async Task<ResponseAPI> TableauDeBord(TableauDeBordViewModel model)
+        public async Task<ResponseAPI> TableauDeBord([FromQuery] TableauDeBordViewModel model)
         {
             var response = new ResponseAPI();
 
@@ -60,26 +60,46 @@ namespace ProjetCESI.Web.Area
 
         private static void UpdateModel(TableauDeBordViewModel model, Tuple<IEnumerable<Ressource>, IEnumerable<StatutActivite>, int> result)
         {
-            var ressources = new List<RessourceTableauBord>();
+            model.Ressources = new List<RessourceTableauBord>();
 
-            foreach (var res in result.Item1)
+            if (result.Item2 != null)
             {
-                ressources.Add(new RessourceTableauBord
+                var list = result.Item1.ToList();
+                var status = result.Item2.ToList();
+
+                for (int i = 0; i < list.Count; i++)
                 {
-                    Id = res.Id,
-                    Categorie = res.Categorie,
-                    Statut = res.Statut,
-                    StatutActivite = StatutActivite.Demare,
-                    Titre = res.Titre,
-                    TypeRelationsRessources = res.TypeRelationsRessources,
-                    TypeRessource = res.TypeRessource
-                });
+                    model.Ressources.Add(new RessourceTableauBord
+                    {
+                        Id = list[i].Id,
+                        Categorie = list[i].Categorie,
+                        Statut = list[i].Statut,
+                        StatutActivite = status[i],
+                        Titre = list[i].Titre,
+                        TypeRelationsRessources = list[i].TypeRelationsRessources,
+                        TypeRessource = list[i].TypeRessource
+                    });
+                }
             }
+            else
+            {
+                model.Ressources = result.Item1.Select(c => new RessourceTableauBord
+                {
+                    Id = c.Id,
+                    Categorie = c.Categorie,
+                    Statut = c.Statut,
+                    StatutActivite = null,
+                    Titre = c.Titre,
+                    TypeRelationsRessources = c.TypeRelationsRessources,
+                    TypeRessource = c.TypeRessource
+                }).ToList();
+            }
+
             model.NombrePages = result.Item3;
         }
 
         [HttpGet("Search")]
-        public async Task<ResponseAPI> Search(TableauDeBordViewModel model)
+        public async Task<ResponseAPI> Search([FromQuery] TableauDeBordViewModel model)
         {
             var response = new ResponseAPI();
 
