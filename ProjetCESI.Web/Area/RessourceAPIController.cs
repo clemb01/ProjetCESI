@@ -233,9 +233,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterFavoris")]
+        [HttpGet("AjouterFavoris")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterFavoris(int ressourceId)
+        public async Task<ResponseAPI> AjouterFavoris([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -249,9 +249,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerFavoris")]
+        [HttpGet("SupprimerFavoris")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerFavoris(int ressourceId)
+        public async Task<ResponseAPI> SupprimerFavoris([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -265,9 +265,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterMettreDeCote")]
+        [HttpGet("AjouterMettreDeCote")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> AjouterMettreDeCote([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -281,9 +281,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerMettreDeCote")]
+        [HttpGet("SupprimerMettreDeCote")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> SupprimerMettreDeCote([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -297,9 +297,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterExploite")]
+        [HttpGet("AjouterExploite")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterExploite(int ressourceId)
+        public async Task<ResponseAPI> AjouterExploite([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -313,9 +313,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerExploite")]
+        [HttpGet("SupprimerExploite")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerExploite(int ressourceId)
+        public async Task<ResponseAPI> SupprimerExploite([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
