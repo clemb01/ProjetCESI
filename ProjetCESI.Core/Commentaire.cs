@@ -14,7 +14,11 @@ namespace ProjetCESI.Core
         [DataMember]
         public DateTimeOffset DateModification { get; set; }
         [DataMember]
+        public DateTimeOffset? DateSuppression { get; set; }
+        [DataMember]
         public string Texte { get; set; }
+        [DataMember]
+        public StatutCommentaire Statut { get; set; }
 
 
         [DataMember]
@@ -31,5 +35,12 @@ namespace ProjetCESI.Core
         public int? CommentaireParentId { get; set; }
 
         public List<Commentaire> CommentairesEnfant { get; set; }
+    }
+
+    public enum StatutCommentaire
+    {
+        Ok,
+        Suspendu,
+        Supprime
     }
 }

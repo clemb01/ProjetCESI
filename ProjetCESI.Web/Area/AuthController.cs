@@ -72,7 +72,7 @@ namespace ProjetCESI.Web.Area
                     var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
                     response.StatusCode = "200";
-                    response.Data = new { accessToken = token, user };
+                    response.Data = new { accessToken = token, expiration = tokenOptions.ValidTo, user };
 
                     return response;
                 }
@@ -80,7 +80,7 @@ namespace ProjetCESI.Web.Area
 
             response.IsError = true;
             response.StatusCode = "400";
-            response.Message = "Invalid Authentication";
+            response.Message = "Cet utilisateur n'a pas été trouvé";
 
             return response;
         }

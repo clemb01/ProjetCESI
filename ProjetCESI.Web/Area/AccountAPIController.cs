@@ -60,7 +60,7 @@ namespace ProjetCESI.Web.Area
                 if (result.Succeeded)
                 {
                     var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-                    var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+                    var confirmationLink = Url.Action(nameof(Controllers.AccountController.ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
                     await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
                     result = await UserManager.AddToRoleAsync(user, Enum.GetName(TypeUtilisateur.Citoyen));
 
@@ -77,30 +77,17 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
+        [HttpGet("RenvoyerEmailConfirm")]
         [AllowAnonymous]
-        [HttpGet]
         public async Task<IActionResult> RenvoyerEmailConfirm(string Username)
         {
             var user = await UserManager.FindByNameAsync(Username);
             var token = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+            var confirmationLink = Url.Action(nameof(Controllers.AccountController.ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
             await MetierFactory.EmailMetier().SendEmailAsync(user.Email, "Email de confirmation", confirmationLink);
 
             return StatusCode(StatusCodes.Status200OK);
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string token, string email)
-        {
-            var user = await UserManager.FindByEmailAsync(email);
-            if (user == null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Une erreur interne c'est produite" });
-
-            var result = await UserManager.ConfirmEmailAsync(user, token);
-
-            return StatusCode(200, new { message = "Mail renvoyé" });
-        }        
+        }    
 
         [HttpGet("Profil")]
         public async Task<IActionResult> Profil()
@@ -122,7 +109,7 @@ namespace ProjetCESI.Web.Area
             return StatusCode(500, new { message = "Une erreur c'est produite" });
         }
 
-        [HttpPost]
+        [HttpPost("AnonymiseMyAccount")]
         public async Task<IActionResult> AnonymiseMyAccount(string id)
         {
             var user = await UserManager.FindByIdAsync(id);
@@ -134,8 +121,8 @@ namespace ProjetCESI.Web.Area
                 return StatusCode(500, new { message = "Une erreur c'est produite" });
         }
 
+        [HttpPost("ForgotPassword")]
         [AllowAnonymous]
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel forgotPasswordModel)
         {
@@ -155,7 +142,7 @@ namespace ProjetCESI.Web.Area
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("ResetPassword")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordModel)
         {
@@ -181,7 +168,7 @@ namespace ProjetCESI.Web.Area
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("UpdateProfilUser")]
         public async Task<IActionResult> UpdateProfilUser(string id, string newUsername)
         {
             var user = await UserManager.FindByIdAsync(id);
@@ -195,7 +182,7 @@ namespace ProjetCESI.Web.Area
             return Ok(new { accessToken = token, result });
         }
 
-        [HttpPost]
+        [HttpPost("UpdateEmail")]
         public async Task<IActionResult> UpdateEmail(string id, string newEmail)
         {
             var user = await UserManager.FindByIdAsync(id);
@@ -214,8 +201,8 @@ namespace ProjetCESI.Web.Area
             return Ok();
         }
 
+        [HttpGet("ConfirmChangeEmail")]
         [AllowAnonymous]
-        [HttpGet]
         public async Task<IActionResult> ConfirmChangeEmail(string token, string id, string newEmail)
         {
             var user = await UserManager.FindByIdAsync(id);
@@ -228,7 +215,7 @@ namespace ProjetCESI.Web.Area
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model)
         {
             if (ModelState.IsValid)

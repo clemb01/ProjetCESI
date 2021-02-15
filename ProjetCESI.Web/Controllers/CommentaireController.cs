@@ -68,6 +68,7 @@ namespace ProjetCESI.Web.Controllers
             model.Commentaires = (await MetierFactory.CreateCommentaireMetier().GetAllCommentairesParentByRessourceId(model.RessourceId)).ToList();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> GetCommentaires(int ressourceId)
         {
             var model = PrepareModel<CommentairesViewModel>();
@@ -80,22 +81,31 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        public async Task<IActionResult> SuppressionCommentaire(int commId, int ressourceId)
         {
-            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+            var model = PrepareModel<CommentairesViewModel>();
+            model.RessourceId = ressourceId;
 
-            if(commentaire.CommentairesEnfant.Count() == 0)
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(commId);
+
+            if (commentaire.CommentairesEnfant.Count == 0)
             {
-                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+                commentaire.Statut = StatutCommentaire.Supprime;
+                commentaire.DateModification = DateTimeOffset.Now;
+                commentaire.DateSuppression = DateTimeOffset.Now;
             }
             else
             {
                 commentaire.Texte = "Ce commentaire a été suspendu";
-                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+                commentaire.DateModification = DateTimeOffset.Now;
+                commentaire.Statut = StatutCommentaire.Suspendu;
             }
 
-            return RedirectToAction("Ressource", "Ressource", new { id = RessourceIdComm });
+            await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
+            await UpdateModel(model);
+
+            return PartialView("Commentaire", model);
         }
     }
 }

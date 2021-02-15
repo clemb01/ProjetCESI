@@ -6,8 +6,8 @@
     ViewData["Title"] = "Inscription";
 }
 
-<div>
-    @using (Html.BeginForm("Register", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form", @data_login_form = "true" }))
+<div class="row">
+    @using (Html.BeginForm("Register", "Account", new { ViewBag.ReturnUrl }, FormMethod.Post, true, htmlAttributes: new { @id = "formLoginAccount", @class = "login-form col-9", @data_login_form = "true" }))
     {
         <div>
             <div asp-validation-summary="ModelOnly"></div>
@@ -46,4 +46,17 @@
             <span class="text--center">S'inscrire</span>
         </button>
     }
+    <div class="col-3 border border-dark" style="border-radius: 5px; height: 100%; background-color: #bababa; padding: 1%; margin-top: 0.75%">
+        <ul>
+            <li>
+                <small class="align-middle">Pas de caractères spéciaux dans le nom d'utilisateur.</small>
+            </li>
+            <li>
+                <small class="align-middle">L'email ne doit pas déjà être utilisé pour un autre compte.</small>
+            </li>
+            <li>
+                <small class="align-middle">Le mot de passe doit contenir au minimum une lettre majuscule et une lettre minuscule, un chiffre, un caractère spécial (*.!@@$%^&(){}[]:;<>,.?/~_+-=|\) et faire 8 caractères minimum.</small>
+            </li>
+        </ul>
+    </div>
 </div>

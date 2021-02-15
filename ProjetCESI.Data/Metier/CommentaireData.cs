@@ -18,8 +18,8 @@ namespace ProjetCESI.Data
                             .Include(c => c.Utilisateur)
                             .Include(c => c.CommentairesEnfant)
                             .ThenInclude(c => c.Utilisateur)
-                            .Where(c => c.RessourceId == __ressourceId && c.CommentaireParent == null)
-                            .OrderByDescending(c => c.DateModification)
+                            .Where(c => c.Statut != StatutCommentaire.Supprime && c.RessourceId == __ressourceId && c.CommentaireParent == null)
+                            .OrderByDescending(c => c.DateCreation)
                             .ToListAsync();
             }
         }

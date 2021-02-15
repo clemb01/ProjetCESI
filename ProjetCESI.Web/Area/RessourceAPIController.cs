@@ -57,12 +57,64 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
+            model.TypeRessource.Nom = @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #6c757d;'>" + model.TypeRessource.Nom + "</span> ";
             model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelationsString = string.Empty;
+
+            foreach (var relation in model.TypeRelations)
+            {
+                model.TypeRelationsString += @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #28a745;'>" + relation.Nom + "</span> ";
+            }
+
             model.Categorie = ressource.Categorie;
+            model.Categorie.Nom = @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #007bff;'>" + model.Categorie.Nom + "</span> ";
             model.Commentaires = ressource.Commentaires;
             model.DateCreation = ressource.DateCreation;
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
+            model.ContenuOriginal = ressource.ContenuOriginal;
             model.Statut = ressource.Statut;
             model.NombreConsultation = ressource.Statut == Statut.Accepter ? ++ressource.NombreConsultation : ressource.NombreConsultation;
             model.DateSuppression = ressource.DateSuppression;
@@ -103,8 +155,10 @@ namespace ProjetCESI.Web.Area
         }
 
         [HttpGet("ValidateRessource/{id}")]
-        public async Task<RessourceViewModel> ValidateRessource(int id)
+        public async Task<ResponseAPI> ValidateRessource(int id)
         {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<RessourceViewModel>();
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
@@ -113,20 +167,75 @@ namespace ProjetCESI.Web.Area
             model.Titre = ressource.Titre;
             model.UtilisateurCreateur = ressource.UtilisateurCreateur;
             model.TypeRessource = ressource.TypeRessource;
+            model.TypeRelationsString = string.Empty;
+            model.TypeRessource.Nom = @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #6c757d;'>" + model.TypeRessource.Nom + "</span> ";
             model.TypeRelations = ressource.TypeRelationsRessources.Select(c => c.TypeRelation).ToList();
+            model.TypeRelationsString = string.Empty;
+
+            foreach (var relation in model.TypeRelations)
+            {
+                model.TypeRelationsString += @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #28a745;'>" + relation.Nom + "</span> ";
+            }
+
             model.Categorie = ressource.Categorie;
+            model.Categorie.Nom = @"<span style='display: inline-block;
+                                          padding: 0.25em 0.4em;
+                                          font - size: 75 %;
+                                          font - weight: 700;
+                                          line - height: 1;
+                                          text - align: center;
+                                          white - space: nowrap;
+                                          vertical - align: baseline;
+                                          border - radius: 0.25rem;
+                                          transition: color 0.15s ease-in-out, background - color 0.15s ease-in-out, border - color 0.15s ease-in-out, box - shadow 0.15s ease-in-out; 
+                                          padding-right: 0.6em;
+                                          padding-left: 0.6em;
+                                          border-radius: 10rem;
+                                          color: #fff;
+                                          background-color: #007bff;'>" + model.Categorie.Nom + "</span> ";
             model.Commentaires = ressource.Commentaires;
             model.DateCreation = ressource.DateCreation;
             model.DateModification = ressource.DateModification;
             model.Contenu = ressource.Contenu;
             model.Statut = ressource.Statut;
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
 
-        [HttpPost("AjouterFavoris")]
+        [HttpGet("AjouterFavoris")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterFavoris(int ressourceId)
+        public async Task<ResponseAPI> AjouterFavoris([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -140,9 +249,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerFavoris")]
+        [HttpGet("SupprimerFavoris")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerFavoris(int ressourceId)
+        public async Task<ResponseAPI> SupprimerFavoris([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -156,9 +265,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterMettreDeCote")]
+        [HttpGet("AjouterMettreDeCote")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> AjouterMettreDeCote([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -172,9 +281,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerMettreDeCote")]
+        [HttpGet("SupprimerMettreDeCote")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerMettreDeCote(int ressourceId)
+        public async Task<ResponseAPI> SupprimerMettreDeCote([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -188,9 +297,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("AjouterExploite")]
+        [HttpGet("AjouterExploite")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> AjouterExploite(int ressourceId)
+        public async Task<ResponseAPI> AjouterExploite([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -204,9 +313,9 @@ namespace ProjetCESI.Web.Area
             return response;
         }
 
-        [HttpPost("SupprimerExploite")]
+        [HttpGet("SupprimerExploite")]
         [StatistiqueFilter]
-        public async Task<ResponseAPI> SupprimerExploite(int ressourceId)
+        public async Task<ResponseAPI> SupprimerExploite([FromQuery] int ressourceId)
         {
             var response = new ResponseAPI();
 
@@ -222,67 +331,89 @@ namespace ProjetCESI.Web.Area
 
         [HttpPost("DemarrerActivite")]
         [StatistiqueFilter]
-        public async Task<IActionResult> DemarrerActivite(int ressourceId)
+        public async Task<ResponseAPI> DemarrerActivite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().DemarrerActivite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("SuspendreActivite")]
         [StatistiqueFilter]
-        public async Task<IActionResult> SuspendreActivite(int ressourceId)
+        public async Task<ResponseAPI> SuspendreActivite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().SuspendreActivite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("QuitterActivite")]
         [StatistiqueFilter]
-        public async Task<IActionResult> QuitterActivite(int ressourceId)
+        public async Task<ResponseAPI> QuitterActivite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().QuitterActivite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("ReprendreActivite")]
         [StatistiqueFilter]
-        public async Task<IActionResult> ReprendreActivite(int ressourceId)
+        public async Task<ResponseAPI> ReprendreActivite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().ReprendreActivite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("TerminerActivite")]
         [StatistiqueFilter]
-        public async Task<IActionResult> TerminerActivite(int ressourceId)
+        public async Task<ResponseAPI> TerminerActivite(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             bool result = await MetierFactory.CreateUtilisateurRessourceMetier().TerminerActivite(Utilisateur.Id, ressourceId);
 
             if (result)
-                return RedirectToAction("Ressource", "Ressource", new { id = ressourceId });
+                response.StatusCode = "200";
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("ValiderRessource")]
-        public async Task<IActionResult> ValiderRessource(int ressourceId)
+        public async Task<ResponseAPI> ValiderRessource(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
@@ -297,15 +428,19 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("RefuserRessource")]
-        public async Task<IActionResult> RefuserRessource(int ressourceId, string messageRefus)
+        public async Task<ResponseAPI> RefuserRessource(int ressourceId, string messageRefus)
         {
+            var response = new ResponseAPI();
+
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
@@ -327,15 +462,19 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Validation de ressource", message);
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("SupprimerRessource")]
-        public async Task<IActionResult> SupprimerRessource(int ressourceId, string messageSuppression)
+        public async Task<ResponseAPI> SupprimerRessource(int ressourceId, string messageSuppression)
         {
+            var response = new ResponseAPI();
+
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
@@ -355,15 +494,19 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suppression de la ressource", message);
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("SuspendreRessource")]
-        public async Task<IActionResult> SuspendreRessource(int ressourceId, string messageSuspendre)
+        public async Task<ResponseAPI> SuspendreRessource(int ressourceId, string messageSuspendre)
         {
+            var response = new ResponseAPI();
+
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
@@ -382,15 +525,19 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Suspension de la ressource", message);
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
 
         [HttpPost("ReactivateRessource")]
-        public async Task<IActionResult> ReactivateRessource(int ressourceId, string messageReactivate)
+        public async Task<ResponseAPI> ReactivateRessource(int ressourceId, string messageReactivate)
         {
+            var response = new ResponseAPI();
+
             var Ressource = await MetierFactory.CreateRessourceMetier().GetRessourceComplete(ressourceId);
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
             string UserId = Ressource.UtilisateurCreateurId.ToString();
@@ -409,10 +556,12 @@ namespace ProjetCESI.Web.Area
             if (result)
             {
                 await MetierFactory.EmailMetier().SendEmailAsync(User.Email, "Réactivation de la ressource", message);
-                return StatusCode(StatusCodes.Status200OK);
+                response.StatusCode = "200";
             }
             else
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                response.StatusCode = "500";
+
+            return response;
         }
     }
 }

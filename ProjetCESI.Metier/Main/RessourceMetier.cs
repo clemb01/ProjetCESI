@@ -1,5 +1,6 @@
 ﻿using ProjetCESI.Core;
 using ProjetCESI.Data;
+using ProjetCESI.Metier.Outils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,11 @@ namespace ProjetCESI.Metier
             }
             else
             {
+                if (contenu.Length > 300)
+                {
+                    contenu = contenu.TruncateHtml(300);
+                }
+
                 content = contenu;
             }
 

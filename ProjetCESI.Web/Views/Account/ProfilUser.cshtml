@@ -2,7 +2,7 @@
 @model UserViewModel
 
 @{
-    ViewData["Title"] = "ProfilUser";
+    ViewData["Title"] = "Mon profil";
 }
 
 
@@ -59,30 +59,27 @@
             </div>
         </div>
     </form>
-    <form method="post" asp-action="">
-        <div class="card">
-            <div class="card-header" id="header3">
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Modification mot de passe</button>
-            </div>
-            <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
-                <div class="card-body">
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                            <button type="button" class="btn btn-outline-info">
-                                @Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })
-                            </button>
-                        </label>
+    <div class="card">
+        <div class="card-header" id="header3">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">Modification mot de passe</button>
+        </div>
+        <div id="collapse3" class="collapse" aria-labelledby="header3" data-parent="#exempleAccordeon">
+            <div class="card-body">
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                        <button type="button" class="btn btn-outline-info">
+                            @Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })
+                        </button>
+                    </label>
 
-                    </div>
                 </div>
             </div>
         </div>
-    </form>
-
+    </div>
     <div class="card">
         <div class="card-header" id="header4">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4" style="color:red;">Suppresion du compte</button>
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4" style="color:red;">Suppression du compte</button>
         </div>
         <div id="collapse4" class="collapse" aria-labelledby="header4" data-parent="#exempleAccordeon">
             <div class="card-body">

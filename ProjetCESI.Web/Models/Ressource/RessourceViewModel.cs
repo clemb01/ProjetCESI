@@ -13,6 +13,7 @@ namespace ProjetCESI.Web.Models
         public DateTimeOffset DateModification { get; set; }
         public string Titre { get; set; }
         public string Contenu { get; set; }
+        public string ContenuOriginal { get; set; }
         public Statut Statut { get; set; }
         public int NombreConsultation { get; set; }
         public User UtilisateurCreateur { get; set; }
@@ -23,6 +24,7 @@ namespace ProjetCESI.Web.Models
         public bool EstMisDeCote { get; set; }
         public StatutActivite? StatutActivite { get; set; }
         public List<TypeRelation> TypeRelations { get; set; }
+        public string TypeRelationsString { get; set; }
         public List<Commentaire> Commentaires { get; set; }
         public bool RessourceSupprime { get; set; }
         public DateTimeOffset DateSuppression { get; set; }

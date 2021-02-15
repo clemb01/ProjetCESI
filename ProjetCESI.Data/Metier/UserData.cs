@@ -22,7 +22,7 @@ namespace ProjetCESI.Data
         {
             using (DbContext ctx = GetContext())
             {
-                var result = ctx.Set<User>().Where(c => !c.UserName.Contains("UtilisateurSupprimé") && !c.UserName.Contains("Admin") && !c.UserName.Contains("SuperAdmin") && c.EmailConfirmed);
+                var result = ctx.Set<User>().Where(c => !c.UtilisateurSupprime && c.Id != UserId && c.EmailConfirmed);
 
                 return await result.ToListAsync();
             }

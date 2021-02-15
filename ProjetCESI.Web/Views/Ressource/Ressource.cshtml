@@ -16,53 +16,60 @@
     ViewData["Title"] = Model.Titre;
 }
 
-<div class="ressource-header justify-content-between">
-    <div class="d-flex" style="width: 80%;">
-        <h3>@Model.Titre</h3>&nbsp;
+<div class="ressource-header row">
+    <div class="col-md-8">
+        <div class="d-flex">
+            <h3>@Model.Titre</h3>&nbsp;
+            @if (User.Identity.IsAuthenticated && (Model.Utilisateur.Id == Model.UtilisateurCreateur.Id || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.Admin || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.SuperAdmin))
+            {
+                <a class="m-1" href="/CreateArticle/Edit/@Model.RessourceId" title="Editer"><img src="~/images/edit.png" width="28" /></a>
+            }
+            @if (User.Identity.IsAuthenticated && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+            {
+                <span><a data-toggle="modal" data-target="#suppression"><img title="Supprimer" src="~/images/bin.png" width="32" /></a></span>
 
-        @if (User.Identity.IsAuthenticated && (Model.Utilisateur.Id == Model.UtilisateurCreateur.Id || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.Admin || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.SuperAdmin))
+                @if (Model.Statut != ProjetCESI.Core.Statut.Suspendre && Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                {
+                    <span class="m-1"><a data-toggle="modal" data-target="#suspendre"><img title="Suspendre" src="~/images/suspendre.png" width="32" /></a></span>
+                }
+                @if (Model.Statut == ProjetCESI.Core.Statut.Suspendre && Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                {
+                    <div class="ressource-button">
+                        <span><a data-toggle="modal" data-target="#reactivate"><img title="Réactiver" src="~/images/play_icone.png" width="32" /></a></span>
+                    </div>
+                }
+            }
+        </div>
+
+        <span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
+        <span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
+
+        @foreach (var relation in Model.TypeRelations)
         {
-            <a href="/CreateArticle/Edit/@Model.RessourceId" title="Editer"><img src="~/images/edit.png" width="28" /></a>
+            <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
         }
     </div>
-    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Accepter)
-    {
-
-        @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
+    <div class="col-4 col-md-4">
+        @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Accepter)
         {
-            <div class="ressource-button">
-                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
-                {
-                    <span class="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 32px;" /></span>
-                    <span class="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote" src="@(Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/photo-camera.svg")" style="width: 32px;" /></span>
-                    <span class="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite" src="@(Model.EstExploite ? "/images/002-check.svg" : "/images/remove.svg")" style="width: 32px;" /></span>
-                }
-                @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
-                {
-                    <span><a data-toggle="modal" data-target="#suppression"><img title="Supprimer" src="~/images/bin.png" width="32" /></a></span>
-                    <span><a data-toggle="modal" data-target="#suspendre"><img title="Suspendre" src="~/images/suspendre.png" width="32" /></a></span>
-                }
-                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
-                {
-                    <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
-                }
-            </div>
+            @if (Model.Statut == ProjetCESI.Core.Statut.Accepter)
+            {
+                <div class="ressource-button">
+                    @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                    {
+                        <span class="favoris badge badge-pill badge-info m-1" id="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris-image" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 24px;" /><span class="m-2" id="favoris-texte">@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")</span></span><br />
+                        <span class="cote badge badge-pill badge-info m-1" id="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote-image" src="@(!Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="cote-texte">@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")</span></span><br />
+                        <span class="exploite badge badge-pill badge-info m-1" id="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite-image" src="@(!Model.EstExploite ? "/images/002-check.png" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="exploite-texte">@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")</span></span><br />
+                    }
+                    @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
+                    {
+                        <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
+                    }
+                </div>
+            }
         }
-    }
-    @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Suspendre && Model.TypePartage == ProjetCESI.Core.TypePartage.Public && User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.Admin)))
-    {
-        <div class="ressource-button">
-            <span><a data-toggle="modal" data-target="#reactivate"><img title="Réactiver" src="~/images/play_icone.png" width="32" /></a></span>
-        </div>
-    }
+    </div>    
 </div>
-<span class="badge badge-pill badge-primary">@Html.DisplayFor(c => c.Categorie.Nom)</span>
-<span class="badge badge-pill badge-secondary">@Html.DisplayFor(c => c.TypeRessource.Nom)</span>
-
-@foreach (var relation in Model.TypeRelations)
-{
-    <span class="badge badge-pill badge-success">@Html.DisplayFor(c => relation.Nom)</span>
-}
 
 @if (Model.TypeRessource == ProjetCESI.Core.TypeRessources.ActiviteJeu)
 {
@@ -135,8 +142,8 @@
             }
             <div class="collapse" id="submit-btn">
                 <div class="d-flex justify-content-end">
-                    <button id="annuler-commentaire">Annuler</button>
-                    <button form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
+                    <button class="btn btn-danger" id="annuler-commentaire">Annuler</button>
+                    <button class="btn btn-primary" form="ajout-commentaire" id="envoyer-btn" disabled>Envoyer</button>
                 </div>
             </div>
         </div>
@@ -318,13 +325,15 @@
             })
                 .done(function () {
                     if (estFavoris) {
-                        document.getElementById('favoris').src = "/images/003-star.svg";
-                        document.getElementById('favoris').title = "Ajouter aux favoris";
+                        document.getElementById('favoris-image').src = "/images/003-star.svg";
+                        document.getElementById('favoris-image').title = "Ajouter aux favoris";
+                        document.getElementById('favoris-texte').innerText = "Ajouter aux favoris";
                         estFavoris = false;
                     }
                     else {
-                        document.getElementById('favoris').src = "/images/004-star-1.svg";
-                        document.getElementById('favoris').title = "Supprimer des favoris";
+                        document.getElementById('favoris-image').src = "/images/004-star-1.svg";
+                        document.getElementById('favoris-image').title = "Supprimer des favoris";
+                        document.getElementById('favoris-texte').innerText = "Supprimer des favoris";
                         estFavoris = true;
                     }
             });
@@ -349,13 +358,15 @@
             })
                 .done(function () {
                     if (estMisDeCote) {
-                        document.getElementById('cote').src = "/images/photo-camera.svg";
-                        document.getElementById('cote').title = "Mettre de côté";
+                        document.getElementById('cote-image').src = "/images/001-clock.svg";
+                        document.getElementById('cote-image').title = "Mettre de côté";
+                        document.getElementById('cote-texte').innerText = "Mettre de côté";
                         estMisDeCote = false;
                     }
                     else {
-                        document.getElementById('cote').src = "/images/001-clock.svg";
-                        document.getElementById('cote').title = "Supprimer des ressources mise de côté";
+                        document.getElementById('cote-image').src = "/images/remove.svg";
+                        document.getElementById('cote-image').title = "Supprimer des ressources mise de côté";
+                        document.getElementById('cote-texte').innerText = "Supprimer des ressources mise de côté";
                         estMisDeCote = true;
                     }
             });
@@ -380,13 +391,15 @@
             })
                 .done(function () {
                     if (estExploite) {
-                        document.getElementById('exploite').src = "/images/remove.svg";
-                        document.getElementById('exploite').title = "Indiquer comme exploitée";
+                        document.getElementById('exploite-image').src = "/images/002-check.png";
+                        document.getElementById('exploite-image').title = "Indiquer comme exploitée";
+                        document.getElementById('exploite-texte').innerText = "Indiquer comme exploitée";
                         estExploite = false;
                     }
                     else {
-                        document.getElementById('exploite').src = "/images/002-check.svg";
-                        document.getElementById('exploite').title = "Supprimer des ressources exploitées";
+                        document.getElementById('exploite-image').src = "/images/remove.svg";
+                        document.getElementById('exploite-image').title = "Supprimer des ressources exploitées";
+                        document.getElementById('exploite-texte').innerText = "Supprimer des ressources exploitées";
                         estExploite = true;
                     }
             });
@@ -429,11 +442,27 @@
                 .done(function (result) {
                     document.getElementById("list-commentaire").innerHTML = result;
                 });
-
-            function Clipboard() {
-                TextCopy.ClipboardService.SetText("Text to place in clipboard");
-            }
         }
+
+        function deleteComment(commentId) {
+            $.ajax({
+                url: "/Commentaire/SuppressionCommentaire",
+                method: "POST",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                    commId: commentId
+                }
+            })
+                .done(function (result) {
+                    document.getElementById("list-commentaire").innerHTML = result;
+                });
+        }
+
+
+        function Clipboard() {
+            TextCopy.ClipboardService.SetText("Text to place in clipboard");
+        }
+
         var toCopy = document.getElementById('to-copy'),
             btnCopy = document.getElementById('copy');
         btnCopy.addEventListener('click', function () {

@@ -16,49 +16,61 @@ namespace ProjetCESI.Web.Area
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CommentaireAPIController : BaseAPIController
     {
-        public async Task<CommentairesViewModel> AjouterCommentaire(string contenu, int ressourceId, int utilisateurId)
+        [HttpPost("AjouterCommentaire")]
+        public async Task<ResponseAPI> AjouterCommentaire([FromBody] CommentaireViewModel model)
         {
+            var response = new ResponseAPI();
+
             var date = DateTimeOffset.Now;
 
             Commentaire commentaire = new Commentaire()
             {
                 DateCreation = date,
                 DateModification = date,
-                RessourceId = ressourceId,
-                Texte = contenu.Replace("\n", "\\n"),
-                UtilisateurId = utilisateurId
+                RessourceId = model.RessourceId,
+                Texte = model.Contenu.Replace("\n", "\\n"),
+                UtilisateurId = Utilisateur.Id
             };
 
             await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
-            var model = new CommentairesViewModel() { RessourceId = ressourceId };
+            var models = new CommentairesViewModel() { RessourceId = model.RessourceId };
 
-            await UpdateModel(model);
+            await UpdateModel(models);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = models;
+
+            return response;
         }
 
-        public async Task<CommentairesViewModel> RepondreCommentaire(string contenu, int ressourceId, int utilisateurId, int commentaireParentId)
+        [HttpPost("RepondreCommentaire")]
+        public async Task<ResponseAPI> RepondreCommentaire([FromBody] CommentaireViewModel model)
         {
+            var response = new ResponseAPI();
+
             var date = DateTimeOffset.Now;
 
             Commentaire commentaire = new Commentaire()
             {
                 DateCreation = date,
                 DateModification = date,
-                RessourceId = ressourceId,
-                Texte = contenu.Replace("\n", "\\n"),
-                UtilisateurId = utilisateurId,
-                CommentaireParentId = commentaireParentId
+                RessourceId = model.RessourceId,
+                Texte = model.Contenu.Replace("\n", "\\n"),
+                UtilisateurId = Utilisateur.Id,
+                CommentaireParentId = model.CommentaireParentId
             };
 
             await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
-            var model = new CommentairesViewModel() { RessourceId = ressourceId };
+            var models = new CommentairesViewModel() { RessourceId = model.RessourceId };
 
-            await UpdateModel(model);
+            await UpdateModel(models);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = models;
+
+            return response;
         }
 
         private async Task UpdateModel(CommentairesViewModel model)
@@ -68,15 +80,52 @@ namespace ProjetCESI.Web.Area
             model.Commentaires = (await MetierFactory.CreateCommentaireMetier().GetAllCommentairesParentByRessourceId(model.RessourceId)).ToList();
         }
 
-        public async Task<CommentairesViewModel> GetCommentaires(int ressourceId)
+        [HttpGet("GetCommentaires")]
+        public async Task<ResponseAPI> GetCommentaires(int ressourceId)
         {
+            var response = new ResponseAPI();
+
             var model = PrepareModel<CommentairesViewModel>();
 
             model.RessourceId = ressourceId;
 
             await UpdateModel(model);
 
-            return model;
+            response.StatusCode = "200";
+            response.Data = model;
+
+            return response;
         }
+
+        [HttpPost("SuppressionCommentaire")]
+        public async Task<ResponseAPI> SuppressionCommentaire([FromBody] SuppressionModel model)
+        {
+            var response = new ResponseAPI();
+
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(model.IdComm);
+
+            if (commentaire.CommentairesEnfant.Count() == 0)
+            {
+                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+                response.Message = "Commentaire supprimé";
+            }
+            else
+            {
+                commentaire.Texte = "Ce commentaire a été suspendu";
+                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+                response.Message = "Commentaire suspendu";
+            }
+
+            response.StatusCode = "200";
+
+            return response;
+
+        }
+    }
+
+    public class SuppressionModel
+    {
+        public int IdComm { get; set; }
+        public int RessourceIdComm { get; set; }
     }
 }
