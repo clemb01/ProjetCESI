@@ -88,15 +88,20 @@ namespace ProjetCESI.Web.Controllers
 
             Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(commId);
 
-            if (commentaire.CommentairesEnfant.Count() == 0)
+            if (commentaire.CommentairesEnfant.Count == 0)
             {
-                await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
+                commentaire.Statut = StatutCommentaire.Supprime;
+                commentaire.DateModification = DateTimeOffset.Now;
+                commentaire.DateSuppression = DateTimeOffset.Now;
             }
             else
             {
                 commentaire.Texte = "Ce commentaire a été suspendu";
-                await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
+                commentaire.DateModification = DateTimeOffset.Now;
+                commentaire.Statut = StatutCommentaire.Suspendu;
             }
+
+            await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
 
             await UpdateModel(model);
 
