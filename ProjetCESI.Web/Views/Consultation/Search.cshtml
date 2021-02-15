@@ -8,9 +8,9 @@
 <h3>Recherche</h3>
 
 <div style="background-color: darkgrey; padding: 15px;">
-    @using (Html.BeginForm("Search", "Consultation", FormMethod.Post, new { @id = "recherche-avancee" }))
-    {
+    <form method="get" action="/Consultation/AdvancedSearch" id="recherche-avancee">
         @Html.EditorFor(model => model.Ressources.TypeTri, new { htmlAttributes = new { @value = Model.Ressources.TypeTri, @class = "form-control", hidden = "hidden", @id = "TypeTri" } })
+        @Html.HiddenFor(model => model.Ressources.Page, new { @id = "page" })
         <div class="form-group">
             <strong>@Html.LabelFor(c => c.Recherche)</strong>
             @Html.EditorFor(model => model.Recherche, new { htmlAttributes = new { @class = "form-control", placeholder = "Recherche", required = "required" } })
@@ -86,17 +86,73 @@
                 Type de ressource : <span class="badge badge-pill badge-secondary">&nbsp;</span>
                 Type de relation : <span class="badge badge-pill badge-success">&nbsp;</span>
             </small>
-            <button type="submit" class="btn btn-primary">Recherche avancée</button>
+            <button type="button" class="btn btn-primary" onclick="submitSearch()">Recherche avancée</button>
         </div>
-    }
+    </form>
 </div>
+@if (Model.Ressources.Ressources != null && Model.Ressources.Ressources.Any())
+{
+    <br />
+    <div class="d-flex justify-content-between">
+        <div>
+            <span>Trier les résultats :</span>
+            <select class="form-control" id="TypeTri" name="Ressources.TypeTri" style="display: initial; width: auto;" onchange="selectionChange(this)">
+                @foreach (var tri in Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>())
+                {
+                    if (Model.Ressources.TypeTri.ToString() == tri.Value)
+                    {
+                        <option value="@tri.Value" selected>@tri.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@tri.Value">@tri.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="d-flex justify-content-end">
+            @if (Model.Ressources.NombrePages > 1)
+            {
+                <ul class="pagination pagination-sm">
+                    @for (int i = 1; i <= Model.Ressources.NombrePages; i++)
+                    {
+                        if (i == Model.Ressources.Page)
+                        {
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">
+                                    @i
+                                    <span class="sr-only">(current)</span>
+                                </span>
+                            </li>
+                        }
+                        else
+                        {
+                            string link = string.Empty;
 
+                            <li class="page-item"><a class="page-link" onclick="goToPage(@i)" style="cursor: pointer">@i</a></li>
+                        }
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+}
 @await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
 
 @section Scripts{
     <script type="text/javascript">
+        function submitSearch() {
+            document.getElementById('page').setAttribute('value', 1);
+            $('#recherche-avancee').submit();
+        }
+
         function selectionChange(selection) {
             document.getElementById('TypeTri').setAttribute('value', selection.value);
+            $('#recherche-avancee').submit();
+        }
+
+        function goToPage(page) {
+            document.getElementById('page').setAttribute('value', page);
             $('#recherche-avancee').submit();
         }
     </script>

@@ -6,9 +6,57 @@
 }
 
 <form asp-action="Consultation" asp-controller="Consultation" method="get" id="tri">
-    <input id="TypeTri" name="tri" hidden />
+    <input id="TypeTri" name="tri" value="@Model.Ressources.TypeTri" hidden />
+    <input id="page" name="page" value="@Model.Ressources.Page" hidden />
 </form>
 
+@if (Model.Ressources.Ressources != null && Model.Ressources.Ressources.Any())
+{
+    <br />
+    <div class="d-flex justify-content-between">
+        <div>
+            <span>Trier les résultats :</span>
+            <select class="form-control" id="TypeTri" name="Ressources.TypeTri" style="display: initial; width: auto;" onchange="selectionChange(this)">
+                @foreach (var tri in Html.GetEnumSelectList<ProjetCESI.Core.TypeTriBase>())
+                {
+                    if (Model.Ressources.TypeTri.ToString() == tri.Value)
+                    {
+                        <option value="@tri.Value" selected>@tri.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@tri.Value">@tri.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="d-flex justify-content-end">
+            @if (Model.Ressources.NombrePages > 1)
+            {
+                <ul class="pagination pagination-sm">
+                    @for (int i = 1; i <= Model.Ressources.NombrePages; i++)
+                    {
+                        if (i == Model.Ressources.Page)
+                        {
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">
+                                    @i
+                                    <span class="sr-only">(current)</span>
+                                </span>
+                            </li>
+                        }
+                        else
+                        {
+                            string link = string.Empty;
+
+                            <li class="page-item"><a class="page-link" onclick="goToPage(@i)" style="cursor: pointer">@i</a></li>
+                        }
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+}
 @if (Model != null)
 {
     @await Html.PartialAsync("ListeRessourcePartial", Model.Ressources)
@@ -24,6 +72,11 @@ else
     <script type="text/javascript">
         function selectionChange(selection) {
             document.getElementById('TypeTri').setAttribute('value', selection.value);
+            $('#tri').submit();
+        }
+
+        function goToPage(page) {
+            document.getElementById('page').setAttribute('value', page);
             $('#tri').submit();
         }
     </script>

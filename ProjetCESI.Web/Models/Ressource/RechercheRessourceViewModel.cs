@@ -29,8 +29,6 @@ namespace ProjetCESI.Web.Models
         [Display(Name = "Et le")]
         public DateTime? DateFin { get; set; }
 
-        public int Page { get; set; }
-
         public ListRessourceViewModel Ressources { get; set; } = new ListRessourceViewModel();
     }
 }

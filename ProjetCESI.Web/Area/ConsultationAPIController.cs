@@ -28,7 +28,9 @@ namespace ProjetCESI.Web.Area
 
             model.Recherche = recherche;
             model.Ressources.TypeTri = 0;
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllSearchPaginedRessource(model.Recherche, _pageOffset: model.Page)).ToList();
+            var result = await MetierFactory.CreateRessourceMetier().GetAllSearchPaginedRessource(model.Recherche, _pageOffset: model.Ressources.Page - 1);
+            model.Ressources.Ressources = result.Item1.ToList();
+            model.Ressources.NombrePages = result.Item2;
             model.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
             model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
             model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
@@ -56,7 +58,9 @@ namespace ProjetCESI.Web.Area
             if (model.DateFin.HasValue)
                 model.DateFin = model.DateFin.Value.AddDays(1).AddTicks(-1);
 
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.Ressources.TypeTri, _pageOffset: model.Page)).ToList();
+            var result = await MetierFactory.CreateRessourceMetier().GetAllAdvancedSearchPaginedRessource(model.Recherche, model.SelectedCategories, model.SelectedTypeRelation, model.SelectedTypeRessources, model.DateDebut, model.DateFin, (TypeTriBase)model.Ressources.TypeTri, _pageOffset: model.Ressources.Page - 1);
+            model.Ressources.Ressources = result.Item1.ToList();
+            model.Ressources.NombrePages = result.Item2;
             model.Categories = ToSelectList((await MetierFactory.CreateCategorieMetier().GetAll()).ToList());
             model.TypeRelations = ToSelectList((await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList());
             model.TypeRessources = ToSelectList((await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList());
@@ -75,7 +79,9 @@ namespace ProjetCESI.Web.Area
             var model = PrepareModel<ConsultationViewModel>();
 
             model.Ressources.TypeTri = tri;
-            model.Ressources.Ressources = (await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri)).ToList();
+            var result = await MetierFactory.CreateRessourceMetier().GetAllPaginedRessource((TypeTriBase)tri);
+            model.Ressources.Ressources = result.Item1.ToList();
+            model.Ressources.NombrePages = result.Item2;
 
             response.StatusCode = "200";
             response.Data = model;

@@ -13,7 +13,7 @@ namespace ProjetCESI.Data
 {
     public class RessourceData : Repository<Ressource>, IRessourceData
     {
-        public async Task<IEnumerable<Ressource>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0, bool __includeShared = false, bool __includePrivate = false)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetAllPaginedRessource(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0, bool __includeShared = false, bool __includePrivate = false)
         {
             using (var ctx = GetContext())
             {
@@ -36,11 +36,15 @@ namespace ProjetCESI.Data
                 else
                     ressources = ressources.Where(c => c.TypePartage == TypePartage.Public);
 
-                return await ressources
-                        .OrderBy(GenerateOrderFilter(_tri))
-                        .Skip(_pageOffset * _pagination)
-                        .Take(_pagination)
-                        .ToListAsync();
+                ressources = ressources.OrderBy(GenerateOrderFilter(_tri));
+
+                int count = await ressources.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                return Tuple.Create((await ressources.Skip(_pageOffset * _pagination)
+                                    .Take(_pagination)
+                                    .ToListAsync()).AsEnumerable(), count);
             }
         }
 
@@ -236,7 +240,7 @@ namespace ProjetCESI.Data
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetAllSearchPaginedRessource(string _search, int _pagination = 20, int _pageOffset = 0)
         {
             if (string.IsNullOrEmpty(_search))
                 return await GetAllPaginedRessource(_pagination: _pagination, _pageOffset: _pageOffset);
@@ -252,15 +256,18 @@ namespace ProjetCESI.Data
                                  .Include(c => c.TypeRelationsRessources)
                                  .ThenInclude(c => c.Ressource)
                                  .Where(c => c.Statut == Statut.Accepter && c.RessourceSupprime == false && c.RessourceParent == null && c.Categorie != null)
-                                 .Where(c => c.Titre.Contains(_search))
-                                 .Skip(_pageOffset * _pagination)
-                                 .Take(_pagination);
+                                 .Where(c => c.Titre.Contains(_search));
 
-                return await ressources.ToListAsync();
+                int count = await ressources.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                return Tuple.Create((await ressources.Skip(_pageOffset * _pagination)
+                                 .Take(_pagination).ToListAsync()).AsEnumerable(), count);
             }
         }
 
-        public async Task<IEnumerable<Ressource>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, TypeTriBase _typeTri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetAllAdvancedSearchPaginedRessource(string _search, List<int> _categories, List<int> _typeRelation, List<int> _typeRessource, DateTime? _dateDebut, DateTime? _dateFin, TypeTriBase _typeTri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             if (string.IsNullOrEmpty(_search))
                 return await GetAllPaginedRessource(_pagination: _pagination, _pageOffset: _pageOffset);
@@ -300,8 +307,12 @@ namespace ProjetCESI.Data
 
                 ressources = ressources.OrderBy(GenerateOrderFilter(_typeTri));
 
-                return await ressources.Skip(_pageOffset * _pagination)
-                                 .Take(_pagination).ToListAsync();
+                int count = await ressources.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                return Tuple.Create((await ressources.Skip(_pageOffset * _pagination)
+                                 .Take(_pagination).ToListAsync()).AsEnumerable(), count);
             }
         }
 
