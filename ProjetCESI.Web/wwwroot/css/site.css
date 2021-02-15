@@ -568,3 +568,16 @@ input[type="checkbox"].input-validation-error {
     letter-spacing: 2px;
     border-bottom: dotted 1px;
 }
+
+h1 {
+    text-align: center;
+    background: linear-gradient(#fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+    background: -webkit-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+    background: -moz-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+    background: -o-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+}
+
+h1 span {
+        background: #fff;
+        padding: 0 20px;
+    }

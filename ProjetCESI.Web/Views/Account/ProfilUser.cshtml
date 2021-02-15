@@ -7,7 +7,7 @@
 
 
 <div class="container">
-    <h1>Gestion du Profil : @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)</h1>
+    <h1><span>Gestion du Profil : @Html.DisplayFor(modelItem => Model.Utilisateur.UserName)</span></h1>
     <form method="post" asp-action="UpdateProfilUser">
         <div class="accordion" id="exempleAccordeon">
             <div class="card">
@@ -16,17 +16,18 @@
                 </div>
                 <div id="collapse1" class="collapse" aria-labelledby="header1" data-parent="#exempleAccordeon">
                     <div class="card-body">
-
+                        
                         <div class="form-group form-check">
                             <label class="form-check-label">
                                 <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
                                 Nouveau pseudo :
                                 <input placeholder="@Model.Utilisateur.UserName" value="@Model.Utilisateur.UserName" name="newUsername" />
+                                <a class="alert alert-success" >Les caractères spéciaux ne sont pas autorisé dans le pseudo</a>
                             </label>
 
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                            <input type="submit" value="Enregistrer" class="btn btn-primary"/>
                         </div>
 
                     </div>
@@ -45,9 +46,9 @@
                     <div class="form-group form-check">
                         <label class="form-check-label">
                             <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                            Nouvelle adresse Email :
-                            <input placeholder="@Model.Utilisateur.Email" value="@Model.Utilisateur.Email" name="newEmail" />
-
+                                Nouvelle adresse Email :
+                                <input placeholder="@Model.Utilisateur.Email" value="@Model.Utilisateur.Email" name="newEmail" />
+                                <a class="alert alert-success">L'email ne doit pas déjà être utilisé pour un autre compte.</a>
                         </label>
 
                     </div>
@@ -88,12 +89,31 @@
                 <div class="form-group form-check">
                     <label class="form-check-label">
                         <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        <button type="button" class="btn btn-outline-danger">
+                        <button type="button" class="btn btn-outline-danger" icon="">
                             @Html.ActionLink("Supprimer le compte", "ConfirmationAnonyme", new { id = Model.Utilisateur.Id })
                         </button>
+                        <a class="alert alert-danger">Si vous cliquez sur le bouton, vous allez accéder à la page de confirmation de suppresion du compte</a>
                     </label>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    h1 {
+        text-align: center;
+        font-family: 'Trebuchet MS';
+        text-shadow: -1px -1px #0c0, 1px 1px #060, -3px 0 4px #000;
+        background: linear-gradient(#fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+        background: -webkit-linear-gradient( #fff 0%, #fff 45%, green 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+        background: -moz-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+        background: -o-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+
+    }
+
+    h1 span{
+        background: #fff;
+        padding: 0 20px;
+    }
+</style>
