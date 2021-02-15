@@ -97,6 +97,9 @@ namespace ProjetCESI.Web.Controllers
         {
             List<TopObject> json = new List<TopObject>();
 
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
+
             switch (selectedRange)
             {
                 case 1:
@@ -133,6 +136,9 @@ namespace ProjetCESI.Web.Controllers
         public async Task<JsonResult> UpdateTopConsultationDisplay(int selectedRange)
         {
             List<TopObject> json = new List<TopObject>();
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
 
             switch (selectedRange)
             {
@@ -171,6 +177,9 @@ namespace ProjetCESI.Web.Controllers
         {
             object json = new object();
             List<TopObject> result;
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
 
             switch (selectedRange)
             {
@@ -218,6 +227,9 @@ namespace ProjetCESI.Web.Controllers
         public async Task<IActionResult> ExportCSV(TimestampFilter periode)
         {
             string filename = string.Empty;
+
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
 
             DateTimeOffset dtBas;
             DateTimeOffset dtHaut;
