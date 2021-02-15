@@ -442,11 +442,27 @@
                 .done(function (result) {
                     document.getElementById("list-commentaire").innerHTML = result;
                 });
-
-            function Clipboard() {
-                TextCopy.ClipboardService.SetText("Text to place in clipboard");
-            }
         }
+
+        function deleteComment(commentId) {
+            $.ajax({
+                url: "/Commentaire/SuppressionCommentaire",
+                method: "POST",
+                data: {
+                    ressourceId: @Model.RessourceId,
+                    commId: commentId
+                }
+            })
+                .done(function (result) {
+                    document.getElementById("list-commentaire").innerHTML = result;
+                });
+        }
+
+
+        function Clipboard() {
+            TextCopy.ClipboardService.SetText("Text to place in clipboard");
+        }
+
         var toCopy = document.getElementById('to-copy'),
             btnCopy = document.getElementById('copy');
         btnCopy.addEventListener('click', function () {

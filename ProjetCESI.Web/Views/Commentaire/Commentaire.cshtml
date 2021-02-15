@@ -14,14 +14,7 @@
             </div>
             @if (User.Identity.IsAuthenticated)
             {
-                if (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
-                {
-                    <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                        <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                        <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                        <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-                    </form>
-                }
+                <button class="btn btn-primary" style="position: relative; float: right;" type="button" onclick="deleteComment(@commentaire.Id)">Supprimer</button>
             }
             @{
                 var comms = commentaire.Texte.Split("\\n");
@@ -58,45 +51,38 @@
                 <div class="collapse" id="collapseResponse-@commentaire.Id">
                     @foreach (var commentaireEnfant in commentaire.CommentairesEnfant)
                     {
-                        <div class="reponse">
-                            <div class="d-inline-flex">
-                                <div>
-                                    <div class="d-inline-flex justify-content-between">
-                                        <div>
-                                            <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
-                                            <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
-                                        </div>
-                                        @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
-                                        {
-                                            if (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
-                                            {
-                                                <form asp-controller="Commentaire" asp-action="SuppressionCommentaire" method="post">
-                                                    <input hidden value="@commentaire.Id" name="IdComm" id="IdComm" />
-                                                    <input hidden value="@commentaire.RessourceId" name="RessourceIdComm" id="RessourceIdComm" />
-                                                    <button class="btn btn-primary" style="position: relative; float: right;" type="submit">Supprimer</button>
-                                                </form>
-                                            }
-                                        }
+                    <div class="reponse">
+                        <div class="d-inline-flex">
+                            <div>
+                                <div class="d-inline-flex justify-content-between">
+                                    <div>
+                                        <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
+                                        <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
                                     </div>
-
-                                    @{
-                                        comms = commentaireEnfant.Texte.Split("\\n");
-                                    }
-
-                                    @foreach (var comm in comms)
-                                    {
-                                        @if (!string.IsNullOrEmpty(comm))
-                                        {
-                                            <span class="d-block" style="word-break: break-word;">@comm</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="d-block">&nbsp;</span>
-                                        }
-                                    }
                                 </div>
+
+                                @{
+                                    comms = commentaireEnfant.Texte.Split("\\n");
+                                }
+
+                                @foreach (var comm in comms)
+                                {
+                                    @if (!string.IsNullOrEmpty(comm))
+                                    {
+                                        <span class="d-block" style="word-break: break-word;">@comm</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="d-block">&nbsp;</span>
+                                    }
+                                }
                             </div>
                         </div>
+                        @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+                        {
+                            <button class="btn btn-primary" style="position: relative; float: right;" type="button" onclick="deleteComment(@commentaire.Id)">Supprimer</button>
+                        }
+                    </div>
                     }
                 </div>
             }

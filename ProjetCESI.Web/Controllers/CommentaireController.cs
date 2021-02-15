@@ -81,11 +81,14 @@ namespace ProjetCESI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SuppressionCommentaire(int IdComm, int RessourceIdComm)
+        public async Task<IActionResult> SuppressionCommentaire(int commId, int ressourceId)
         {
-            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(IdComm);
+            var model = PrepareModel<CommentairesViewModel>();
+            model.RessourceId = ressourceId;
 
-            if(commentaire.CommentairesEnfant.Count() == 0)
+            Commentaire commentaire = await MetierFactory.CreateCommentaireMetier().GetCommentaireComplet(commId);
+
+            if (commentaire.CommentairesEnfant.Count() == 0)
             {
                 await MetierFactory.CreateCommentaireMetier().Delete(commentaire);
             }
@@ -95,8 +98,9 @@ namespace ProjetCESI.Web.Controllers
                 await MetierFactory.CreateCommentaireMetier().InsertOrUpdate(commentaire);
             }
 
-            return RedirectToAction("Ressource", "Ressource", new { id = RessourceIdComm });
+            await UpdateModel(model);
 
+            return PartialView("Commentaire", model);
         }
     }
 }
