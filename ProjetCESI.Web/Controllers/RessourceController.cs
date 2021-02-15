@@ -31,6 +31,9 @@ namespace ProjetCESI.Web.Controllers
 
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
+            if (ressource.RessourceParentId != null)
+                return RedirectToAction("Ressource", "Ressource", new { id = ressource.RessourceParentId });
+
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.Statut != Statut.Accepter)
                     if (User.IsInRole(Enum.GetName(TypeUtilisateur.Citoyen)))

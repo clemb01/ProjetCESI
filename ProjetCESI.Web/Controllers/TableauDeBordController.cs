@@ -33,6 +33,10 @@ namespace ProjetCESI.Web.Controllers
             {
                 result = await ressourceMetier.GetUserRessourcesMiseDeCote(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
             }
+            else if (model.NomVue == "privees")
+            {
+                result = await ressourceMetier.GetUserRessourcePrivees(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);
+            }
             else if (model.NomVue == "crees")
             {
                 result = await ressourceMetier.GetUserRessourcesCreees(UserId.Value, model.Recherche, _pageOffset: model.Page > 0 ? model.Page - 1 : model.Page);

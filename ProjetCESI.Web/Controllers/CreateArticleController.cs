@@ -145,17 +145,22 @@ namespace ProjetCESI.Web.Controllers
         public async Task<IActionResult> FinaliserRessource(int ressourceId)
         {
             var ressourceMetier = MetierFactory.CreateRessourceMetier();
-            Guid g = Guid.NewGuid();
-            string GuidString = Convert.ToBase64String(g.ToByteArray());
-            GuidString = GuidString.Replace("=", "");
-            GuidString = GuidString.Replace("+", "");
 
             Ressource ressource = await ressourceMetier.GetById(ressourceId);
-            var shareLink = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = GuidString }, Request.Scheme);
-            ressource.ShareLink = shareLink;
-            ressource.KeyLink = GuidString;
 
-            if(User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)))
+            if (ressource.TypePartage == TypePartage.Partage)
+            {
+                Guid g = Guid.NewGuid();
+                string GuidString = Convert.ToBase64String(g.ToByteArray());
+                GuidString = GuidString.Replace("=", "");
+                GuidString = GuidString.Replace("+", "");
+
+                var shareLink = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = GuidString }, Request.Scheme);
+                ressource.ShareLink = shareLink;
+                ressource.KeyLink = GuidString;
+            }
+
+            if(User.IsInRole(Enum.GetName(TypeUtilisateur.Admin)) || User.IsInRole(Enum.GetName(TypeUtilisateur.SuperAdmin)) || ressource.TypePartage == TypePartage.Prive)
                 ressource.Statut = Statut.Accepter;
             else
                 ressource.Statut = Statut.AttenteValidation;

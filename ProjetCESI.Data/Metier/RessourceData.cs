@@ -96,6 +96,35 @@ namespace ProjetCESI.Data
             }
         }
 
+        public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcePrivees(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 20)
+        {
+            using (var ctx = GetContext())
+            {
+                IQueryable<Ressource> query = ctx.Set<Ressource>()
+                        .Include(c => c.UtilisateurCreateur)
+                        .Include(c => c.Categorie)
+                        .Include(c => c.TypeRessource)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.TypeRelation)
+                        .Include(c => c.TypeRelationsRessources)
+                        .ThenInclude(c => c.Ressource)
+                        .Where(c => c.TypePartage == TypePartage.Prive && c.UtilisateurCreateurId == _userId && c.RessourceParentId == null);
+
+                if (!string.IsNullOrEmpty(_search))
+                    query = Search(query, _search);
+
+                int count = await query.CountAsync();
+                int mod = (count % _pagination) != 0 ? 1 : 0;
+                count = (count / _pagination) + mod;
+
+                var result = await query.OrderBy(GenerateOrderFilter(_tri))
+                        .Skip(_pageOffset * _pagination)
+                        .Take(_pagination).ToListAsync();
+
+                return Tuple.Create(result.AsEnumerable(), count);
+            }
+        }
+
         public async Task<Tuple<IEnumerable<Ressource>, int>> GetUserRessourcesExploitee(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
         {
             using (var ctx = GetContext())

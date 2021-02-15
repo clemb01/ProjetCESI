@@ -19,6 +19,9 @@
         <li class="list-group-item @(Model.NomVue == "activites" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=activites">Mes activités</a>
         </li>
+        <li class="list-group-item @(Model.NomVue == "privees" ? "active" : "")">
+            <a class="nav-link" href="/TableauDeBord?nomVue=privees">Ressource privées</a>
+        </li>
         <li class="list-group-item @(Model.NomVue == "crees" ? "active" : "")">
             <a class="nav-link" href="/TableauDeBord?nomVue=crees">Ressource créées</a>
         </li>
@@ -86,7 +89,7 @@
                     <th scope="col">Statut Activité</th>
                 }
 
-                @if (Model.NomVue != "activites")
+                @if (Model.NomVue != "activites" && Model.NomVue != "privees")
                 {
                     <th scope="col">Actions</th>
                 }
@@ -155,6 +158,10 @@ else
             else if (Model.NomVue == "miscote")
             {
                 <text>Aucune ressources n'est marquées comme mise de côté</text>
+            }
+            else if (Model.NomVue == "privees")
+            {
+                <text>Vous n'avez créé aucune ressources privées</text>
             }
             else if (Model.NomVue == "crees")
             {

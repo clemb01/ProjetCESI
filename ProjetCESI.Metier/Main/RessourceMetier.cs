@@ -50,6 +50,13 @@ namespace ProjetCESI.Metier
             return Tuple.Create(result.Item1, (IEnumerable<StatutActivite>)null, result.Item2);
         }
 
+        public async Task<Tuple<IEnumerable<Ressource>, IEnumerable<StatutActivite>, int>> GetUserRessourcePrivees(int _userId, string _search = null, TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0)
+        {
+            var result = await DataClass.GetUserRessourcePrivees(_userId, _search, _tri, _pagination, _pageOffset);
+
+            return Tuple.Create(result.Item1, (IEnumerable<StatutActivite>)null, result.Item2);
+        }
+
         public async Task<IEnumerable<Ressource>> GetRessourcesNonValider(TypeTriBase _tri = TypeTriBase.DateModification, int _pagination = 20, int _pageOffset = 0) => await DataClass.GetRessourcesNonValider(_tri, _pagination, _pageOffset);
 
         public async Task<IEnumerable<Tuple<int, string, string, List<string>, string, string>>> GetRessourcesAccueil(TypeTriBase _tri = TypeTriBase.DateModificationDesc, int _pagination = 5, int _pageOffset = 0)
