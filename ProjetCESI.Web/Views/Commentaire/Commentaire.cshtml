@@ -92,7 +92,7 @@
                                     }
                                 </div>
                             </div>
-                            @if (User.Identity.IsAuthenticated && Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen)
+                            @if (User.Identity.IsAuthenticated && (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen))
                             {
                                 <button class="btn btn-primary" style="position: relative; float: right;" type="button" onclick="deleteComment(@commentaire.Id)">Supprimer</button>
                             }

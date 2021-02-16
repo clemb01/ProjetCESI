@@ -7,10 +7,10 @@ function toggleResponse(elementId, count) {
     var text = document.getElementById('comments-' + elementId).innerText
 
     if (count > 1) {
-        texte = "les " + count + " commentaires";
+        texte = "les " + count + " réponses";
     }
     else {
-        texte = "le commentaire";
+        texte = "la réponse";
     }
 
     if (text.includes("Masquer")) {
