@@ -53,7 +53,14 @@
             @if (commentaire.CommentairesEnfant.Any())
             {
                 <span class="toggle-response" id="comments-@commentaire.Id" onclick="toggleResponse(@commentaire.Id, @commentaire.CommentairesEnfant.Count)">
-                    Afficher les @commentaire.CommentairesEnfant.Count réponses
+                    @if (commentaire.CommentairesEnfant.Count == 1)
+                    {
+                        <text>Afficher la réponse</text>
+                    }
+                    else
+                    {
+                        <text>Afficher les @commentaire.CommentairesEnfant.Count réponses</text>
+                    }
                 </span>
                 <div class="collapse" id="collapseResponse-@commentaire.Id">
                     @foreach (var commentaireEnfant in commentaire.CommentairesEnfant)
