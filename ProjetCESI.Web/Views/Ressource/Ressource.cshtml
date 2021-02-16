@@ -20,6 +20,10 @@
     <div class="col-md-8">
         <div class="d-flex">
             <h3>@Model.Titre</h3>&nbsp;
+            @if (Model.RessourceOfficielle)
+            {
+                <text><span><img title="Ressource officielle" src="~/images/008-check.png" style="margin-left: 0.25em; margin-top: 0.35em" width="26" /></span>&nbsp;</text>
+            }
             @if (User.Identity.IsAuthenticated && (Model.Utilisateur.Id == Model.UtilisateurCreateur.Id || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.Admin || Model.UtilisateurRole == ProjetCESI.Core.TypeUtilisateur.SuperAdmin))
             {
                 <a class="m-1" href="/CreateArticle/Edit/@Model.RessourceId" title="Editer"><img src="~/images/edit.png" width="28" /></a>
@@ -52,20 +56,20 @@
     <div class="col-4 col-md-4">
         @if (User.Identity.IsAuthenticated && Model.Statut == ProjetCESI.Core.Statut.Accepter)
         {
-        <div class="ressource-button">
-            @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
-                    {
-            <span class="favoris badge badge-pill badge-info m-1" id="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris-image" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 24px;" /><span class="m-2" id="favoris-texte">@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")</span></span><br />
-            <span class="cote badge badge-pill badge-info m-1" id="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote-image" src="@(!Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="cote-texte">@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")</span></span><br />
-            <span class="exploite badge badge-pill badge-info m-1" id="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite-image" src="@(!Model.EstExploite ? "/images/002-check.png" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="exploite-texte">@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")</span></span><br />
-                    }
-            @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
-                    {
-            <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
-                    }
-        </div>
+            <div class="ressource-button">
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Public)
+                {
+                    <span class="favoris badge badge-pill badge-info m-1" id="favoris"><img title="@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")" id="favoris-image" src="@(Model.EstFavoris ? "/images/004-star-1.svg" : "/images/003-star.svg")" style="width: 24px;" /><span class="m-2" id="favoris-texte">@(Model.EstFavoris ? "Supprimer des favoris" : "Ajouter aux favoris")</span></span><br />
+                    <span class="cote badge badge-pill badge-info m-1" id="cote"><img title="@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")" id="cote-image" src="@(!Model.EstMisDeCote ? "/images/001-clock.svg" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="cote-texte">@(!Model.EstMisDeCote ? "Mettre de côté" : "Supprimer des ressources mise de côté")</span></span><br />
+                    <span class="exploite badge badge-pill badge-info m-1" id="exploite"><img title="@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")" id="exploite-image" src="@(!Model.EstExploite ? "/images/002-check.png" : "/images/remove.svg")" style="width: 24px;" /><span class="m-2" id="exploite-texte">@(!Model.EstExploite ? "Indiquer comme exploitée" : "Supprimer des ressources exploitées")</span></span><br />
+                }
+                @if (Model.TypePartage == ProjetCESI.Core.TypePartage.Partage && Model.UtilisateurCreateur.UserName == User.Identity.Name)
+                {
+                    <span><a data-toggle="modal" data-target="#Share"><img title="" src="~/images/share.png" width="32" /></a></span>
+                }
+            </div>
         }
-    </div>    
+    </div>
 </div>
 
 @if (Model.TypeRessource == ProjetCESI.Core.TypeRessources.ActiviteJeu)

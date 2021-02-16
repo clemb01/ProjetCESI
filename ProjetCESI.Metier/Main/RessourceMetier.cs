@@ -73,7 +73,7 @@ namespace ProjetCESI.Metier
             ));
         }
 
-        public async Task<int> InitNewRessource(int __userId)
+        public async Task<int> InitNewRessource(int __userId, TypeUtilisateur _userRole)
         {
             Ressource result = await DataClass.GetFirstEmptyRessource(__userId);
 
@@ -82,7 +82,8 @@ namespace ProjetCESI.Metier
                 result = new Ressource
                 {
                     UtilisateurCreateurId = __userId,
-                    Statut = Statut.Empty
+                    Statut = Statut.Empty,
+                    RessourceOfficielle = _userRole != TypeUtilisateur.Citoyen
                 };
 
                 await DataClass.InsertOrUpdate(result);

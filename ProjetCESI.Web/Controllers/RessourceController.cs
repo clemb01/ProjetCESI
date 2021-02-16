@@ -61,6 +61,7 @@ namespace ProjetCESI.Web.Controllers
             model.RessourceSupprime = ressource.RessourceSupprime;
             model.TypePartage = ressource.TypePartage;
             model.ShareURL = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = ressource.KeyLink }, Request.Scheme);
+            model.RessourceOfficielle = ressource.RessourceOfficielle;
 
             if (User.Identity.IsAuthenticated)
             {
@@ -78,7 +79,6 @@ namespace ProjetCESI.Web.Controllers
                 string blobFile = ressource.ContenuOriginal.Split("||").Last();
                 await BlobStorage.GetBlobData(blobFile.Substring(blobFile.LastIndexOf("stockage/") + 9), Path.Combine(uploads, blobFile.Substring(blobFile.LastIndexOf("/") + 1)));
             }
-
             ressource.TypeRelationsRessources = null;
             ressource.TypeRessource = null;
             ressource.Categorie = null;

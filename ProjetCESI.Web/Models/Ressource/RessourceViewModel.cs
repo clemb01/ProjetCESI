@@ -22,6 +22,7 @@ namespace ProjetCESI.Web.Models
         public bool EstFavoris { get; set; }
         public bool EstExploite { get; set; }
         public bool EstMisDeCote { get; set; }
+        public bool RessourceOfficielle { get; set; }
         public StatutActivite? StatutActivite { get; set; }
         public List<TypeRelation> TypeRelations { get; set; }
         public string TypeRelationsString { get; set; }

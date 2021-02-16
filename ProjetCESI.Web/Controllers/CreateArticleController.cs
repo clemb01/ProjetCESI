@@ -38,7 +38,7 @@ namespace ProjetCESI.Web.Controllers
 
             ViewBag.Preview = null;
 
-            model.RessourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
+            model.RessourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault(), (TypeUtilisateur)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()));
             
             return View("CreateOrUpdate", model);
         }

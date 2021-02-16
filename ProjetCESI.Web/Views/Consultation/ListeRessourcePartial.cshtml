@@ -8,22 +8,31 @@
         {
             @if (ressource.TypePartage == ProjetCESI.Core.TypePartage.Public)
             {
-                <div class="col-sm-6" id="ressource-card">
+                <div class="col-sm-6" id="ressource-card" style="margin-top: 0.5em;">
                     <a href="/Ressource/@ressource.Id">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
-                                    <h5 title="@ressource.Titre">@(ressource.Titre.Length > 35 ? $"{ressource.Titre.Substring(0, 35).TrimEnd()}...": ressource.Titre)</h5>
+                                    <h5 title="@ressource.Titre">@(ressource.Titre.Length > 30 ? $"{ressource.Titre.Substring(0, 30).TrimEnd()}...": ressource.Titre)</h5>
                                     <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
                                 </div>
-                                <p class="card-text">
-                                    <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
-                                    <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
-                                    @foreach (var relation in ressource.TypeRelationsRessources)
-                                    {
-                                        <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
-                                    }
-                                </p>
+                                <div class="d-flex justify-content-between" style="height: 100%">
+                                    <p class="card-text" style="margin-bottom: 0">
+                                        <span class="badge badge-pill badge-primary">@ressource.Categorie.Nom</span><br />
+                                        <span class="badge badge-pill badge-secondary">@ressource.TypeRessource.Nom</span><br />
+                                        @foreach (var relation in ressource.TypeRelationsRessources)
+                                        {
+                                            <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
+                                        }
+                                    </p>
+                                    <span class="align-self-start">
+                                        par @ressource.UtilisateurCreateur.UserName
+                                        @if (ressource.RessourceOfficielle)
+                                        {
+                                            <img title="Ressource officielle" src="~/images/008-check.png" width="16" class="m-1" />
+                                        }
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </a>

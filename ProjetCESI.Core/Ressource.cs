@@ -32,6 +32,8 @@ namespace ProjetCESI.Core
         public int NombreConsultation { get; set; }
         [DataMember]
         public TypePartage TypePartage { get; set; }
+        [DataMember]
+        public bool RessourceOfficielle { get; set; }
 
         [DataMember]
         public Ressource RessourceParent { get; set; }

@@ -37,7 +37,7 @@ namespace ProjetCESI.Web.Area
             var typeRelations = (await MetierFactory.CreateTypeRelationMetier().GetAll()).ToList().Select(c => new { c.Id, c.Nom });
             var typeRessources = (await MetierFactory.CreateTypeRessourceMetier().GetAll()).ToList().Select(c => new { c.Id, c.Nom });
 
-            var ressourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault());
+            var ressourceId = await MetierFactory.CreateRessourceMetier().InitNewRessource(UserId.GetValueOrDefault(), (TypeUtilisateur)Enum.Parse(typeof(TypeUtilisateur), UtilisateurRoles.FirstOrDefault()));
 
             response.StatusCode = "200";
             response.Data = new
