@@ -279,6 +279,9 @@ namespace ProjetCESI.Web.Controllers
 
         private async Task UpdateStatistique(GestionViewModel model)
         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-FR");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr-FR");
+
             var recherches = (await MetierFactory.CreateStatistiqueMetier().GetTopRecherche(10, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
 
             var consultations = (await MetierFactory.CreateStatistiqueMetier().GetTopConsultation(10, new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, 1, 0, 0, 0, DateTimeOffset.Now.Offset), new DateTimeOffset(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTime.DaysInMonth(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month), 23, 59, 59, DateTimeOffset.Now.Offset))).ToList();
