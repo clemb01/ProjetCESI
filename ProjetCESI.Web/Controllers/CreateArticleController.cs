@@ -148,7 +148,7 @@ namespace ProjetCESI.Web.Controllers
 
             Ressource ressource = await ressourceMetier.GetById(ressourceId);
 
-            if (ressource.TypePartage == TypePartage.Partage)
+            if (string.IsNullOrEmpty(ressource.KeyLink) && ressource.TypePartage == TypePartage.Partage)
             {
                 Guid g = Guid.NewGuid();
                 string GuidString = Convert.ToBase64String(g.ToByteArray());

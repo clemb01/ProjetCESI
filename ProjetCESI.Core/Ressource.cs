@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -48,7 +49,7 @@ namespace ProjetCESI.Core
         public Categorie Categorie { get; set; }
         [DataMember]
         public int? CategorieId { get; set; }
-        [DataMember]
+        [NotMapped]
         public string ShareLink { get; set; }
         [DataMember]
         public string KeyLink { get; set; }

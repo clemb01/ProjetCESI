@@ -59,7 +59,7 @@ namespace ProjetCESI.Web.Controllers
             model.DateSuppression = ressource.DateSuppression;
             model.RessourceSupprime = ressource.RessourceSupprime;
             model.TypePartage = ressource.TypePartage;
-            model.ShareURL = ressource.ShareLink;
+            model.ShareURL = Url.Action(nameof(Ressource), "Ressource", new { id = ressource.Id, shareLink = ressource.KeyLink }, Request.Scheme);
 
             if (User.Identity.IsAuthenticated)
             {
