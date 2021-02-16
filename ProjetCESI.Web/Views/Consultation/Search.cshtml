@@ -19,7 +19,7 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <strong>@Html.LabelFor(c => c.SelectedCategories, "Categories")</strong>
-                <select data-placeholder="Sélectionnez des catégorie..." class="chosen-select form-control" name="SelectedCategories" multiple tabindex="1">
+                <select data-placeholder="Sélectionnez des catégories..." class="chosen-select form-control" name="SelectedCategories" multiple tabindex="1">
                     <option value=""></option>
                     @foreach (var categorie in ViewBag.Categories)
                     {
