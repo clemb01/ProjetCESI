@@ -19,6 +19,7 @@ namespace ProjetCESI.Web.Models
         public string Apercu { get; set; }
         public string Categorie { get; set; }
         public string TypeRessource { get; set; }
+        public bool RessourceOfficelle { get; set; }
         public List<string> TypeRelations { get; set; }
 
     }

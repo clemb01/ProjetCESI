@@ -13,7 +13,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
-                                    <h5 title="@ressource.Titre">@(ressource.Titre.Length > 30 ? $"{ressource.Titre.Substring(0, 30).TrimEnd()}...": ressource.Titre)</h5>
+                                    <h5 title="@ressource.Titre">
+                                        @(ressource.Titre.Length > 30 ? $"{ressource.Titre.Substring(0, 30).TrimEnd()}...": ressource.Titre)
+                                        <span>
+                                            @if (ressource.RessourceOfficielle)
+                                            {
+                                                <img title="Ressource officielle" src="~/images/008-check.png" width="16" />
+                                            }
+                                        </span>
+                                    </h5>
                                     <small>Publié le @ressource.DateModification.ToString("dd/MM/yyyy")</small>
                                 </div>
                                 <div class="d-flex justify-content-between" style="height: 100%">
@@ -25,12 +33,8 @@
                                             <span class="badge badge-pill badge-success">@relation.TypeRelation.Nom</span>
                                         }
                                     </p>
-                                    <span class="align-self-start">
+                                    <span>
                                         par @ressource.UtilisateurCreateur.UserName
-                                        @if (ressource.RessourceOfficielle)
-                                        {
-                                            <img title="Ressource officielle" src="~/images/008-check.png" width="16" class="m-1" />
-                                        }
                                     </span>
                                 </div>
                             </div>

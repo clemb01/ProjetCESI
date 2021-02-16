@@ -32,7 +32,8 @@ namespace ProjetCESI.Web.Controllers
                 Titre = c.Item3,
                 TypeRelations = c.Item4,
                 TypeRessource = c.Item5,
-                Apercu = c.Item6
+                Apercu = c.Item6,
+                RessourceOfficelle = c.Item7
             }).ToList();
 
             model.RessourcesPlusRecentes = ressourcesPlusRecente.Select(c => new RessourceAccueil
@@ -42,7 +43,8 @@ namespace ProjetCESI.Web.Controllers
                 Titre = c.Item3,
                 TypeRelations = c.Item4,
                 TypeRessource = c.Item5,
-                Apercu = c.Item6
+                Apercu = c.Item6,
+                RessourceOfficelle = c.Item7
             }).ToList();
 
             return View(model);
