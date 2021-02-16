@@ -38,6 +38,7 @@ namespace ProjetCESI.Web.Controllers
                 if (ressource.Statut != Statut.Accepter)
                     if (User.IsInRole(Enum.GetName(TypeUtilisateur.Citoyen)))
                         return RedirectToAction("Accueil", "Accueil");
+
             if (ressource.UtilisateurCreateurId != UserId)
                 if (ressource.TypePartage != TypePartage.Public && shareLink != ressource.KeyLink)
                 {
