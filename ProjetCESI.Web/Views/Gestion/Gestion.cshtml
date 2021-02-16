@@ -17,9 +17,12 @@
             <li class="list-group-item @(Model.NomVue == "Validation" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=Validation">Validation des ressources</a>
             </li>
-            <li class="list-group-item @(Model.NomVue == "UserList" ? "active" : "")">
-                <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
-            </li>
+            @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
+            {
+                <li class="list-group-item @(Model.NomVue == "UserList" ? "active" : "")">
+                    <a class="nav-link" href="/Gestion?NomVue=UserList">Liste des utilisateurs</a>
+                </li>
+            }
             <li class="list-group-item @(Model.NomVue == "statistique" ? "active" : "")">
                 <a class="nav-link" href="/Gestion?NomVue=statistique">Statistiques</a>
             </li>
@@ -36,72 +39,75 @@
 
 @if (Model.NomVue == "UserList")
 {
-    <div>
-        <h1>Utilisateurs</h1>
-        <br />
-
-        <br />
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>
-                        Nom d'utilisateur
-                    </th>
-
-                    <th>
-                        Adresse mail
-                    </th>
-                    <th>
-                        Ban jusqu'au
-                    </th>
-                    <th>
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Users)
-                {
-                    <tr>
-
-                        <td>
-                            @Html.DisplayFor(modelItem => item.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @if (item.LockoutEnd > DateTimeOffset.Now)
-                            {
-                                @Html.DisplayFor(modelItem => item.LockoutEnd)
-                            }
-
-                        </td>
-                        <td>
-                            <strong>
-                                @Html.ActionLink("Ban", "BanTempo", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
-                                @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
-                            </strong>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-
-    @if (TempData["Utilisateur"] != null && bool.Parse(TempData["Utilisateur"].ToString()) == true)
+    @if (User.IsInRole(Enum.GetName(ProjetCESI.Core.TypeUtilisateur.SuperAdmin)))
     {
-        <div id="AlertBan">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Compte banni!</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+        <div>
+            <h1>Utilisateurs</h1>
+            <br />
+
+            <br />
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Nom d'utilisateur
+                        </th>
+
+                        <th>
+                            Adresse mail
+                        </th>
+                        <th>
+                            Ban jusqu'au
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Users)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @if (item.LockoutEnd > DateTimeOffset.Now)
+                                {
+                                    @Html.DisplayFor(modelItem => item.LockoutEnd)
+                                }
+
+                            </td>
+                            <td>
+                                <strong>
+                                    @Html.ActionLink("Ban", "BanTempo", "Admin", new { id = item.Id })
+                                    @Html.ActionLink("Anonymiser", "AnonymeUser", "Admin", new { id = item.Id })
+                                    @Html.ActionLink("Rôles", "UpdateRole", "Admin", new { id = item.Id })
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
 
+
+        @if (TempData["Utilisateur"] != null && bool.Parse(TempData["Utilisateur"].ToString()) == true)
+        {
+            <div id="AlertBan">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Compte banni!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+        }
     }
 }
 @if (Model.NomVue == "Validation")
@@ -194,40 +200,40 @@
 }
 @if (Model.NomVue == "Parametre")
 {
-<div>
-    <h1>Paramètre</h1>
-    <br />
-    <br />
-    <button class="btn btn-primary" onclick="AddCategorie()">Ajouter une categorie</button>
-    <br />
-    <br />
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>
-                    Nom de la catégorie
-                </th>
-                <th>
-                    Actions
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.categories)
-            {
+    <div>
+        <h1>Paramètre</h1>
+        <br />
+        <br />
+        <button class="btn btn-primary" onclick="AddCategorie()">Ajouter une categorie</button>
+        <br />
+        <br />
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nom)
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
-                        <button class="btn btn-danger" onclick="DeleteCategorie(@item.Id)">Supprimer</button>
-                    </td>
+                    <th>
+                        Nom de la catégorie
+                    </th>
+                    <th>
+                        Actions
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.categories)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" onclick="GetCategorie(@item.Id, '@item.Nom')">Modifier</button>
+                            <button class="btn btn-danger" onclick="DeleteCategorie(@item.Id)">Supprimer</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 <!-- modal modification paramètre categorie-->
