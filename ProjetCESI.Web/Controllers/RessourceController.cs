@@ -31,6 +31,9 @@ namespace ProjetCESI.Web.Controllers
 
             Ressource ressource = await ressourceMetier.GetRessourceComplete(id);
 
+            if (ressource == null)
+                return RedirectToAction("Accueil", "Accueil");
+
             if (ressource.RessourceParentId != null)
                 return RedirectToAction("Ressource", "Ressource", new { id = ressource.RessourceParentId });
 

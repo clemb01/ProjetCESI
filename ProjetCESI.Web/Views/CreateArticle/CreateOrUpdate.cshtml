@@ -5,12 +5,19 @@
     ViewData["Title"] = "Création de ressource";
 }
 
-<h2>Création d'un article</h2>
+@if (Model.Action.Contains("Edit"))
+{
+    <h2>Edition d'un article</h2>
+}
+else
+{
+    <h2>Création d'un article</h2>
+}
 
 @using (Html.BeginForm("CreateOrUpdateRessource",
-                    "CreateArticle",
-                    FormMethod.Post,
-                    new { enctype = "multipart/form-data", @id = "create-update-ressource" }))
+                  "CreateArticle",
+                  FormMethod.Post,
+                  new { enctype = "multipart/form-data", @id = "create-update-ressource" }))
 {
     @await Html.PartialAsync("_FormPartial", Model)
 
@@ -54,7 +61,7 @@
 @section Scripts {
     @await Html.PartialAsync("_JSScripts")
 
-<script>
+    <script>
     $(document).ready(function () {
         $('#later-btn').click(function () {
             $('#create-update-ressource').attr('action', '/CreateArticle/FinirPlusTard');
@@ -68,5 +75,5 @@
         </text>
     }
     });
-</script>
+    </script>
 }

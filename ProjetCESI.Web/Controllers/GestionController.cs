@@ -68,9 +68,12 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ModifParamCategorie(int id, string nomCategorie)
         {
-            var categorie = await MetierFactory.CreateCategorieMetier().GetById(id);
-            categorie.Nom = nomCategorie;
-            var result = await MetierFactory.CreateCategorieMetier().InsertOrUpdate(categorie);
+            if (!string.IsNullOrEmpty(nomCategorie))
+            {
+                var categorie = await MetierFactory.CreateCategorieMetier().GetById(id);
+                categorie.Nom = nomCategorie;
+                var result = await MetierFactory.CreateCategorieMetier().InsertOrUpdate(categorie);
+            }
             return RedirectToAction("Gestion", new { nomVue = "Parametre" });
 
         }
@@ -78,9 +81,12 @@ namespace ProjetCESI.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategorie(string newCategorie)
         {
-            Core.Categorie NewCate = new Core.Categorie();
-            NewCate.Nom = newCategorie;
-            await MetierFactory.CreateCategorieMetier().InsertOrUpdate(NewCate);
+            if (!string.IsNullOrEmpty(newCategorie))
+            {
+                Core.Categorie NewCate = new Core.Categorie();
+                NewCate.Nom = newCategorie;
+                await MetierFactory.CreateCategorieMetier().InsertOrUpdate(NewCate);
+            }
             return RedirectToAction("Gestion", new { nomVue = "Parametre" });
         }
 

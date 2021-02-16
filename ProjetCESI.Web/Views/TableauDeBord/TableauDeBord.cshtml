@@ -133,7 +133,8 @@
                         }
                         else if (Model.NomVue == "crees")
                         {
-                            <a href="/CreateArticle/Edit/@ressource.Id">Editer la ressource</a>
+                            <a href="/CreateArticle/Edit/@ressource.Id"><img src="~/images/edit.png" width="16"/></a>
+                            <a href="#" onclick="removeFrom(@ressource.Id, '@Model.NomVue')"><img src="~/images/bin.png" width="16"/></a>
                         }
                     </td>
                 }
@@ -192,6 +193,8 @@ else
                 url = '/Ressource/SupprimerExploite';
             else if (what == "miscote")
                 url = '/Ressource/SupprimerMettreDeCote';
+            else if (what == "crees")
+                url = '/Ressource/SupprimerRessource';
 
             $.ajax({
                 url: url,
