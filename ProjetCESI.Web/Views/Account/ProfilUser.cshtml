@@ -15,16 +15,16 @@
                     <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Modification pseudo</button>
                 </div>
                 <div id="collapse1" class="collapse" aria-labelledby="header1" data-parent="#exempleAccordeon">
-                    <div class="card-body">
-                        
+                    <div class="card-body">                        
                         <div class="form-group form-check">
-                            <label class="form-check-label">
-                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                                Nouveau pseudo :
-                                <input placeholder="@Model.Utilisateur.UserName" value="@Model.Utilisateur.UserName" name="newUsername" />
-                                <a class="alert alert-success" >Les caractères spéciaux ne sont pas autorisé dans le pseudo</a>
-                            </label>
-
+                            <div class="d-flex">
+                                <div class="m-2">
+                                    <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                                    Nouveau pseudo :
+                                    <input placeholder="@Model.Utilisateur.UserName" value="@Model.Utilisateur.UserName" name="newUsername" />
+                                </div>
+                                <span class="alert alert-success">Les caractères spéciaux ne sont pas autorisé dans le pseudo</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Enregistrer" class="btn btn-primary"/>
@@ -44,13 +44,14 @@
             <div id="collapse2" class="collapse" aria-labelledby="header2" data-parent="#exempleAccordeon">
                 <div class="card-body">
                     <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
+                        <div class="d-flex">
+                            <div class="m-2">
+                                <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
                                 Nouvelle adresse Email :
                                 <input placeholder="@Model.Utilisateur.Email" value="@Model.Utilisateur.Email" name="newEmail" />
-                                <a class="alert alert-success">L'email ne doit pas déjà être utilisé pour un autre compte.</a>
-                        </label>
-
+                            </div>
+                            <p class="alert alert-success">L'email ne doit pas déjà être utilisé pour un autre compte.</p>
+                        </div>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Enregistrer" class="btn btn-primary" />
@@ -67,10 +68,7 @@
             <div class="card-body">
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        <button type="button" class="btn btn-outline-info">
-                            @Html.ActionLink("Modifier mot de passe", "UpdatePassword", new { id = Model.Utilisateur.Id })
-                        </button>
+                        <a class = "btn btn-outline-info" href="/Account/UpdatePassword?id=@Model.Utilisateur.Id">Modifier mot de passe</a>
                     </label>
 
                 </div>
@@ -84,13 +82,12 @@
         <div id="collapse4" class="collapse" aria-labelledby="header4" data-parent="#exempleAccordeon">
             <div class="card-body">
                 <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input hidden name="Id" type="text" value="@Model.Utilisateur.Id" />
-                        <button type="button" class="btn btn-outline-danger" icon="">
-                            @Html.ActionLink("Supprimer le compte", "ConfirmationAnonyme", new { id = Model.Utilisateur.Id })
-                        </button>
-                        <a class="alert alert-danger">Si vous cliquez sur le bouton, vous allez accéder à la page de confirmation de suppresion du compte</a>
-                    </label>
+                    <div class="d-flex">
+                        <div>
+                            <a class="btn btn-outline-danger m-2" href="/Account/ConfirmationAnonyme?id=@Model.Utilisateur.Id">Supprimer le compte</a>
+                        </div>
+                        <p class="alert alert-danger">Si vous cliquez sur le bouton, vous allez accéder à la page de confirmation de suppresion du compte</p>
+                    </div>
                 </div>
             </div>
         </div>
