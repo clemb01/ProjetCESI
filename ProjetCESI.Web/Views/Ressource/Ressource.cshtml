@@ -72,7 +72,7 @@
     </div>
 </div>
 
-@if (Model.TypeRessource == ProjetCESI.Core.TypeRessources.ActiviteJeu)
+@if (Model.TypeRessource == ProjetCESI.Core.TypeRessources.ActiviteJeu && User.Identity.IsAuthenticated)
 {
     @if (Model.StatutActivite == ProjetCESI.Core.StatutActivite.NonDemare)
     {
