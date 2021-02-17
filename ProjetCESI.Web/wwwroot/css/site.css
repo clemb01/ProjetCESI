@@ -1,6 +1,20 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.profil-underline {
+    text-align: center;
+    font-family: 'Trebuchet MS';
+    background: linear-gradient(#fff 0%, #fff 45%, #08cbce 46%, #08cbce 54%, #fff 54%, #fff 100%);
+    background: -webkit-linear-gradient( #fff 0%, #fff 45%, #08cbce 46%, #08cbce 54%, #fff 54%, #fff 100%);
+    background: -moz-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+    background: -o-linear-gradient( #fff 0%, #fff 45%, #7c8d07 46%, #7c8d07 54%, #fff 54%, #fff 100%);
+}
+
+.profil-underline span {
+    background: #fff;
+    padding: 0 20px;
+}
+
 .carousel-item a:hover {
     text-decoration: none;
 }

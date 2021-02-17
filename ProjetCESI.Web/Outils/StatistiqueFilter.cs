@@ -49,7 +49,7 @@ namespace ProjetCESI.Web.Outils
             stat.Controller = context.ActionDescriptor.RouteValues["controller"];
             stat.Action = context.ActionDescriptor.RouteValues["action"];
 
-            if ((stat.Controller == "Consultation" || stat.Controller == "ConsultationAPI") && stat.Action == "Search")
+            if ((stat.Controller == "Consultation" || stat.Controller == "ConsultationAPI") && stat.Action.Contains("Search"))
             {
                 if (context.ActionArguments.ContainsKey("model"))
                 {
