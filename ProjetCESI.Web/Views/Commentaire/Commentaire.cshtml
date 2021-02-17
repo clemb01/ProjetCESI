@@ -10,9 +10,9 @@
         <div style="width: 100%;">
             <div class="d-inline-flex">
                 <span style="font-weight:bold;">@commentaire.Utilisateur.UserName</span>&nbsp;
-                <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaire.DateCreation < commentaire.DateModification ? "(Modifié)" : "")</span>
+                <span>Publié le @commentaire.DateModification.ToString("dd/MM/yyyy HH:mm")</span>
             </div>
-            @if (commentaire.Statut != ProjetCESI.Core.StatutCommentaire.Suspendu && User.Identity.IsAuthenticated && (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen))
+            @if (commentaire.Statut == ProjetCESI.Core.StatutCommentaire.Ok && User.Identity.IsAuthenticated && (Model.Utilisateur.Id == commentaire.UtilisateurId || Model.UtilisateurRole != ProjetCESI.Core.TypeUtilisateur.Citoyen))
             {
                 <button class="btn btn-primary" style="position: relative; float: right;" type="button" onclick="deleteComment(@commentaire.Id)">Supprimer</button>
             }
@@ -23,9 +23,9 @@
             {
                 @if (!string.IsNullOrEmpty(comm))
                 {
-                    if (commentaire.Statut == ProjetCESI.Core.StatutCommentaire.Suspendu)
+                    if (commentaire.Statut != ProjetCESI.Core.StatutCommentaire.Suspendu)
                     {
-                        <span class="d-block" style="font-style: italic; word-break: break-word;">@comm</span>
+                        <span class="d-block" style="font-style: italic; word-break: break-word;">Ce commentaire à été supprimé</span>
                     }
                     else
                     {
@@ -71,7 +71,7 @@
                                     <div class="d-inline-flex justify-content-between">
                                         <div>
                                             <span style="font-weight:bold;">@commentaireEnfant.Utilisateur.UserName</span>&nbsp;
-                                            <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm") @(commentaireEnfant.DateCreation < commentaireEnfant.DateModification ? "(Modifié)" : "")</span>
+                                            <span>Publié le @commentaireEnfant.DateModification.ToString("dd/MM/yyyy HH:mm")</span>
                                         </div>
                                     </div>
 
@@ -83,7 +83,14 @@
                                     {
                                         @if (!string.IsNullOrEmpty(comm))
                                         {
-                                            <span class="d-block" style="word-break: break-word;">@comm</span>
+                                            if (commentaireEnfant.Statut != ProjetCESI.Core.StatutCommentaire.Suspendu)
+                                            {
+                                                <span class="d-block" style="font-style: italic; word-break: break-word;">Ce commentaire à été supprimé</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="d-block" style="word-break: break-word;">@comm</span>
+                                            }
                                         }
                                         else
                                         {
