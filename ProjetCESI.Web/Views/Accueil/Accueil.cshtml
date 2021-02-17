@@ -23,8 +23,8 @@
                 {
                     <div class="item carousel-item @(i == 0 ? "active" : "")">
                         <div style=" width: 85%; margin-left: auto; margin-right: auto; margin-top: 1.5%">
-                            <a href="/Ressource/@Model.RessourcesPlusRecentes[i].Id">
-                                <h2 style="height: 9vh;">
+                            <a href="/Ressource/@Model.RessourcesPlusRecentes[i].Id" style="">
+                                <h2 style="height: 100px;">
                                     @Model.RessourcesPlusRecentes[i].Titre
                                     @if (Model.RessourcesPlusRecentes[i].RessourceOfficelle)
                                     {
@@ -32,7 +32,7 @@
                                     }
                                 </h2>
                                 <div class="carousel-caption" style="position: initial; width: 82%; margin-left: auto; margin-right: auto;">
-                                    <div style="height:15vh; overflow: hidden;">
+                                    <div style="height:150px; overflow: hidden;">
                                         @Html.Raw(Model.RessourcesPlusRecentes[i].Apercu)
                                     </div>
                                     <p>
@@ -82,7 +82,7 @@
                 <div class="item carousel-item @(i == 0 ? "active" : "")">
                     <div style=" width: 85%; margin-left: auto; margin-right: auto; margin-top: 1.5%">
                         <a href="/Ressource/@Model.RessourcesPlusVues[i].Id">
-                            <h2 style="height: 9vh;">
+                            <h2 style="height: 100px;">
                                 @Model.RessourcesPlusVues[i].Titre
                                 @if (Model.RessourcesPlusVues[i].RessourceOfficelle)
                                 {
@@ -90,7 +90,7 @@
                                 }
                             </h2>
                             <div class="carousel-caption" style="position: initial; width: 82%; margin-left: auto; margin-right: auto;">
-                                <div style="height: 15vh; overflow: hidden;">
+                                <div style="height: 150px; overflow: hidden;">
                                     @Html.Raw(Model.RessourcesPlusVues[i].Apercu)
                                 </div>
                                 <p>
