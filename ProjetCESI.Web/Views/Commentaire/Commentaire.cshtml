@@ -23,7 +23,7 @@
             {
                 @if (!string.IsNullOrEmpty(comm))
                 {
-                    if (commentaire.Statut != ProjetCESI.Core.StatutCommentaire.Suspendu)
+                    if (commentaire.Statut != ProjetCESI.Core.StatutCommentaire.Ok)
                     {
                         <span class="d-block" style="font-style: italic; word-break: break-word;">Ce commentaire à été supprimé</span>
                     }
@@ -83,7 +83,7 @@
                                     {
                                         @if (!string.IsNullOrEmpty(comm))
                                         {
-                                            if (commentaireEnfant.Statut != ProjetCESI.Core.StatutCommentaire.Suspendu)
+                                            if (commentaireEnfant.Statut != ProjetCESI.Core.StatutCommentaire.Ok)
                                             {
                                                 <span class="d-block" style="font-style: italic; word-break: break-word;">Ce commentaire à été supprimé</span>
                                             }
