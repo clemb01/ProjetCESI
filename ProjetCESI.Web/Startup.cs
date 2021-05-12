@@ -42,6 +42,9 @@ namespace ProjetCESI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+#if DEBUG
+            services.AddDbContext<MainContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Cn1")));
+#elif RELEASE
             var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
             // Parse connection URL to connection string for Npgsql
@@ -60,6 +63,7 @@ namespace ProjetCESI
             var connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
 
             services.AddDbContext<MainContext>(options => options.UseNpgsql(connStr));
+#endif
             services.AddIdentity<User, ApplicationRole>(options => options.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<MainContext>()
                 .AddDefaultTokenProviders();

@@ -33,6 +33,12 @@ namespace ProjetCESI.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+#if DEBUG
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().SetBasePath(Environment.CurrentDirectory).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            IConfigurationRoot configurationRoot = configurationBuilder.Build();
+
+            optionsBuilder.UseSqlServer(configurationRoot.GetConnectionString(ConnectionString));
+#elif RELEASE
             var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
             // Parse connection URL to connection string for Npgsql
@@ -49,8 +55,9 @@ namespace ProjetCESI.Data.Context
             var pgPort = pgHostPort.Split(":")[1];
 
             var connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};SSL Mode=Require;Trust Server Certificate=true";
-
+            
             optionsBuilder.UseNpgsql(connStr);
+#endif
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
