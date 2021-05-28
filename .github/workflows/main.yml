@@ -48,7 +48,7 @@ jobs:
         key: ${{ runner.os }}-build-${{ env.cache-name }}
         restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test --no-build --no-restore --verbosity normal --configuration Release
 
   deploy:
     runs-on: ubuntu-latest
