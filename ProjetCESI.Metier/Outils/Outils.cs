@@ -23,11 +23,10 @@ namespace ProjetCESI.Metier.Outils
                 string connectionString = currentConfig.GetConnectionString(configKey);
                 return connectionString;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw (ex);
+                throw;
             }
-            return "";
         }
     }
 }

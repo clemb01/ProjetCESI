@@ -23,7 +23,7 @@ namespace ProjetCESI.Metier.Outils
 
                 await blobReference.DownloadToFileAsync(filepath, FileMode.OpenOrCreate);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -38,9 +38,9 @@ namespace ProjetCESI.Metier.Outils
                 string fileUrl = _task.Result;
                 return fileUrl;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw (ex);
+                throw;
             }
         }
 
@@ -95,7 +95,7 @@ namespace ProjetCESI.Metier.Outils
                 }
                 return "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
