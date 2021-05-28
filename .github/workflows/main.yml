@@ -23,6 +23,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release
     - name: Publish
-      run: dotnet publish -c Release -o /src/publish
+      run: dotnet publish -c Release -o src/publish
     - name: Voir les fichiers
       run: ls -la 
