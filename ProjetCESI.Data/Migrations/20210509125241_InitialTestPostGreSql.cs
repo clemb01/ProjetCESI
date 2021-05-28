@@ -1,5 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+#if RELEASE
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+#endif
 
 namespace ProjetCESI.Data.Migrations
 {

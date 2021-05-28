@@ -74,7 +74,9 @@ namespace ProjetCESI.Data
 
         virtual async public Task<IEnumerable<T>> CreationDonneesTable()
         {
-            return null;
+            IEnumerable<T> value = null;
+
+            return await Task.FromResult(value);
         }
 
         virtual public async Task<bool> InsertOrUpdate(IEnumerable<T> __lstCoreElement)
@@ -109,7 +111,7 @@ namespace ProjetCESI.Data
                     return result != default(int) ? true : false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -152,7 +154,7 @@ namespace ProjetCESI.Data
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {                
                 return false;
             }
@@ -178,7 +180,7 @@ namespace ProjetCESI.Data
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

@@ -277,7 +277,7 @@ namespace ProjetCESI.Web.Controllers
 
                 return File(bytes, "application/octet-stream", filename);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500);
             }
