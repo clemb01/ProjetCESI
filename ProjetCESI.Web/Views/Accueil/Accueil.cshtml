@@ -9,6 +9,7 @@
 {
     <div class="text-center">
         <h2>Dernière ressources mise en ligne</h2>
+        <h1>TEST POUR VOIR SI C'EST BON</h1>
     </div>
     <div style="width: 75%; margin: auto;">
         <div id="carouselRessourcePlusRecente" class="carousel slide" data-ride="carousel">
@@ -79,32 +80,32 @@
             <div class="carousel-inner">
                 @for (int i = 0; i < Model.RessourcesPlusVues.Count; i++)
                 {
-                <div class="item carousel-item @(i == 0 ? "active" : "")">
-                    <div style=" width: 85%; margin-left: auto; margin-right: auto; margin-top: 1.5%">
-                        <a href="/Ressource/@Model.RessourcesPlusVues[i].Id">
-                            <h2 style="height: 100px;">
-                                @Model.RessourcesPlusVues[i].Titre
-                                @if (Model.RessourcesPlusVues[i].RessourceOfficelle)
-                                {
-                                    <text>&nbsp;<span><img title="Ressource officielle" src="~/images/008-check.png" width="26" /></span>&nbsp;</text>
-                                }
-                            </h2>
-                            <div class="carousel-caption" style="position: initial; width: 82%; margin-left: auto; margin-right: auto;">
-                                <div style="height: 150px; overflow: hidden;">
-                                    @Html.Raw(Model.RessourcesPlusVues[i].Apercu)
-                                </div>
-                                <p>
-                                    <span class="badge badge-pill badge-primary">@Model.RessourcesPlusVues[i].Categorie</span><br />
-                                    <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusVues[i].TypeRessource</span><br />
-                                    @foreach (var relation in Model.RessourcesPlusVues[i].TypeRelations)
+                    <div class="item carousel-item @(i == 0 ? "active" : "")">
+                        <div style=" width: 85%; margin-left: auto; margin-right: auto; margin-top: 1.5%">
+                            <a href="/Ressource/@Model.RessourcesPlusVues[i].Id">
+                                <h2 style="height: 100px;">
+                                    @Model.RessourcesPlusVues[i].Titre
+                                    @if (Model.RessourcesPlusVues[i].RessourceOfficelle)
                                     {
-                                        <span class="badge badge-pill badge-success">@relation</span>
+                                        <text>&nbsp;<span><img title="Ressource officielle" src="~/images/008-check.png" width="26" /></span>&nbsp;</text>
                                     }
-                                </p>
-                            </div>
-                        </a>
+                                </h2>
+                                <div class="carousel-caption" style="position: initial; width: 82%; margin-left: auto; margin-right: auto;">
+                                    <div style="height: 150px; overflow: hidden;">
+                                        @Html.Raw(Model.RessourcesPlusVues[i].Apercu)
+                                    </div>
+                                    <p>
+                                        <span class="badge badge-pill badge-primary">@Model.RessourcesPlusVues[i].Categorie</span><br />
+                                        <span class="badge badge-pill badge-secondary">@Model.RessourcesPlusVues[i].TypeRessource</span><br />
+                                        @foreach (var relation in Model.RessourcesPlusVues[i].TypeRelations)
+                                        {
+                                            <span class="badge badge-pill badge-success">@relation</span>
+                                        }
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                </div>
                 }
             </div>
             <a class="carousel-control-prev" href="#carouselRessourcePlusVues" role="button" data-slide="prev">
