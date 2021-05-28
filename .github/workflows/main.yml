@@ -21,6 +21,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --configuration Release
     - name: Voir les fichiers
       run: ls -la ProjetCESI.Web/bin
