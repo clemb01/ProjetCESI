@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build and test
     runs-on: ubuntu-latest
 
     steps:
@@ -28,31 +29,12 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --configuration Release
-        
-  tests:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Caching data
-      uses: actions/cache@v2.1.6
-      env:
-        cache-name: 'cache-release'
-      with:
-        path: '**/Release'
-        key: ${{ runner.os }}-build-${{ env.cache-name }}
-        restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test --no-build --no-restore --verbosity normal --configuration Release
 
   deploy:
     runs-on: ubuntu-latest
-    needs: tests
+    needs: build
     env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         APP_NAME: ${{ 'ressources-relationnelle' }}
