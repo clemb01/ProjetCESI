@@ -23,4 +23,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Voir les fichiers
-      run: ls -la
+      run: ls -la ProjetCESI.Web/bin
