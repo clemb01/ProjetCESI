@@ -31,5 +31,5 @@ jobs:
       run: |
         docker build . -t ${{ env.APP_NAME }} -f Dockerfile
         docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
-        heroku container:push web -a $APP_NAME
-        heroku container:release web -a $APP_NAME
+        heroku container:push web -a ${{ env.APP_NAME }}
+        heroku container:release web -a ${{ env.APP_NAME }}
