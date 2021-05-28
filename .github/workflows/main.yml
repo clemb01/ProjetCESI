@@ -9,6 +9,48 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Caching data
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: 'cache-release'
+      with:
+        path: '**/Release'
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+        
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Caching data
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: 'cache-release'
+      with:
+        path: '**/Release'
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --configuration Release
+
+  deploy:
+    runs-on: ubuntu-latest
     env: 
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         APP_NAME: ${{ 'ressources-relationnelle' }}
@@ -19,12 +61,14 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+    - name: Caching data
+      uses: actions/cache@v2.1.6
+      env:
+        cache-name: 'cache-release'
+      with:
+        path: '**/Release'
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
+        restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Publish
       run: dotnet publish -c Release -o src/publish
     - name: Build docker image
@@ -33,3 +77,4 @@ jobs:
         docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
         heroku container:push web -a ${{ env.APP_NAME }}
         heroku container:release web -a ${{ env.APP_NAME }}
+        
